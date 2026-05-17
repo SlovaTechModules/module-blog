@@ -55,4 +55,31 @@ class Category extends AbstractDb
                 ->where('cat_link.category_id = ?', $categoryId)
         );
     }
+
+    /**
+     * @return array<int,int> [category_id => active post count]
+     */
+    public function getPostCounts(): array
+    {
+        $connection = $this->getConnection();
+        $select = $connection->select()
+            ->from(
+                ['cat_link' => $this->getTable('slova_blog_post_category')],
+                ['category_id', 'cnt' => 'COUNT(*)']
+            )
+            ->join(
+                ['post' => $this->getTable('slova_blog_post')],
+                'post.post_id = cat_link.post_id AND post.is_active = 1'
+                . ' AND (post.published_at IS NULL OR post.published_at <= NOW())',
+                []
+            )
+            ->group('cat_link.category_id');
+
+        $rows = $connection->fetchAll($select);
+        $map = [];
+        foreach ($rows as $row) {
+            $map[(int)$row['category_id']] = (int)$row['cnt'];
+        }
+        return $map;
+    }
 }

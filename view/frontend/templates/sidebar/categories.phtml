@@ -19,9 +19,11 @@ if (!$categories) {
     </h3>
     <ul class="slova-blog-sidebar-categories__list">
         <?php foreach ($categories as $category): ?>
+            <?php $count = $block->getPostCount($category); ?>
             <li class="slova-blog-sidebar-categories__item<?= $block->isCurrent($category) ? ' is-current' : '' ?>">
                 <a href="<?= $escaper->escapeUrl($block->getCategoryUrl($category)) ?>">
-                    <?= $escaper->escapeHtml($category->getName()) ?>
+                    <span class="slova-blog-sidebar-categories__name"><?= $escaper->escapeHtml($category->getName()) ?></span>
+                    <span class="slova-blog-sidebar-categories__count">(<?= (int)$count ?>)</span>
                 </a>
             </li>
         <?php endforeach; ?>
@@ -62,15 +64,26 @@ if (!$categories) {
     }
 
     .slova-blog-sidebar-categories__item a {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: .5rem;
         color: #374151;
         text-decoration: none;
         font-size: .9375rem;
         transition: color 0.15s;
     }
 
-    .slova-blog-sidebar-categories__item a:hover,
-    .slova-blog-sidebar-categories__item.is-current a {
+    .slova-blog-sidebar-categories__item a:hover .slova-blog-sidebar-categories__name,
+    .slova-blog-sidebar-categories__item.is-current a .slova-blog-sidebar-categories__name {
         color: var(--color-primary, #009999);
         font-weight: 600;
+    }
+
+    .slova-blog-sidebar-categories__count {
+        color: #9ca3af;
+        font-size: .8125rem;
+        font-variant-numeric: tabular-nums;
+        flex-shrink: 0;
     }
 </style>

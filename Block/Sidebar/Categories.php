@@ -7,7 +7,9 @@ use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\View\Element\Template;
 use Slova\Blog\Api\Data\CategoryInterface;
+use Slova\Blog\Api\Data\PostInterface;
 use Slova\Blog\Model\Category;
+use Slova\Blog\Model\ResourceModel\Category as CategoryResource;
 use Slova\Blog\Model\ResourceModel\Category\Collection;
 use Slova\Blog\Model\ResourceModel\Category\CollectionFactory;
 use Slova\Blog\Model\Url as BlogUrl;
@@ -15,15 +17,26 @@ use Slova\Blog\Model\Url as BlogUrl;
 class Categories extends Template implements IdentityInterface
 {
     private ?Collection $collection = null;
+    /** @var array<int,int>|null */
+    private ?array $counts = null;
 
     public function __construct(
         Template\Context $context,
         private readonly CollectionFactory $collectionFactory,
+        private readonly CategoryResource $categoryResource,
         private readonly BlogUrl $blogUrl,
         private readonly Registry $registry,
         array $data = []
     ) {
         parent::__construct($context, $data);
+    }
+
+    public function getPostCount(Category $category): int
+    {
+        if ($this->counts === null) {
+            $this->counts = $this->categoryResource->getPostCounts();
+        }
+        return $this->counts[(int)$category->getId()] ?? 0;
     }
 
     /**
@@ -52,7 +65,7 @@ class Categories extends Template implements IdentityInterface
 
     public function getIdentities(): array
     {
-        $tags = [CategoryInterface::CACHE_TAG];
+        $tags = [CategoryInterface::CACHE_TAG, PostInterface::CACHE_TAG];
         foreach ($this->getCategories() as $cat) {
             $tags[] = CategoryInterface::CACHE_TAG . '_' . $cat->getId();
         }
