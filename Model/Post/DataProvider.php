@@ -15,7 +15,7 @@ use Slova\Blog\Model\ResourceModel\Post\CollectionFactory;
 class DataProvider extends AbstractDataProvider
 {
     private const IMAGE_FIELDS_BY_FIELDSET = [
-        'general' => ['featured_image'],
+        'general' => ['featured_image', 'thumbnail_mobile'],
         'intro'   => ['side_image'],
         'seo'     => ['og_image'],
     ];
@@ -87,7 +87,7 @@ class DataProvider extends AbstractDataProvider
             $data = $post->getData();
             $id = (int)$post->getData('post_id');
 
-            foreach (['featured_image', 'og_image', 'side_image'] as $field) {
+            foreach (['featured_image', 'og_image', 'side_image', 'thumbnail_mobile'] as $field) {
                 if (!empty($data[$field]) && !is_array($data[$field])) {
                     $value = (string)$data[$field];
                     $relativePath = str_contains($value, '/') ? ltrim($value, '/') : 'slova/blog/' . $value;

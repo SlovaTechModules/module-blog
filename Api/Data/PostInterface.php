@@ -12,6 +12,8 @@ interface PostInterface
     public const CONTENT = 'content';
     public const FEATURED_IMAGE = 'featured_image';
     public const FEATURED_IMAGE_ALT = 'featured_image_alt';
+    public const THUMBNAIL_MOBILE = 'thumbnail_mobile';
+    public const THUMBNAIL_MOBILE_ALT = 'thumbnail_mobile_alt';
     public const IS_ACTIVE = 'is_active';
     public const PUBLISHED_AT = 'published_at';
     public const CREATED_AT = 'created_at';

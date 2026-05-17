@@ -21,7 +21,7 @@ class Upload extends Post
     {
         try {
             $fieldName = 'featured_image';
-            foreach (['og_image', 'side_image'] as $alt) {
+            foreach (['og_image', 'side_image', 'thumbnail_mobile'] as $alt) {
                 if (!empty($this->getRequest()->getFiles($alt))) {
                     $fieldName = $alt;
                     break;

@@ -14,10 +14,12 @@ use Slova\Blog\Model\ResourceModel\Category\CollectionFactory as CategoryCollect
 use Slova\Blog\Model\ResourceModel\Post\Collection;
 use Slova\Blog\Model\ResourceModel\Post\CollectionFactory;
 use Slova\Blog\Model\Url as BlogUrl;
+use Slova\Imaging\Service\ImageProcessor;
 
 class PostList extends Template implements IdentityInterface
 {
     public const PAGE_SIZE = 12;
+    public const MOBILE_BREAKPOINT_PX = 768;
 
     private ?Collection $collection = null;
     /** @var Category[]|null */
@@ -29,9 +31,24 @@ class PostList extends Template implements IdentityInterface
         private readonly CategoryCollectionFactory $categoryCollectionFactory,
         private readonly Registry $registry,
         private readonly BlogUrl $blogUrl,
+        private readonly ImageProcessor $imageProcessor,
         array $data = []
     ) {
         parent::__construct($context, $data);
+    }
+
+    public function getThumbnailMobilePath(Post $post): string
+    {
+        $img = (string)$post->getThumbnailMobile();
+        if ($img === '') {
+            return '';
+        }
+        return str_contains($img, '/') ? ltrim($img, '/') : 'slova/blog/' . $img;
+    }
+
+    public function processImage(string $path, int $width, string $format = 'webp'): string
+    {
+        return $this->imageProcessor->process($path, $width, $format);
     }
 
     public function getPosts(): Collection

@@ -10,6 +10,8 @@
         <column xsi:type="mediumtext" name="content" nullable="true" comment="Full WYSIWYG Content"/>
         <column xsi:type="varchar" name="featured_image" length="255" nullable="true" comment="Featured Image Path"/>
         <column xsi:type="varchar" name="featured_image_alt" length="255" nullable="true" comment="Featured Image Alt"/>
+        <column xsi:type="varchar" name="thumbnail_mobile" length="255" nullable="true" comment="Mobile-only card thumbnail (1:1 recommended)"/>
+        <column xsi:type="varchar" name="thumbnail_mobile_alt" length="255" nullable="true" comment="Mobile thumbnail alt text"/>
         <column xsi:type="smallint" name="is_active" padding="6" unsigned="true" nullable="false" default="1" comment="Is Active"/>
         <column xsi:type="timestamp" name="published_at" on_update="false" nullable="true" comment="Published At"/>
         <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
