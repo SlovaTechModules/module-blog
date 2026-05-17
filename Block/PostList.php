@@ -128,6 +128,21 @@ class PostList extends Template implements IdentityInterface
         return $pager->toHtml();
     }
 
+    public function getCurrentPage(): int
+    {
+        return (int)$this->getPosts()->getCurPage();
+    }
+
+    public function getLastPage(): int
+    {
+        return (int)$this->getPosts()->getLastPageNumber();
+    }
+
+    public function getLoadedItemsCount(): int
+    {
+        return count($this->getPosts()->getItems());
+    }
+
     public function getIdentities(): array
     {
         $tags = [PostInterface::CACHE_TAG];
