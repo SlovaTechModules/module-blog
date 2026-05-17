@@ -17,7 +17,7 @@ use Slova\Blog\Model\Url as BlogUrl;
 
 class PostList extends Template implements IdentityInterface
 {
-    public const PAGE_SIZE = 10;
+    public const PAGE_SIZE = 12;
 
     private ?Collection $collection = null;
     /** @var Category[]|null */
