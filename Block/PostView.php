@@ -257,6 +257,14 @@ class PostView extends Template implements IdentityInterface
                 'title' => __('Jurnal de bord'),
                 'link'  => $this->blogUrl->getBaseUrl(),
             ]);
+            $currentCategory = $this->registry->registry('current_blog_category');
+            if ($currentCategory && $currentCategory->getId()) {
+                $breadcrumbs->addCrumb('blog_category', [
+                    'label' => $currentCategory->getName(),
+                    'title' => $currentCategory->getName(),
+                    'link'  => $this->blogUrl->getCategoryUrl((string)$currentCategory->getUrlKey()),
+                ]);
+            }
             $breadcrumbs->addCrumb('post', [
                 'label' => $post->getTitle(),
                 'title' => $post->getTitle(),

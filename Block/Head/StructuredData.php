@@ -76,13 +76,31 @@ class StructuredData extends Template
             $article['description'] = trim(strip_tags($description));
         }
 
+        $crumbItems = [
+            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Acasă', 'item' => $storeUrl],
+            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Jurnal de bord', 'item' => $this->blogUrl->getBaseUrl()],
+        ];
+
+        $currentCategory = $this->registry->registry('current_blog_category');
+        $position = 3;
+        if ($currentCategory && $currentCategory->getId()) {
+            $crumbItems[] = [
+                '@type'    => 'ListItem',
+                'position' => $position++,
+                'name'     => (string)$currentCategory->getName(),
+                'item'     => $this->blogUrl->getCategoryUrl((string)$currentCategory->getUrlKey()),
+            ];
+        }
+        $crumbItems[] = [
+            '@type'    => 'ListItem',
+            'position' => $position,
+            'name'     => (string)$post->getTitle(),
+            'item'     => $postUrl,
+        ];
+
         $breadcrumbs = [
-            '@type' => 'BreadcrumbList',
-            'itemListElement' => [
-                ['@type' => 'ListItem', 'position' => 1, 'name' => 'Acasă', 'item' => $storeUrl],
-                ['@type' => 'ListItem', 'position' => 2, 'name' => 'Jurnal de bord', 'item' => $this->blogUrl->getBaseUrl()],
-                ['@type' => 'ListItem', 'position' => 3, 'name' => $post->getTitle(), 'item' => $postUrl],
-            ],
+            '@type'           => 'BreadcrumbList',
+            'itemListElement' => $crumbItems,
         ];
 
         $payload = [

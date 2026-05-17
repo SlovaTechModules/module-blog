@@ -8,7 +8,9 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\ForwardFactory;
 use Magento\Framework\Registry;
 use Magento\Framework\View\Result\PageFactory;
+use Slova\Blog\Model\CategoryFactory;
 use Slova\Blog\Model\PostFactory;
+use Slova\Blog\Model\ResourceModel\Category as CategoryResource;
 use Slova\Blog\Model\ResourceModel\Post as PostResource;
 
 class View extends Action
@@ -19,6 +21,8 @@ class View extends Action
         private readonly ForwardFactory $resultForwardFactory,
         private readonly PostFactory $postFactory,
         private readonly PostResource $postResource,
+        private readonly CategoryFactory $categoryFactory,
+        private readonly CategoryResource $categoryResource,
         private readonly Registry $registry
     ) {
         parent::__construct($context);
@@ -44,6 +48,16 @@ class View extends Action
         }
 
         $this->registry->register('current_blog_post', $post);
+
+        $categoryIds = $post->getCategoryIds();
+        $primaryCategoryId = !empty($categoryIds) ? (int)$categoryIds[0] : 0;
+        if ($primaryCategoryId) {
+            $category = $this->categoryFactory->create();
+            $this->categoryResource->load($category, $primaryCategoryId);
+            if ($category->getId() && (int)$category->getIsActive() === 1) {
+                $this->registry->register('current_blog_category', $category);
+            }
+        }
 
         return $this->resultPageFactory->create();
     }
