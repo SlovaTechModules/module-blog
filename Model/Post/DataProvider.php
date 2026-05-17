@@ -42,8 +42,9 @@ class DataProvider extends AbstractDataProvider
 
         if (!$items) {
             $this->loadedData[''] = [
-                'is_active'   => 1,
-                'meta_robots' => 'INDEX,FOLLOW',
+                'is_active'    => 1,
+                'meta_robots'  => 'INDEX,FOLLOW',
+                'category_ids' => [],
             ];
         }
 

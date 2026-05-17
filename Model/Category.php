@@ -18,6 +18,9 @@ class Category extends AbstractModel implements IdentityInterface
 
     public function getIdentities(): array
     {
-        return [CategoryInterface::CACHE_TAG . '_' . $this->getId()];
+        return [
+            CategoryInterface::CACHE_TAG,
+            CategoryInterface::CACHE_TAG . '_' . $this->getId(),
+        ];
     }
 }

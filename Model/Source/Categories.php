@@ -19,8 +19,8 @@ class Categories implements OptionSourceInterface
         $collection = $this->collectionFactory->create()->applyDefaultOrder();
         foreach ($collection as $category) {
             $options[] = [
-                'value' => (int)$category->getId(),
-                'label' => $category->getName(),
+                'value' => (string)$category->getId(),
+                'label' => (string)$category->getName(),
             ];
         }
         return $options;

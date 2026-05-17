@@ -130,7 +130,7 @@
         </field>
         <field name="category_ids" sortOrder="60" formElement="multiselect">
             <settings>
-                <dataType>text</dataType>
+                <dataType>int</dataType>
                 <label translate="true">Categorii</label>
                 <dataScope>category_ids</dataScope>
             </settings>

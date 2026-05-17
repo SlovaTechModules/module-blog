@@ -52,22 +52,22 @@ class Post extends AbstractDb
     public function getCategoryIds(int $postId): array
     {
         $connection = $this->getConnection();
-        return array_map('intval', $connection->fetchCol(
+        return $connection->fetchCol(
             $connection->select()
                 ->from($this->getTable('slova_blog_post_category'), ['category_id'])
                 ->where('post_id = ?', $postId)
-        ));
+        );
     }
 
     public function getProductIds(int $postId): array
     {
         $connection = $this->getConnection();
-        return array_map('intval', $connection->fetchCol(
+        return $connection->fetchCol(
             $connection->select()
                 ->from($this->getTable('slova_blog_post_product'), ['product_id'])
                 ->where('post_id = ?', $postId)
                 ->order('position ASC')
-        ));
+        );
     }
 
     private function saveCategoryLinks(int $postId, array $categoryIds): void

@@ -18,7 +18,10 @@ class Post extends AbstractModel implements IdentityInterface
 
     public function getIdentities(): array
     {
-        return [PostInterface::CACHE_TAG . '_' . $this->getId()];
+        return [
+            PostInterface::CACHE_TAG,
+            PostInterface::CACHE_TAG . '_' . $this->getId(),
+        ];
     }
 
     public function getCategoryIds(): array
