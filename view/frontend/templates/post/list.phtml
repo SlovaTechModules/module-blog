@@ -30,12 +30,13 @@ $totalCount = (int)$posts->getSize();
          aria-label="<?= $escaper->escapeHtmlAttr(__('Listă articole')) ?>"
          tabindex="-1">
     <ul id="product-grid" role="list" class="slova-blog-list">
-        <?php foreach ($posts as $post): ?>
+        <?php foreach ($posts->getItems() as $i => $post): ?>
             <?php
             $postUrl = $block->getPostUrl((string)$post->getUrlKey());
             $imgPath = $block->getFeaturedImagePath($post);
             $categories = $block->getCategoriesForPost($post);
             $shortContent = trim((string)$post->getShortContent());
+            $isLcp = ($i === 0);
             ?>
             <li>
                 <article class="slova-blog-card">
@@ -45,7 +46,8 @@ $totalCount = (int)$posts->getSize();
                                 $imgPath,
                                 480,
                                 alt: (string)($post->getFeaturedImageAlt() ?: $post->getTitle()),
-                                loading: 'lazy',
+                                loading: $isLcp ? 'eager' : 'lazy',
+                                fetchPriority: $isLcp ? 'high' : 'auto',
                                 imgClass: 'slova-blog-card__img'
                             ) ?>
                         <?php else: ?>
