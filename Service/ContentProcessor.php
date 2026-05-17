@@ -51,22 +51,57 @@ class ContentProcessor
                     $attrs['decoding'] = 'async';
                 }
 
-                if (!isset($attrs['width']) || !isset($attrs['height'])) {
-                    $src = (string)($attrs['src'] ?? '');
-                    $mediaPath = $this->urlToMediaPath($src);
-                    if ($mediaPath) {
-                        [$w, $h] = $this->imageProcessor->dimensionsAt($mediaPath, 1600);
-                        if ($w > 0 && $h > 0) {
-                            $attrs['width'] = $attrs['width'] ?? (string)$w;
-                            $attrs['height'] = $attrs['height'] ?? (string)$h;
-                        }
-                    }
+                $src = (string)($attrs['src'] ?? '');
+                $mediaPath = $this->urlToMediaPath($src);
+
+                if (!$mediaPath) {
+                    // External/unknown URL — just enhance attributes and return.
+                    return '<img' . $this->renderAttributes($attrs) . '>';
                 }
 
-                return '<img' . $this->renderAttributes($attrs) . '>';
+                $baseWidth = isset($attrs['width']) ? max(1, (int)$attrs['width']) : 900;
+
+                [$natW, $natH] = $this->imageProcessor->dimensionsAt($mediaPath, $baseWidth);
+                if ($natW > 0 && $natH > 0) {
+                    $attrs['width']  = $attrs['width']  ?? (string)$natW;
+                    $attrs['height'] = $attrs['height'] ?? (string)$natH;
+                }
+
+                $webp1x = $this->imageProcessor->process($mediaPath, $baseWidth, 'webp');
+                $webp2x = $this->imageProcessor->process($mediaPath, $baseWidth * 2, 'webp');
+                $jpg1x  = $this->imageProcessor->process($mediaPath, $baseWidth, 'jpg');
+                $jpg2x  = $this->imageProcessor->process($mediaPath, $baseWidth * 2, 'jpg');
+
+                $rawMediaUrl = $this->mediaUrl($mediaPath);
+                if ($webp1x === '' || $webp1x === $rawMediaUrl) {
+                    // Processing failed entirely — leave the original <img>.
+                    return '<img' . $this->renderAttributes($attrs) . '>';
+                }
+
+                $webpSrcset = $webp1x . ' 1x' . ($webp2x !== $webp1x && $webp2x !== '' ? ', ' . $webp2x . ' 2x' : '');
+                $jpgSrcset  = $jpg1x  . ' 1x' . ($jpg2x  !== $jpg1x  && $jpg2x  !== '' ? ', ' . $jpg2x  . ' 2x' : '');
+
+                $attrs['src']    = $jpg1x;
+                $attrs['srcset'] = $jpgSrcset;
+
+                return sprintf(
+                    '<picture><source type="image/webp" srcset="%s"><img%s></picture>',
+                    htmlspecialchars($webpSrcset, ENT_QUOTES, 'UTF-8'),
+                    $this->renderAttributes($attrs)
+                );
             },
             $html
         );
+    }
+
+    private function mediaUrl(string $relativePath): string
+    {
+        try {
+            $base = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
+            return $base . ltrim($relativePath, '/');
+        } catch (\Throwable) {
+            return '';
+        }
     }
 
     private function processIframes(string $html): string
