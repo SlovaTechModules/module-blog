@@ -223,6 +223,49 @@ class PostView extends Template implements IdentityInterface
         return [PostInterface::CACHE_TAG . '_' . $post->getId()];
     }
 
+    /**
+     * @return array{post_id:int,url_key:string,title:string,url:string}|null
+     */
+    public function getPreviousPost(): ?array
+    {
+        return $this->getNeighborInCategory('prev');
+    }
+
+    /**
+     * @return array{post_id:int,url_key:string,title:string,url:string}|null
+     */
+    public function getNextPost(): ?array
+    {
+        return $this->getNeighborInCategory('next');
+    }
+
+    /**
+     * @return array{post_id:int,url_key:string,title:string,url:string}|null
+     */
+    private function getNeighborInCategory(string $direction): ?array
+    {
+        $post = $this->getPost();
+        if (!$post) {
+            return null;
+        }
+        $category = $this->registry->registry('current_blog_category');
+        if (!$category || !$category->getId()) {
+            return null;
+        }
+        /** @var \Slova\Blog\Model\ResourceModel\Post $resource */
+        $resource = $post->getResource();
+        $row = $resource->getNeighborInCategory(
+            (int)$post->getId(),
+            (int)$category->getId(),
+            $direction
+        );
+        if (!$row) {
+            return null;
+        }
+        $row['url'] = $this->blogUrl->getPostUrl($row['url_key']);
+        return $row;
+    }
+
     protected function _prepareLayout()
     {
         parent::_prepareLayout();

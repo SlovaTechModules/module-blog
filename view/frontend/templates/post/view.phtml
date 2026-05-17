@@ -101,6 +101,28 @@ $itemRenderer = $block->getLayout()->getBlock('product_list_item')
     </div>
 </article>
 
+<?php $prevPost = $block->getPreviousPost(); $nextPost = $block->getNextPost(); ?>
+<?php if ($prevPost || $nextPost): ?>
+    <nav class="slova-blog-post__nav" aria-label="<?= $escaper->escapeHtmlAttr(__('Navigare articole')) ?>">
+        <?php if ($prevPost): ?>
+            <a href="<?= $escaper->escapeUrl($prevPost['url']) ?>" class="slova-blog-post__nav-link slova-blog-post__nav-prev" rel="prev">
+                <span class="slova-blog-post__nav-label">← <?= $escaper->escapeHtml(__('Articol anterior')) ?></span>
+                <span class="slova-blog-post__nav-title"><?= $escaper->escapeHtml($prevPost['title']) ?></span>
+            </a>
+        <?php else: ?>
+            <span></span>
+        <?php endif; ?>
+        <?php if ($nextPost): ?>
+            <a href="<?= $escaper->escapeUrl($nextPost['url']) ?>" class="slova-blog-post__nav-link slova-blog-post__nav-next" rel="next">
+                <span class="slova-blog-post__nav-label"><?= $escaper->escapeHtml(__('Articol următor')) ?> →</span>
+                <span class="slova-blog-post__nav-title"><?= $escaper->escapeHtml($nextPost['title']) ?></span>
+            </a>
+        <?php else: ?>
+            <span></span>
+        <?php endif; ?>
+    </nav>
+<?php endif; ?>
+
 <?php if (!empty($relatedProducts)): ?>
     <?php $sliderName = 'slova-blog-related-' . (int)$post->getId(); ?>
     <section class="slova-blog-related"
@@ -342,6 +364,55 @@ $itemRenderer = $block->getLayout()->getBlock('product_list_item')
 
     .slova-blog-yt:hover .slova-blog-yt__btn {
         background: var(--color-secondary, #FF5533);
+    }
+
+    .slova-blog-post__nav {
+        margin-top: 2.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .slova-blog-post__nav-link {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        text-decoration: none;
+        color: var(--color-dark, #111e1e);
+        padding: 0.75rem 0;
+        transition: color 0.15s;
+    }
+
+    .slova-blog-post__nav-link:hover {
+        color: var(--color-primary, #009999);
+    }
+
+    .slova-blog-post__nav-next {
+        text-align: right;
+    }
+
+    .slova-blog-post__nav-label {
+        font-size: 0.8125rem;
+        color: #6b7280;
+        font-weight: 500;
+    }
+
+    .slova-blog-post__nav-title {
+        font-size: 1rem;
+        font-weight: 600;
+        line-height: 1.3;
+    }
+
+    @media (max-width: 639px) {
+        .slova-blog-post__nav {
+            grid-template-columns: 1fr;
+            gap: 0.75rem;
+        }
+        .slova-blog-post__nav-next {
+            text-align: left;
+        }
     }
 
     .slova-blog-related {
