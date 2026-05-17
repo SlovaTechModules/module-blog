@@ -18,6 +18,12 @@ if (!$categories) {
         <?= $escaper->escapeHtml(__('Categorii de articole')) ?>
     </h3>
     <ul class="slova-blog-sidebar-categories__list">
+        <li class="slova-blog-sidebar-categories__item<?= $block->isAllActive() ? ' is-current' : '' ?>">
+            <a href="<?= $escaper->escapeUrl($block->getAllPostsUrl()) ?>">
+                <span class="slova-blog-sidebar-categories__name"><?= $escaper->escapeHtml(__('Toate articolele')) ?></span>
+                <span class="slova-blog-sidebar-categories__count">(<?= (int)$block->getTotalPostCount() ?>)</span>
+            </a>
+        </li>
         <?php foreach ($categories as $category): ?>
             <?php $count = $block->getPostCount($category); ?>
             <li class="slova-blog-sidebar-categories__item<?= $block->isCurrent($category) ? ' is-current' : '' ?>">

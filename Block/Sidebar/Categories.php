@@ -12,6 +12,7 @@ use Slova\Blog\Model\Category;
 use Slova\Blog\Model\ResourceModel\Category as CategoryResource;
 use Slova\Blog\Model\ResourceModel\Category\Collection;
 use Slova\Blog\Model\ResourceModel\Category\CollectionFactory;
+use Slova\Blog\Model\ResourceModel\Post\CollectionFactory as PostCollectionFactory;
 use Slova\Blog\Model\Url as BlogUrl;
 
 class Categories extends Template implements IdentityInterface
@@ -19,16 +20,39 @@ class Categories extends Template implements IdentityInterface
     private ?Collection $collection = null;
     /** @var array<int,int>|null */
     private ?array $counts = null;
+    private ?int $totalPostCount = null;
 
     public function __construct(
         Template\Context $context,
         private readonly CollectionFactory $collectionFactory,
         private readonly CategoryResource $categoryResource,
+        private readonly PostCollectionFactory $postCollectionFactory,
         private readonly BlogUrl $blogUrl,
         private readonly Registry $registry,
         array $data = []
     ) {
         parent::__construct($context, $data);
+    }
+
+    public function getAllPostsUrl(): string
+    {
+        return $this->blogUrl->getBaseUrl();
+    }
+
+    public function isAllActive(): bool
+    {
+        return $this->registry->registry('current_blog_category') === null;
+    }
+
+    public function getTotalPostCount(): int
+    {
+        if ($this->totalPostCount === null) {
+            $this->totalPostCount = (int)$this->postCollectionFactory->create()
+                ->addActiveFilter()
+                ->addPublishedFilter()
+                ->getSize();
+        }
+        return $this->totalPostCount;
     }
 
     public function getPostCount(Category $category): int
