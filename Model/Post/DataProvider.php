@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Slova\Blog\Model\Post;
 
+use Magento\Backend\Model\UrlInterface as BackendUrlInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\Request\DataPersistorInterface;
@@ -13,6 +14,12 @@ use Slova\Blog\Model\ResourceModel\Post\CollectionFactory;
 
 class DataProvider extends AbstractDataProvider
 {
+    private const IMAGE_FIELDS_BY_FIELDSET = [
+        'general' => ['featured_image'],
+        'intro'   => ['side_image'],
+        'seo'     => ['og_image'],
+    ];
+
     private array $loadedData = [];
 
     public function __construct(
@@ -24,11 +31,38 @@ class DataProvider extends AbstractDataProvider
         private readonly DataPersistorInterface $dataPersistor,
         private readonly ProductRepositoryInterface $productRepository,
         private readonly SearchCriteriaBuilder $searchCriteriaBuilder,
+        private readonly BackendUrlInterface $backendUrl,
         array $meta = [],
         array $data = []
     ) {
         $this->collection = $collectionFactory->create();
         parent::__construct($name, $primaryFieldName, $requestFieldName, $meta, $data);
+    }
+
+    public function getMeta(): array
+    {
+        $meta = parent::getMeta();
+        $galleryConfig = [
+            'mediaGallery' => [
+                'openDialogUrl'   => $this->backendUrl->getUrl('cms/wysiwyg_images/index'),
+                'openDialogTitle' => (string) __('Alege imaginea'),
+                'storeId'         => (int) $this->storeManager->getStore()->getId(),
+            ],
+        ];
+
+        foreach (self::IMAGE_FIELDS_BY_FIELDSET as $fieldset => $fields) {
+            foreach ($fields as $field) {
+                if (isset($meta[$fieldset]['children'][$field])) {
+                    $existing = $meta[$fieldset]['children'][$field]['arguments']['data']['config'] ?? [];
+                    $meta[$fieldset]['children'][$field]['arguments']['data']['config'] = array_merge(
+                        $existing,
+                        $galleryConfig
+                    );
+                }
+            }
+        }
+
+        return $meta;
     }
 
     public function getData(): array
@@ -42,9 +76,10 @@ class DataProvider extends AbstractDataProvider
 
         if (!$items) {
             $this->loadedData[''] = [
-                'is_active'    => 1,
-                'meta_robots'  => 'INDEX,FOLLOW',
-                'category_ids' => [],
+                'is_active'           => 1,
+                'show_featured_image' => 1,
+                'meta_robots'         => 'INDEX,FOLLOW',
+                'category_ids'        => [],
             ];
         }
 
@@ -52,11 +87,13 @@ class DataProvider extends AbstractDataProvider
             $data = $post->getData();
             $id = (int)$post->getData('post_id');
 
-            foreach (['featured_image', 'og_image'] as $field) {
+            foreach (['featured_image', 'og_image', 'side_image'] as $field) {
                 if (!empty($data[$field]) && !is_array($data[$field])) {
+                    $value = (string)$data[$field];
+                    $relativePath = str_contains($value, '/') ? ltrim($value, '/') : 'slova/blog/' . $value;
                     $data[$field] = [[
-                        'name' => $data[$field],
-                        'url'  => $mediaUrl . 'slova/blog/' . $data[$field],
+                        'name' => $value,
+                        'url'  => $mediaUrl . $relativePath,
                     ]];
                 }
             }

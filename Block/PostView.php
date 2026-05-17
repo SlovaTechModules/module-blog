@@ -48,12 +48,72 @@ class PostView extends Template implements IdentityInterface
 
     public function getFeaturedImagePath(): string
     {
-        $post = $this->getPost();
-        if (!$post) {
+        return $this->resolveImagePath((string)$this->getPost()?->getFeaturedImage());
+    }
+
+    private function resolveImagePath(string $value): string
+    {
+        if ($value === '') {
             return '';
         }
-        $img = (string)$post->getFeaturedImage();
-        return $img !== '' ? 'slova/blog/' . $img : '';
+        return str_contains($value, '/') ? ltrim($value, '/') : 'slova/blog/' . $value;
+    }
+
+    public function shouldShowFeaturedImage(): bool
+    {
+        $post = $this->getPost();
+        if (!$post) {
+            return false;
+        }
+        return (int)$post->getShowFeaturedImage() === 1 && $this->getFeaturedImagePath() !== '';
+    }
+
+    public function getSideImagePath(): string
+    {
+        return $this->resolveImagePath((string)$this->getPost()?->getSideImage());
+    }
+
+    public function getSideText(): string
+    {
+        $post = $this->getPost();
+        return $post ? trim((string)$post->getSideText()) : '';
+    }
+
+    public function getSideImageAlt(): string
+    {
+        $post = $this->getPost();
+        return $post ? (string)$post->getSideImageAlt() : '';
+    }
+
+    public function hasSideSection(): bool
+    {
+        return $this->getSideText() !== '' || $this->getSideImagePath() !== '';
+    }
+
+    public function getSanitizedSideText(): string
+    {
+        $raw = $this->getSideText();
+        if ($raw === '') {
+            return '';
+        }
+        $escaped = htmlspecialchars($raw, ENT_QUOTES, 'UTF-8');
+        $allowedTags = [
+            '&lt;strong&gt;'  => '<strong>',
+            '&lt;/strong&gt;' => '</strong>',
+            '&lt;em&gt;'      => '<em>',
+            '&lt;/em&gt;'     => '</em>',
+        ];
+        $withTags = strtr($escaped, $allowedTags);
+
+        $paragraphs = preg_split('/\n\s*\n/', $withTags) ?: [];
+        $rendered = [];
+        foreach ($paragraphs as $p) {
+            $p = trim($p);
+            if ($p !== '') {
+                $rendered[] = '<p>' . nl2br($p) . '</p>';
+            }
+        }
+        return implode('', $rendered);
     }
 
     public function getOgImageUrl(): string
@@ -62,12 +122,11 @@ class PostView extends Template implements IdentityInterface
         if (!$post) {
             return '';
         }
-        $img = (string)($post->getOgImage() ?: $post->getFeaturedImage());
-        if ($img === '') {
+        $path = $this->resolveImagePath((string)($post->getOgImage() ?: $post->getFeaturedImage()));
+        if ($path === '') {
             return '';
         }
-        $base = $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
-        return $base . 'slova/blog/' . $img;
+        return $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . $path;
     }
 
     public function getCanonicalUrl(): string

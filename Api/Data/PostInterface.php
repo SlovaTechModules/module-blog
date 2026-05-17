@@ -20,6 +20,10 @@ interface PostInterface
     public const META_DESCRIPTION = 'meta_description';
     public const META_ROBOTS = 'meta_robots';
     public const OG_IMAGE = 'og_image';
+    public const SHOW_FEATURED_IMAGE = 'show_featured_image';
+    public const SIDE_TEXT = 'side_text';
+    public const SIDE_IMAGE = 'side_image';
+    public const SIDE_IMAGE_ALT = 'side_image_alt';
 
     public const CACHE_TAG = 'slova_blog_post';
     public const ENTITY_TYPE = 'slova_blog_post';

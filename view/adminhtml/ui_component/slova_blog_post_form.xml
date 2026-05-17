@@ -128,6 +128,25 @@
                 <notice translate="true">Descrierea imaginii pentru accesibilitate și SEO.</notice>
             </settings>
         </field>
+        <field name="show_featured_image" sortOrder="57" formElement="checkbox">
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Afișează imaginea ca hero pe pagina articolului</label>
+                <dataScope>show_featured_image</dataScope>
+                <notice translate="true">Imaginea reprezentativă se folosește mereu pe card. Aici alegi dacă apare și ca bandă lată sus, pe pagina articolului. Dezactivează când folosești o secțiune intro mai jos.</notice>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
         <field name="category_ids" sortOrder="60" formElement="multiselect">
             <settings>
                 <dataType>int</dataType>
@@ -186,6 +205,49 @@
                     </settings>
                 </date>
             </formElements>
+        </field>
+    </fieldset>
+
+    <fieldset name="intro">
+        <settings>
+            <label translate="true">Secțiune intro (alternativă la hero)</label>
+            <collapsible>true</collapsible>
+            <opened>false</opened>
+        </settings>
+        <field name="side_text" sortOrder="10" formElement="textarea">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Text intro</label>
+                <dataScope>side_text</dataScope>
+                <notice translate="true">Apare în coloana stângă, aliniat la dreapta. Pentru emfază: &lt;strong&gt;aldine&lt;/strong&gt; sau &lt;em&gt;italice&lt;/em&gt;. Restul HTML-ului e ignorat.</notice>
+            </settings>
+        </field>
+        <field name="side_image" sortOrder="20" formElement="imageUploader">
+            <settings>
+                <label translate="true">Imagine intro</label>
+                <componentType>imageUploader</componentType>
+                <dataScope>side_image</dataScope>
+                <notice translate="true">Apare în coloana dreaptă, aliniată la stânga. Orice raport — portret/pătrat/peisaj — se afișează la dimensiunea naturală în coloană.</notice>
+            </settings>
+            <formElements>
+                <imageUploader>
+                    <settings>
+                        <allowedExtensions>jpg jpeg gif png webp</allowedExtensions>
+                        <maxFileSize>5242880</maxFileSize>
+                        <uploaderConfig>
+                            <param xsi:type="string" name="url">slova_blog/post_image/upload</param>
+                        </uploaderConfig>
+                        <previewTmpl>Magento_Catalog/image-preview</previewTmpl>
+                    </settings>
+                </imageUploader>
+            </formElements>
+        </field>
+        <field name="side_image_alt" sortOrder="30" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Text alternativ imagine intro</label>
+                <dataScope>side_image_alt</dataScope>
+            </settings>
         </field>
     </fieldset>
 

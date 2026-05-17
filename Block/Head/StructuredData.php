@@ -45,7 +45,12 @@ class StructuredData extends Template
         $updatedAt = $post->getUpdatedAt();
 
         $image = (string)($post->getOgImage() ?: $post->getFeaturedImage());
-        $imageUrl = $image !== '' ? $mediaUrl . 'slova/blog/' . $image : '';
+        if ($image !== '') {
+            $relativePath = str_contains($image, '/') ? ltrim($image, '/') : 'slova/blog/' . $image;
+            $imageUrl = $mediaUrl . $relativePath;
+        } else {
+            $imageUrl = '';
+        }
         $description = (string)($post->getMetaDescription() ?: $post->getShortContent());
 
         $article = [

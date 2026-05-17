@@ -21,8 +21,11 @@ class Upload extends Post
     {
         try {
             $fieldName = 'featured_image';
-            if (!empty($this->getRequest()->getFiles('og_image'))) {
-                $fieldName = 'og_image';
+            foreach (['og_image', 'side_image'] as $alt) {
+                if (!empty($this->getRequest()->getFiles($alt))) {
+                    $fieldName = $alt;
+                    break;
+                }
             }
             $result = $this->imageUploader->saveFileToTmpDir($fieldName);
         } catch (\Exception $e) {

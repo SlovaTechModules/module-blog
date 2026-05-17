@@ -98,7 +98,10 @@ class PostList extends Template implements IdentityInterface
     public function getFeaturedImagePath(Post $post): string
     {
         $img = (string)$post->getFeaturedImage();
-        return $img !== '' ? 'slova/blog/' . $img : '';
+        if ($img === '') {
+            return '';
+        }
+        return str_contains($img, '/') ? ltrim($img, '/') : 'slova/blog/' . $img;
     }
 
     public function getFormattedDate(Post $post): string

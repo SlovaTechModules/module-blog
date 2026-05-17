@@ -16,7 +16,7 @@ use Slova\Core\Helper\UrlKey;
 
 class Save extends Post
 {
-    private const IMAGE_FIELDS = ['featured_image', 'og_image'];
+    private const IMAGE_FIELDS = ['featured_image', 'og_image', 'side_image'];
 
     public function __construct(
         Context $context,

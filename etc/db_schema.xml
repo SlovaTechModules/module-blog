@@ -18,6 +18,10 @@
         <column xsi:type="text" name="meta_description" nullable="true" comment="Meta Description"/>
         <column xsi:type="varchar" name="meta_robots" length="50" nullable="true" default="INDEX,FOLLOW" comment="Meta Robots"/>
         <column xsi:type="varchar" name="og_image" length="255" nullable="true" comment="Open Graph Image"/>
+        <column xsi:type="smallint" name="show_featured_image" padding="6" unsigned="true" nullable="false" default="1" comment="Show featured image as hero"/>
+        <column xsi:type="text" name="side_text" nullable="true" comment="Intro side-section plain text"/>
+        <column xsi:type="varchar" name="side_image" length="255" nullable="true" comment="Intro side-section image path"/>
+        <column xsi:type="varchar" name="side_image_alt" length="255" nullable="true" comment="Intro side-section image alt"/>
 
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="post_id"/>
