@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">slova_blog_post_listing.slova_blog_post_listing_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="add">
+                <url path="slova_blog/post/newAction"/>
+                <class>primary</class>
+                <label translate="true">Articol nou</label>
+            </button>
+        </buttons>
+        <spinner>slova_blog_post_columns</spinner>
+        <deps>
+            <dep>slova_blog_post_listing.slova_blog_post_listing_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="slova_blog_post_listing_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <updateUrl path="mui/index/render"/>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">post_id</param>
+            </storageConfig>
+        </settings>
+        <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider" name="slova_blog_post_listing_data_source">
+            <settings>
+                <requestFieldName>post_id</requestFieldName>
+                <primaryFieldName>post_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters"/>
+        <massaction name="listing_massaction">
+            <action name="delete">
+                <settings>
+                    <type>delete</type>
+                    <label translate="true">Șterge</label>
+                    <url path="slova_blog/post/massDelete"/>
+                    <confirm>
+                        <message translate="true">Sigur ștergi articolele selectate?</message>
+                        <title translate="true">Șterge articole</title>
+                    </confirm>
+                </settings>
+            </action>
+        </massaction>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="slova_blog_post_columns">
+        <selectionsColumn name="ids" sortOrder="10">
+            <settings>
+                <indexField>post_id</indexField>
+            </settings>
+        </selectionsColumn>
+        <column name="post_id" sortOrder="20">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">ID</label>
+                <visible>false</visible>
+            </settings>
+        </column>
+        <column name="title" sortOrder="30">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Titlu</label>
+                <sortable>true</sortable>
+            </settings>
+        </column>
+        <column name="url_key" sortOrder="40">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">URL Key</label>
+            </settings>
+        </column>
+        <column name="is_active" sortOrder="50" component="Magento_Ui/js/grid/columns/select">
+            <settings>
+                <filter>select</filter>
+                <dataType>select</dataType>
+                <label translate="true">Activ</label>
+                <options class="Magento\Config\Model\Config\Source\Yesno"/>
+            </settings>
+        </column>
+        <column name="published_at" sortOrder="60" class="Magento\Ui\Component\Listing\Columns\Date">
+            <settings>
+                <filter>dateRange</filter>
+                <dataType>date</dataType>
+                <label translate="true">Publicat</label>
+                <sortable>true</sortable>
+                <sorting>desc</sorting>
+            </settings>
+        </column>
+        <column name="updated_at" sortOrder="70" class="Magento\Ui\Component\Listing\Columns\Date">
+            <settings>
+                <filter>dateRange</filter>
+                <dataType>date</dataType>
+                <label translate="true">Modificat</label>
+                <visible>false</visible>
+            </settings>
+        </column>
+        <actionsColumn name="actions" sortOrder="80" class="Slova\Blog\Ui\Component\Listing\Column\PostActions">
+            <settings>
+                <indexField>post_id</indexField>
+                <label translate="true">Acțiuni</label>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

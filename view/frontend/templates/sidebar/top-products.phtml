@@ -1,0 +1,129 @@
+<?php
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Magento\Framework\Escaper;
+use Slova\Blog\Block\Sidebar\TopProducts;
+use Slova\Imaging\ViewModel\Image as ImageVm;
+
+/** @var TopProducts $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var ImageVm $imageVm */
+$imageVm = $viewModels->require(ImageVm::class);
+
+$products = $block->getProducts();
+if (!$products) {
+    return;
+}
+?>
+
+<aside class="slova-blog-sidebar-top" aria-label="<?= $escaper->escapeHtmlAttr(__('Cărți de top')) ?>">
+    <h3 class="slova-blog-sidebar-top__title">
+        <?= $escaper->escapeHtml(__('Cărți de top')) ?>
+    </h3>
+    <ol class="slova-blog-sidebar-top__list">
+        <?php foreach ($products as $i => $product):
+            $rank = $i + 1;
+            $thumbPath = $product->getThumbnail() && $product->getThumbnail() !== 'no_selection'
+                ? 'catalog/product' . $product->getThumbnail()
+                : '';
+            ?>
+            <li class="slova-blog-sidebar-top__item">
+                <span class="slova-blog-sidebar-top__rank">#<?= (int)$rank ?></span>
+                <a class="slova-blog-sidebar-top__thumb" href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>" aria-hidden="true" tabindex="-1">
+                    <?php if ($thumbPath): ?>
+                        <?= /* @noEscape */ $imageVm->picture(
+                            $thumbPath,
+                            56,
+                            alt: (string)$product->getName(),
+                            height: 56,
+                            loading: 'lazy'
+                        ) ?>
+                    <?php endif; ?>
+                </a>
+                <a class="slova-blog-sidebar-top__name" href="<?= $escaper->escapeUrl($product->getProductUrl()) ?>">
+                    <?= $escaper->escapeHtml($product->getName()) ?>
+                </a>
+            </li>
+        <?php endforeach; ?>
+    </ol>
+</aside>
+
+<style>
+    .slova-blog-sidebar-top {
+        background: #fff;
+        padding: 1.25rem;
+        border-radius: 0.75rem;
+        border: 1px solid #e5e7eb;
+    }
+
+    .slova-blog-sidebar-top__title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        margin: 0 0 .75rem;
+        color: var(--color-dark, #111e1e);
+        padding-bottom: .625rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .slova-blog-sidebar-top__list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        counter-reset: top-rank;
+    }
+
+    .slova-blog-sidebar-top__item {
+        display: grid;
+        grid-template-columns: 28px 56px 1fr;
+        gap: .625rem;
+        align-items: center;
+        padding: .625rem 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .slova-blog-sidebar-top__item:last-child {
+        border-bottom: 0;
+    }
+
+    .slova-blog-sidebar-top__rank {
+        font-weight: 700;
+        color: var(--color-secondary, #FF5533);
+        font-size: .875rem;
+    }
+
+    .slova-blog-sidebar-top__thumb {
+        display: block;
+        width: 56px;
+        height: 56px;
+        overflow: hidden;
+        border-radius: .375rem;
+        background: #f3f4f6;
+    }
+
+    .slova-blog-sidebar-top__thumb img,
+    .slova-blog-sidebar-top__thumb picture {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+    }
+
+    .slova-blog-sidebar-top__name {
+        font-size: .875rem;
+        line-height: 1.3;
+        color: #374151;
+        text-decoration: none;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .slova-blog-sidebar-top__name:hover {
+        color: var(--color-primary, #009999);
+    }
+</style>

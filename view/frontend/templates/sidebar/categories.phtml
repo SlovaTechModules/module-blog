@@ -1,0 +1,76 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Slova\Blog\Block\Sidebar\Categories;
+
+/** @var Categories $block */
+/** @var Escaper $escaper */
+
+$categories = $block->getCategories();
+if (!$categories) {
+    return;
+}
+?>
+
+<aside class="slova-blog-sidebar-categories" aria-label="<?= $escaper->escapeHtmlAttr(__('Categorii de articole')) ?>">
+    <h3 class="slova-blog-sidebar-categories__title">
+        <?= $escaper->escapeHtml(__('Categorii de articole')) ?>
+    </h3>
+    <ul class="slova-blog-sidebar-categories__list">
+        <?php foreach ($categories as $category): ?>
+            <li class="slova-blog-sidebar-categories__item<?= $block->isCurrent($category) ? ' is-current' : '' ?>">
+                <a href="<?= $escaper->escapeUrl($block->getCategoryUrl($category)) ?>">
+                    <?= $escaper->escapeHtml($category->getName()) ?>
+                </a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+</aside>
+
+<style>
+    .slova-blog-sidebar-categories {
+        background: #fff;
+        padding: 1.25rem;
+        border-radius: 0.75rem;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 1.5rem;
+    }
+
+    .slova-blog-sidebar-categories__title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        margin: 0 0 .75rem;
+        color: var(--color-dark, #111e1e);
+        padding-bottom: .625rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .slova-blog-sidebar-categories__list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .slova-blog-sidebar-categories__item {
+        padding: .5rem 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .slova-blog-sidebar-categories__item:last-child {
+        border-bottom: 0;
+    }
+
+    .slova-blog-sidebar-categories__item a {
+        color: #374151;
+        text-decoration: none;
+        font-size: .9375rem;
+        transition: color 0.15s;
+    }
+
+    .slova-blog-sidebar-categories__item a:hover,
+    .slova-blog-sidebar-categories__item.is-current a {
+        color: var(--color-primary, #009999);
+        font-weight: 600;
+    }
+</style>

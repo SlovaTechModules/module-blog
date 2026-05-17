@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/db_schema.xsd">
+
+    <table name="slova_blog_post" resource="default" engine="innodb" comment="Slova Blog Post">
+        <column xsi:type="int" name="post_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Post ID"/>
+        <column xsi:type="varchar" name="title" length="255" nullable="false" comment="Title"/>
+        <column xsi:type="varchar" name="url_key" length="255" nullable="false" comment="URL Key"/>
+        <column xsi:type="text" name="short_content" nullable="true" comment="Short Content (card preview)"/>
+        <column xsi:type="mediumtext" name="content" nullable="true" comment="Full WYSIWYG Content"/>
+        <column xsi:type="varchar" name="featured_image" length="255" nullable="true" comment="Featured Image Path"/>
+        <column xsi:type="varchar" name="featured_image_alt" length="255" nullable="true" comment="Featured Image Alt"/>
+        <column xsi:type="smallint" name="is_active" padding="6" unsigned="true" nullable="false" default="1" comment="Is Active"/>
+        <column xsi:type="timestamp" name="published_at" on_update="false" nullable="true" comment="Published At"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <column xsi:type="varchar" name="meta_title" length="255" nullable="true" comment="Meta Title"/>
+        <column xsi:type="text" name="meta_description" nullable="true" comment="Meta Description"/>
+        <column xsi:type="varchar" name="meta_robots" length="50" nullable="true" default="INDEX,FOLLOW" comment="Meta Robots"/>
+        <column xsi:type="varchar" name="og_image" length="255" nullable="true" comment="Open Graph Image"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="SLOVA_BLOG_POST_URL_KEY">
+            <column name="url_key"/>
+        </constraint>
+        <index referenceId="SLOVA_BLOG_POST_IS_ACTIVE_PUBLISHED_AT" indexType="btree">
+            <column name="is_active"/>
+            <column name="published_at"/>
+        </index>
+    </table>
+
+    <table name="slova_blog_category" resource="default" engine="innodb" comment="Slova Blog Category">
+        <column xsi:type="int" name="category_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Category ID"/>
+        <column xsi:type="varchar" name="name" length="255" nullable="false" comment="Name"/>
+        <column xsi:type="varchar" name="url_key" length="255" nullable="false" comment="URL Key"/>
+        <column xsi:type="smallint" name="is_active" padding="6" unsigned="true" nullable="false" default="1" comment="Is Active"/>
+        <column xsi:type="int" name="sort_order" padding="10" unsigned="true" nullable="false" default="0" comment="Sort Order"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="category_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="SLOVA_BLOG_CATEGORY_URL_KEY">
+            <column name="url_key"/>
+        </constraint>
+    </table>
+
+    <table name="slova_blog_post_category" resource="default" engine="innodb" comment="Post to Category link">
+        <column xsi:type="int" name="post_id" padding="10" unsigned="true" nullable="false" comment="Post ID"/>
+        <column xsi:type="int" name="category_id" padding="10" unsigned="true" nullable="false" comment="Category ID"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+            <column name="category_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="SLOVA_BLOG_POST_CAT_POST_ID_SLOVA_BLOG_POST_POST_ID"
+                    table="slova_blog_post_category" column="post_id"
+                    referenceTable="slova_blog_post" referenceColumn="post_id" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="SLOVA_BLOG_POST_CAT_CAT_ID_SLOVA_BLOG_CAT_CAT_ID"
+                    table="slova_blog_post_category" column="category_id"
+                    referenceTable="slova_blog_category" referenceColumn="category_id" onDelete="CASCADE"/>
+        <index referenceId="SLOVA_BLOG_POST_CATEGORY_CATEGORY_ID" indexType="btree">
+            <column name="category_id"/>
+        </index>
+    </table>
+
+    <table name="slova_blog_post_product" resource="default" engine="innodb" comment="Post to Product link">
+        <column xsi:type="int" name="post_id" padding="10" unsigned="true" nullable="false" comment="Post ID"/>
+        <column xsi:type="int" name="product_id" padding="10" unsigned="true" nullable="false" comment="Product ID"/>
+        <column xsi:type="int" name="position" padding="10" unsigned="true" nullable="false" default="0" comment="Position"/>
+
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="post_id"/>
+            <column name="product_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="SLOVA_BLOG_POST_PRD_POST_ID_SLOVA_BLOG_POST_POST_ID"
+                    table="slova_blog_post_product" column="post_id"
+                    referenceTable="slova_blog_post" referenceColumn="post_id" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="SLOVA_BLOG_POST_PRD_PRD_ID_CAT_PRD_ENTT_ENTT_ID"
+                    table="slova_blog_post_product" column="product_id"
+                    referenceTable="catalog_product_entity" referenceColumn="entity_id" onDelete="CASCADE"/>
+        <index referenceId="SLOVA_BLOG_POST_PRODUCT_PRODUCT_ID" indexType="btree">
+            <column name="product_id"/>
+        </index>
+    </table>
+
+</schema>

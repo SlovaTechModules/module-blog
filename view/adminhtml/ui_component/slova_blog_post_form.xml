@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">slova_blog_post_form.slova_blog_post_form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">Articol</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="back" class="Slova\Blog\Block\Adminhtml\Post\Edit\BackButton"/>
+            <button name="delete" class="Slova\Blog\Block\Adminhtml\Post\Edit\DeleteButton"/>
+            <button name="save" class="Slova\Blog\Block\Adminhtml\Post\Edit\SaveButton"/>
+            <button name="save_and_continue" class="Slova\Blog\Block\Adminhtml\Post\Edit\SaveAndContinueButton"/>
+        </buttons>
+        <namespace>slova_blog_post_form</namespace>
+        <dataScope>data</dataScope>
+        <deps>
+            <dep>slova_blog_post_form.slova_blog_post_form_data_source</dep>
+        </deps>
+    </settings>
+
+    <dataSource name="slova_blog_post_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="slova_blog/post/save"/>
+        </settings>
+        <dataProvider class="Slova\Blog\Model\Post\DataProvider" name="slova_blog_post_form_data_source">
+            <settings>
+                <requestFieldName>post_id</requestFieldName>
+                <primaryFieldName>post_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+
+    <fieldset name="general">
+        <settings>
+            <label translate="true">General</label>
+        </settings>
+        <field name="post_id" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <visible>false</visible>
+                <dataScope>post_id</dataScope>
+            </settings>
+        </field>
+        <field name="title" sortOrder="10" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Titlu</label>
+                <dataScope>title</dataScope>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="url_key" sortOrder="20" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">URL Key</label>
+                <dataScope>url_key</dataScope>
+                <notice translate="true">Lasă gol pentru generare automată din titlu. Va apărea ca /jurnal-de-bord/{url_key}</notice>
+            </settings>
+        </field>
+        <field name="short_content" sortOrder="30" formElement="textarea">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Descriere scurtă</label>
+                <dataScope>short_content</dataScope>
+                <notice translate="true">Apare pe card în listing. 1-2 propoziții. Fără HTML.</notice>
+            </settings>
+        </field>
+        <field name="content" sortOrder="40" formElement="wysiwyg">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="wysiwygConfigData" xsi:type="array">
+                        <item name="is_pagebuilder_enabled" xsi:type="boolean">false</item>
+                        <item name="add_variables" xsi:type="boolean">false</item>
+                        <item name="add_widgets" xsi:type="boolean">false</item>
+                        <item name="toggle_wysiwyg" xsi:type="boolean">true</item>
+                    </item>
+                </item>
+            </argument>
+            <settings>
+                <label translate="true">Conținut</label>
+                <dataType>text</dataType>
+                <dataScope>content</dataScope>
+            </settings>
+            <formElements>
+                <wysiwyg>
+                    <settings>
+                        <wysiwyg>true</wysiwyg>
+                    </settings>
+                </wysiwyg>
+            </formElements>
+        </field>
+        <field name="featured_image" sortOrder="50" formElement="imageUploader">
+            <settings>
+                <label translate="true">Imagine reprezentativă</label>
+                <componentType>imageUploader</componentType>
+                <dataScope>featured_image</dataScope>
+                <notice translate="true">Apare pe card (thumbnail) și pe pagina articolului (hero). Raport recomandat 16:9.</notice>
+            </settings>
+            <formElements>
+                <imageUploader>
+                    <settings>
+                        <allowedExtensions>jpg jpeg gif png webp</allowedExtensions>
+                        <maxFileSize>5242880</maxFileSize>
+                        <uploaderConfig>
+                            <param xsi:type="string" name="url">slova_blog/post_image/upload</param>
+                        </uploaderConfig>
+                        <previewTmpl>Magento_Catalog/image-preview</previewTmpl>
+                    </settings>
+                </imageUploader>
+            </formElements>
+        </field>
+        <field name="featured_image_alt" sortOrder="55" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Text alternativ imagine</label>
+                <dataScope>featured_image_alt</dataScope>
+                <notice translate="true">Descrierea imaginii pentru accesibilitate și SEO.</notice>
+            </settings>
+        </field>
+        <field name="category_ids" sortOrder="60" formElement="multiselect">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Categorii</label>
+                <dataScope>category_ids</dataScope>
+            </settings>
+            <formElements>
+                <multiselect>
+                    <settings>
+                        <options class="Slova\Blog\Model\Source\Categories"/>
+                    </settings>
+                </multiselect>
+            </formElements>
+        </field>
+        <field name="related_skus" sortOrder="70" formElement="textarea">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Cărți menționate (SKU-uri)</label>
+                <dataScope>related_skus</dataScope>
+                <notice translate="true">SKU-uri separate prin virgulă. Ex: 9786068739571, 9786060970095. SKU-urile necunoscute sunt ignorate.</notice>
+            </settings>
+        </field>
+        <field name="is_active" sortOrder="80" formElement="checkbox">
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Activ</label>
+                <dataScope>is_active</dataScope>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+        <field name="published_at" sortOrder="90" formElement="date">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Publicat la</label>
+                <dataScope>published_at</dataScope>
+                <notice translate="true">Lasă gol pentru a folosi data creării. Setează o dată viitoare pentru a programa publicarea.</notice>
+            </settings>
+            <formElements>
+                <date>
+                    <settings>
+                        <options>
+                            <option name="showsTime" xsi:type="boolean">true</option>
+                            <option name="dateFormat" xsi:type="string">yyyy-MM-dd HH:mm:ss</option>
+                            <option name="timeFormat" xsi:type="string">HH:mm:ss</option>
+                        </options>
+                    </settings>
+                </date>
+            </formElements>
+        </field>
+    </fieldset>
+
+    <fieldset name="seo">
+        <settings>
+            <label translate="true">SEO</label>
+            <collapsible>true</collapsible>
+            <opened>false</opened>
+        </settings>
+        <field name="meta_title" sortOrder="10" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Meta Title</label>
+                <dataScope>meta_title</dataScope>
+                <notice translate="true">Dacă lipsește, se folosește titlul articolului.</notice>
+            </settings>
+        </field>
+        <field name="meta_description" sortOrder="20" formElement="textarea">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Meta Description</label>
+                <dataScope>meta_description</dataScope>
+                <notice translate="true">Dacă lipsește, se folosește descrierea scurtă.</notice>
+            </settings>
+        </field>
+        <field name="meta_robots" sortOrder="30" formElement="select">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Meta Robots</label>
+                <dataScope>meta_robots</dataScope>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Slova\Blog\Model\Source\MetaRobots"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="og_image" sortOrder="40" formElement="imageUploader">
+            <settings>
+                <label translate="true">Open Graph Image</label>
+                <componentType>imageUploader</componentType>
+                <dataScope>og_image</dataScope>
+                <notice translate="true">Apare la share pe Facebook/WhatsApp. Dacă lipsește, se folosește imaginea reprezentativă. Recomandat 1200x630.</notice>
+            </settings>
+            <formElements>
+                <imageUploader>
+                    <settings>
+                        <allowedExtensions>jpg jpeg png webp</allowedExtensions>
+                        <maxFileSize>5242880</maxFileSize>
+                        <uploaderConfig>
+                            <param xsi:type="string" name="url">slova_blog/post_image/upload</param>
+                        </uploaderConfig>
+                        <previewTmpl>Magento_Catalog/image-preview</previewTmpl>
+                    </settings>
+                </imageUploader>
+            </formElements>
+        </field>
+    </fieldset>
+
+    <fieldset name="preview">
+        <settings>
+            <label translate="true">Preview</label>
+            <collapsible>true</collapsible>
+            <opened>false</opened>
+        </settings>
+        <htmlContent name="preview_link">
+            <block class="Slova\Blog\Block\Adminhtml\Post\Edit\PreviewLink"
+                   name="slova_blog_post_preview_link"
+                   template="Slova_Blog::post/preview-link.phtml"/>
+        </htmlContent>
+    </fieldset>
+
+</form>

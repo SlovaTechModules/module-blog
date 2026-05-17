@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      layout="2columns-right"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="page.main.title" remove="true"/>
+        <referenceBlock name="head.additional">
+            <block class="Slova\Blog\Block\Head\StructuredData"
+                   name="slova.blog.post.structured.data"
+                   template="Slova_Blog::head/structured-data.phtml"/>
+        </referenceBlock>
+        <referenceContainer name="content">
+            <block class="Slova\Blog\Block\HeaderBand"
+                   name="slova.blog.header.band"
+                   template="Slova_Blog::header-band.phtml"
+                   before="-">
+                <arguments>
+                    <argument name="default_title" xsi:type="string" translate="true">Jurnal</argument>
+                </arguments>
+            </block>
+            <block class="Slova\Blog\Block\PostView"
+                   name="slova.blog.post.view"
+                   template="Slova_Blog::post/view.phtml"
+                   cacheable="true"/>
+        </referenceContainer>
+        <referenceContainer name="sidebar.additional">
+            <block class="Slova\Blog\Block\Sidebar\Categories"
+                   name="slova.blog.sidebar.categories"
+                   template="Slova_Blog::sidebar/categories.phtml"
+                   cacheable="true"/>
+            <block class="Slova\Blog\Block\Sidebar\TopProducts"
+                   name="slova.blog.sidebar.top.products"
+                   template="Slova_Blog::sidebar/top-products.phtml"
+                   cacheable="true">
+                <arguments>
+                    <argument name="limit" xsi:type="number">5</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

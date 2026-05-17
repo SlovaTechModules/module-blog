@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="slova_blog_post_listing_data_source" xsi:type="string">Slova\Blog\Model\ResourceModel\Post\Grid\Collection</item>
+                <item name="slova_blog_category_listing_data_source" xsi:type="string">Slova\Blog\Model\ResourceModel\Category\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
+
+    <virtualType name="Slova\Blog\Model\ResourceModel\Post\Grid\Collection"
+                 type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">slova_blog_post</argument>
+            <argument name="resourceModel" xsi:type="string">Slova\Blog\Model\ResourceModel\Post</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Slova\Blog\Model\ResourceModel\Category\Grid\Collection"
+                 type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+        <arguments>
+            <argument name="mainTable" xsi:type="string">slova_blog_category</argument>
+            <argument name="resourceModel" xsi:type="string">Slova\Blog\Model\ResourceModel\Category</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="Slova\Blog\PostImageUpload" type="Magento\Catalog\Model\ImageUploader">
+        <arguments>
+            <argument name="baseTmpPath" xsi:type="string">slova/blog/tmp</argument>
+            <argument name="basePath" xsi:type="string">slova/blog</argument>
+            <argument name="allowedExtensions" xsi:type="array">
+                <item name="jpg" xsi:type="string">jpg</item>
+                <item name="jpeg" xsi:type="string">jpeg</item>
+                <item name="gif" xsi:type="string">gif</item>
+                <item name="png" xsi:type="string">png</item>
+                <item name="webp" xsi:type="string">webp</item>
+            </argument>
+            <argument name="allowedMimeTypes" xsi:type="array">
+                <item name="jpg" xsi:type="string">image/jpeg</item>
+                <item name="jpeg" xsi:type="string">image/jpeg</item>
+                <item name="gif" xsi:type="string">image/gif</item>
+                <item name="png" xsi:type="string">image/png</item>
+                <item name="webp" xsi:type="string">image/webp</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Slova\Blog\Controller\Adminhtml\Post\Image\Upload">
+        <arguments>
+            <argument name="imageUploader" xsi:type="object">Slova\Blog\PostImageUpload</argument>
+        </arguments>
+    </type>
+
+    <type name="Slova\Blog\Model\ImageUploader">
+        <arguments>
+            <argument name="basePath" xsi:type="string">slova/blog</argument>
+            <argument name="baseTmpPath" xsi:type="string">slova/blog/tmp</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Sitemap\Model\ItemProvider\Composite">
+        <arguments>
+            <argument name="itemProviders" xsi:type="array">
+                <item name="slova_blog_post" xsi:type="object">Slova\Blog\Model\Sitemap\PostItemProvider</item>
+                <item name="slova_blog_category" xsi:type="object">Slova\Blog\Model\Sitemap\CategoryItemProvider</item>
+            </argument>
+        </arguments>
+    </type>
+
+</config>

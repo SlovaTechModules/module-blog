@@ -1,0 +1,22 @@
+<?php
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Slova\Blog\Block\Head\StructuredData;
+
+/** @var StructuredData $block */
+/** @var Escaper $escaper */
+
+$canonical = $block->getCanonicalUrl();
+$json = $block->getJsonLd();
+
+if ($canonical === '' && $json === '') {
+    return;
+}
+?>
+<?php if ($canonical !== ''): ?>
+<link rel="canonical" href="<?= $escaper->escapeUrl($canonical) ?>">
+<?php endif; ?>
+<?php if ($json !== ''): ?>
+<script type="application/ld+json"><?= /* @noEscape */ $json ?></script>
+<?php endif; ?>

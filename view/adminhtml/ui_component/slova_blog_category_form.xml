@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">slova_blog_category_form.slova_blog_category_form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">Categorie</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
+    </argument>
+    <settings>
+        <buttons>
+            <button name="back" class="Slova\Blog\Block\Adminhtml\Category\Edit\BackButton"/>
+            <button name="delete" class="Slova\Blog\Block\Adminhtml\Category\Edit\DeleteButton"/>
+            <button name="save" class="Slova\Blog\Block\Adminhtml\Category\Edit\SaveButton"/>
+            <button name="save_and_continue" class="Slova\Blog\Block\Adminhtml\Category\Edit\SaveAndContinueButton"/>
+        </buttons>
+        <namespace>slova_blog_category_form</namespace>
+        <dataScope>data</dataScope>
+        <deps>
+            <dep>slova_blog_category_form.slova_blog_category_form_data_source</dep>
+        </deps>
+    </settings>
+
+    <dataSource name="slova_blog_category_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="slova_blog/category/save"/>
+        </settings>
+        <dataProvider class="Slova\Blog\Model\Category\DataProvider" name="slova_blog_category_form_data_source">
+            <settings>
+                <requestFieldName>category_id</requestFieldName>
+                <primaryFieldName>category_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+
+    <fieldset name="general">
+        <settings>
+            <label translate="true">General</label>
+        </settings>
+        <field name="category_id" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <visible>false</visible>
+                <dataScope>category_id</dataScope>
+            </settings>
+        </field>
+        <field name="name" sortOrder="10" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Nume</label>
+                <dataScope>name</dataScope>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+        <field name="url_key" sortOrder="20" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">URL Key</label>
+                <dataScope>url_key</dataScope>
+                <notice translate="true">Lasă gol pentru generare automată. Va apărea ca /jurnal-de-bord/categorie/{url_key}</notice>
+            </settings>
+        </field>
+        <field name="is_active" sortOrder="30" formElement="checkbox">
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Activ</label>
+                <dataScope>is_active</dataScope>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true" xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+        <field name="sort_order" sortOrder="40" formElement="input">
+            <settings>
+                <dataType>number</dataType>
+                <label translate="true">Sort Order</label>
+                <dataScope>sort_order</dataScope>
+                <notice translate="true">Categoriile se afișează în această ordine. Cel mai mic apare primul.</notice>
+            </settings>
+        </field>
+    </fieldset>
+
+</form>
