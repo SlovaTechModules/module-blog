@@ -52,11 +52,9 @@ $totalCount = (int)$posts->getSize();
                         <?= $escaper->escapeHtml($post->getTitle()) ?>
                     </a>
                 </h2>
-                <?php if ($shortContent !== ''): ?>
-                    <p class="slova-blog-card__excerpt">
-                        <?= $escaper->escapeHtml($shortContent) ?>
-                    </p>
-                <?php endif; ?>
+                <p class="slova-blog-card__excerpt">
+                    <?= $escaper->escapeHtml($shortContent) ?>
+                </p>
                 <div class="slova-blog-card__meta">
                     <?php foreach ($categories as $cat): ?>
                         <a href="<?= $escaper->escapeUrl($block->getCategoryUrl((string)$cat->getUrlKey())) ?>"
@@ -64,11 +62,6 @@ $totalCount = (int)$posts->getSize();
                             <?= $escaper->escapeHtml($cat->getName()) ?>
                         </a>
                     <?php endforeach; ?>
-                    <?php if ($date): ?>
-                        <time class="slova-blog-card__date" datetime="<?= $escaper->escapeHtmlAttr(date('c', strtotime($post->getPublishedAt() ?: $post->getCreatedAt()))) ?>">
-                            <?= $escaper->escapeHtml($date) ?>
-                        </time>
-                    <?php endif; ?>
                 </div>
             </div>
         </article>
@@ -100,17 +93,18 @@ $totalCount = (int)$posts->getSize();
         gap: 1rem;
         padding: 1rem;
         background: #fff;
-        border: 2px solid transparent;
+        border: 2px solid #D0E5E5;
         border-radius: 0.75rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .slova-blog-card:hover {
+        border-color: transparent;
         background-image:
             linear-gradient(#fff, #fff),
             linear-gradient(135deg, var(--color-primary, #009999), var(--color-secondary, #FF5533));
         background-origin: border-box;
         background-clip: padding-box, border-box;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .slova-blog-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 8px 24px rgba(0, 153, 153, 0.12);
     }
@@ -151,6 +145,12 @@ $totalCount = (int)$posts->getSize();
         line-height: 1.3;
         font-weight: 600;
         margin: 0;
+        min-height: calc(1.3em * 2);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     .slova-blog-card__title a {
@@ -167,6 +167,7 @@ $totalCount = (int)$posts->getSize();
         line-height: 1.5;
         color: #4b5563;
         margin: 0;
+        min-height: calc(1.5em * 2);
         display: -webkit-box;
         -webkit-line-clamp: 2;
         line-clamp: 2;
