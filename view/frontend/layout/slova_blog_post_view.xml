@@ -29,6 +29,16 @@
                    name="slova.blog.sidebar.categories"
                    template="Slova_Blog::sidebar/categories.phtml"
                    cacheable="true"/>
+            <container name="slova.blog.sidebar.banner.wrap"
+                       htmlTag="div"
+                       htmlClass="slova-blog-sidebar-banner">
+                <block class="Magento\Cms\Block\Block"
+                       name="slova.blog.sidebar.banner">
+                    <arguments>
+                        <argument name="block_id" xsi:type="string">pdp_left_column_banner</argument>
+                    </arguments>
+                </block>
+            </container>
             <block class="Carusel\Collections\Block\Frontend\BestsellerProducts"
                    name="slova.blog.sidebar.bestsellers"
                    template="Carusel_Collections::product/bestsellers-sidebar.phtml"
