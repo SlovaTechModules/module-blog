@@ -105,13 +105,13 @@ $itemRenderer = $block->getLayout()->getBlock('product_list_item')
     <?php $sliderName = 'slova-blog-related-' . (int)$post->getId(); ?>
     <section class="slova-blog-related"
              id="<?= $escaper->escapeHtmlAttr($sliderName) ?>"
-             aria-label="<?= $escaper->escapeHtmlAttr(__('Cărți menționate')) ?>"
+             aria-label="<?= $escaper->escapeHtmlAttr(__('File din povestea')) ?>"
              x-data
              x-snap-slider.auto-pager.group-pager
              x-defer="intersect">
         <div class="slova-blog-related__head">
             <h2 class="slova-blog-related__title">
-                <?= $escaper->escapeHtml(__('Cărți menționate')) ?>
+                <?= $escaper->escapeHtml(__('File din povestea')) ?>
             </h2>
         </div>
         <div class="snap-track md:[--snap-cols:2] lg:[--snap-cols:3] xl:[--snap-cols:4]"
@@ -352,21 +352,16 @@ $itemRenderer = $block->getLayout()->getBlock('product_list_item')
 
     .slova-blog-related {
         margin-top: 2.5rem;
-        padding: 1.25rem;
-        background: #fff;
-        border-radius: 0.75rem;
-        border: 1px solid #e5e7eb;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e5e7eb;
     }
 
     .slova-blog-related__head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
         margin-bottom: 1rem;
     }
 
     .slova-blog-related__title {
-        font-size: 1.125rem;
+        font-size: 1.25rem;
         font-weight: 700;
         margin: 0;
         color: var(--color-dark, #111e1e);

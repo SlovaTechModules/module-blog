@@ -215,11 +215,16 @@
             <opened>false</opened>
         </settings>
         <field name="side_text" sortOrder="10" formElement="textarea">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="rows" xsi:type="number">10</item>
+                </item>
+            </argument>
             <settings>
                 <dataType>text</dataType>
                 <label translate="true">Text intro</label>
                 <dataScope>side_text</dataScope>
-                <notice translate="true">Apare în coloana stângă, aliniat la dreapta. Pentru emfază: &lt;strong&gt;aldine&lt;/strong&gt; sau &lt;em&gt;italice&lt;/em&gt;. Restul HTML-ului e ignorat.</notice>
+                <notice translate="true">Apare în coloana stângă, aliniat la dreapta. Pentru bold (aldine), încadrează textul în &lt;strong&gt;…&lt;/strong&gt;. Pentru italic, în &lt;em&gt;…&lt;/em&gt;. Exemplu: o carte &lt;em&gt;extraordinară&lt;/em&gt; despre &lt;strong&gt;curaj&lt;/strong&gt;. Apasă Enter pentru linie nouă, Enter dublu pentru paragraf nou. Restul tagurilor HTML sunt ignorate.</notice>
             </settings>
         </field>
         <field name="side_image" sortOrder="20" formElement="imageUploader">
