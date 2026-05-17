@@ -3,15 +3,16 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceBlock name="page.main.title" remove="true"/>
-        <referenceContainer name="content">
+        <referenceContainer name="columns.top">
             <block class="Slova\Blog\Block\HeaderBand"
                    name="slova.blog.header.band"
-                   template="Slova_Blog::header-band.phtml"
-                   before="-">
+                   template="Slova_Blog::header-band.phtml">
                 <arguments>
                     <argument name="default_title" xsi:type="string" translate="true">Jurnal de bord</argument>
                 </arguments>
             </block>
+        </referenceContainer>
+        <referenceContainer name="content">
             <block class="Slova\Blog\Block\PostList"
                    name="slova.blog.post.list"
                    template="Slova_Blog::post/list.phtml"

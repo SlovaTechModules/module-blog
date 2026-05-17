@@ -37,9 +37,8 @@ $totalCount = (int)$posts->getSize();
                 <?php if ($imgPath): ?>
                     <?= /* @noEscape */ $imageVm->picture(
                         $imgPath,
-                        240,
+                        480,
                         alt: (string)($post->getFeaturedImageAlt() ?: $post->getTitle()),
-                        height: 240,
                         loading: 'lazy',
                         imgClass: 'slova-blog-card__img'
                     ) ?>
@@ -234,6 +233,23 @@ $totalCount = (int)$posts->getSize();
     @media (min-width: 768px) {
         .slova-blog-card {
             grid-template-columns: 200px 1fr;
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .slova-blog-list {
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.25rem;
+        }
+        .slova-blog-card {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        .slova-blog-card__thumb {
+            aspect-ratio: 16 / 9;
+        }
+        .slova-blog-card__title {
+            font-size: 1.125rem;
         }
     }
 </style>

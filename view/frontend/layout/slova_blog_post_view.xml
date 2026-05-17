@@ -9,15 +9,16 @@
                    name="slova.blog.post.structured.data"
                    template="Slova_Blog::head/structured-data.phtml"/>
         </referenceBlock>
-        <referenceContainer name="content">
+        <referenceContainer name="columns.top">
             <block class="Slova\Blog\Block\HeaderBand"
                    name="slova.blog.header.band"
-                   template="Slova_Blog::header-band.phtml"
-                   before="-">
+                   template="Slova_Blog::header-band.phtml">
                 <arguments>
                     <argument name="default_title" xsi:type="string" translate="true">Jurnal</argument>
                 </arguments>
             </block>
+        </referenceContainer>
+        <referenceContainer name="content">
             <block class="Slova\Blog\Block\PostView"
                    name="slova.blog.post.view"
                    template="Slova_Blog::post/view.phtml"
