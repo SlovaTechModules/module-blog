@@ -9,6 +9,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Slova\Blog\Controller\Adminhtml\Category;
 use Slova\Blog\Model\CategoryFactory;
 use Slova\Blog\Model\ResourceModel\Category as CategoryResource;
+use Slova\Core\Helper\UrlKey;
 
 class Save extends Category
 {
@@ -16,7 +17,8 @@ class Save extends Category
         Context $context,
         private readonly DataPersistorInterface $dataPersistor,
         private readonly CategoryFactory $categoryFactory,
-        private readonly CategoryResource $categoryResource
+        private readonly CategoryResource $categoryResource,
+        private readonly UrlKey $urlKeyHelper
     ) {
         parent::__construct($context);
     }
@@ -41,9 +43,9 @@ class Save extends Category
         }
 
         if (empty($data['url_key']) && !empty($data['name'])) {
-            $data['url_key'] = $this->slugify((string)$data['name']);
+            $data['url_key'] = $this->urlKeyHelper->normalizeUrlKey((string)$data['name']);
         } elseif (!empty($data['url_key'])) {
-            $data['url_key'] = $this->slugify((string)$data['url_key']);
+            $data['url_key'] = $this->urlKeyHelper->normalizeUrlKey((string)$data['url_key']);
         }
 
         if (empty($data['category_id'])) {
@@ -69,17 +71,5 @@ class Save extends Category
 
         $this->dataPersistor->set('slova_blog_category', $data);
         return $resultRedirect->setPath('*/*/edit', ['category_id' => $id]);
-    }
-
-    private function slugify(string $value): string
-    {
-        $value = mb_strtolower(trim($value));
-        $value = strtr($value, [
-            'ă' => 'a', 'â' => 'a', 'î' => 'i', 'ș' => 's', 'ş' => 's',
-            'ț' => 't', 'ţ' => 't', 'Ă' => 'a', 'Â' => 'a', 'Î' => 'i',
-            'Ș' => 's', 'Ş' => 's', 'Ț' => 't', 'Ţ' => 't',
-        ]);
-        $value = preg_replace('/[^a-z0-9]+/u', '-', $value) ?? '';
-        return trim($value, '-');
     }
 }

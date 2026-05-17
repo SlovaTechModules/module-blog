@@ -12,6 +12,7 @@ use Slova\Blog\Controller\Adminhtml\Post;
 use Slova\Blog\Model\ImageUploader;
 use Slova\Blog\Model\PostFactory;
 use Slova\Blog\Model\ResourceModel\Post as PostResource;
+use Slova\Core\Helper\UrlKey;
 
 class Save extends Post
 {
@@ -24,7 +25,8 @@ class Save extends Post
         private readonly PostResource $postResource,
         private readonly ImageUploader $imageUploader,
         private readonly ProductRepositoryInterface $productRepository,
-        private readonly SearchCriteriaBuilder $searchCriteriaBuilder
+        private readonly SearchCriteriaBuilder $searchCriteriaBuilder,
+        private readonly UrlKey $urlKeyHelper
     ) {
         parent::__construct($context);
     }
@@ -103,9 +105,9 @@ class Save extends Post
     private function normalizeUrlKey(array $data): array
     {
         if (empty($data['url_key']) && !empty($data['title'])) {
-            $data['url_key'] = $this->slugify((string)$data['title']);
+            $data['url_key'] = $this->urlKeyHelper->normalizeUrlKey((string)$data['title']);
         } elseif (!empty($data['url_key'])) {
-            $data['url_key'] = $this->slugify((string)$data['url_key']);
+            $data['url_key'] = $this->urlKeyHelper->normalizeUrlKey((string)$data['url_key']);
         }
         return $data;
     }
@@ -164,17 +166,5 @@ class Save extends Post
 
         $data['product_ids'] = $productIds;
         return $data;
-    }
-
-    private function slugify(string $value): string
-    {
-        $value = mb_strtolower(trim($value));
-        $value = strtr($value, [
-            'ă' => 'a', 'â' => 'a', 'î' => 'i', 'ș' => 's', 'ş' => 's',
-            'ț' => 't', 'ţ' => 't', 'Ă' => 'a', 'Â' => 'a', 'Î' => 'i',
-            'Ș' => 's', 'Ş' => 's', 'Ț' => 't', 'Ţ' => 't',
-        ]);
-        $value = preg_replace('/[^a-z0-9]+/u', '-', $value) ?? '';
-        return trim($value, '-');
     }
 }
