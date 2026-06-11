@@ -22,6 +22,7 @@
             <block class="Slova\Blog\Block\Sidebar\Categories"
                    name="slova.blog.sidebar.categories"
                    template="Slova_Blog::sidebar/categories.phtml"
+                   before="-"
                    cacheable="true"/>
             <container name="slova.blog.sidebar.banner.wrap"
                        htmlTag="div"
