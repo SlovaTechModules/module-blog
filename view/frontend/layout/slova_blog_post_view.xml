@@ -9,6 +9,9 @@
             <block class="Slova\Blog\Block\Head\StructuredData"
                    name="slova.blog.post.structured.data"
                    template="Slova_Blog::head/structured-data.phtml"/>
+            <block class="Magento\Framework\View\Element\Template"
+                   name="slova.blog.head.sidebar.css"
+                   template="Slova_Blog::head/sidebar-css.phtml"/>
         </referenceBlock>
         <referenceContainer name="columns.top">
             <block class="Slova\Blog\Block\HeaderBand"
@@ -20,6 +23,15 @@
             </block>
         </referenceContainer>
         <referenceContainer name="content">
+            <container name="slova.blog.categories.mobile"
+                       htmlTag="div"
+                       htmlClass="slova-blog-categories-mobile"
+                       before="-">
+                <block class="Slova\Blog\Block\Sidebar\Categories"
+                       name="slova.blog.categories.mobile.block"
+                       template="Slova_Blog::sidebar/categories.phtml"
+                       cacheable="true"/>
+            </container>
             <block class="Slova\Blog\Block\PostView"
                    name="slova.blog.post.view"
                    template="Slova_Blog::post/view.phtml"

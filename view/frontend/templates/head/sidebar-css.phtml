@@ -1,0 +1,175 @@
+<?php
+/**
+ * Slova_Blog — CSS critic pentru sidebar-ul de blog, randat în <head>.
+ *
+ * Trebuie să stea în <head> (NU inline în body, unde sidebar-ul se randează
+ * la final): override-ul de layout sub 1280 (single column + categorii primele
+ * + dropdown închis) trebuie aplicat ÎNAINTE de primul paint. Altfel pe
+ * mobil/tabletă conținutul se randează în poziția greșită (categorii jos +
+ * deschise), apoi sare când CSS-ul din body e parsat → CLS.
+ */
+declare(strict_types=1);
+?>
+<style>
+    /* Dropdown-ul mobil e randat FIZIC în capul conținutului (înainte de articole),
+       ascuns pe desktop. Pe desktop categoriile vin din sidebar-ul din dreapta. */
+    .slova-blog-categories-mobile {
+        display: none;
+    }
+
+    .slova-blog-sidebar-categories {
+        background: #fff;
+        padding: 1.25rem;
+        border-radius: 0.75rem;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 1.5rem;
+    }
+
+    .slova-blog-sidebar-categories__toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .5rem;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background: none;
+        border: 0;
+        text-align: left;
+        color: inherit;
+        cursor: default;
+    }
+
+    .slova-blog-sidebar-categories__title {
+        font-size: 1.125rem;
+        line-height: 1.3;
+        font-weight: 700;
+        color: var(--color-dark, #111e1e);
+    }
+
+    .slova-blog-sidebar-categories__chevron {
+        width: 1.25rem;
+        height: 1.25rem;
+        flex-shrink: 0;
+        color: var(--color-primary, #009999);
+        display: none;
+        transition: transform .2s ease;
+    }
+
+    .slova-blog-sidebar-categories__collapse {
+        display: block;
+    }
+
+    .slova-blog-sidebar-categories__list {
+        list-style: none;
+        padding: 0;
+        margin: .75rem 0 0;
+    }
+
+    .slova-blog-sidebar-categories__item {
+        padding: .5rem 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .slova-blog-sidebar-categories__item:last-child {
+        border-bottom: 0;
+    }
+
+    .slova-blog-sidebar-categories__item a {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: .5rem;
+        color: #374151;
+        text-decoration: none;
+        font-size: .9375rem;
+        transition: color 0.15s;
+    }
+
+    .slova-blog-sidebar-categories__item a:hover .slova-blog-sidebar-categories__name,
+    .slova-blog-sidebar-categories__item.is-current a .slova-blog-sidebar-categories__name {
+        color: var(--color-primary, #009999);
+        font-weight: 600;
+    }
+
+    .slova-blog-sidebar-categories__count {
+        color: #9ca3af;
+        font-size: .8125rem;
+        font-variant-numeric: tabular-nums;
+        flex-shrink: 0;
+    }
+
+    .slova-blog-sidebar-banner {
+        margin-bottom: 1.5rem;
+    }
+
+    .wishlist-widget .card {
+        margin-bottom: 1.5rem;
+    }
+
+    /* ── Sub 1280: single column, categorii ca dropdown primul pe pagină,
+          restul coloanei ascuns complet pe mobil + tabletă ── */
+    @media (max-width: 1279px) {
+        .slova-blog-page .columns {
+            grid-template-columns: minmax(0px, 1fr);
+            grid-template-rows: auto;
+        }
+        .slova-blog-page .columns > .column.main {
+            order: 0;
+            grid-row: auto;
+        }
+        /* Sidebar-ul dispare complet pe mobil/tabletă; categoriile vin din
+           instanța randată în capul conținutului (.slova-blog-categories-mobile).
+           Fără reorder CSS → fără shift „meniul apare și împinge articolele". */
+        .slova-blog-page .sidebar-additional {
+            display: none;
+        }
+        .slova-blog-categories-mobile {
+            display: block;
+        }
+
+        /* Ancoră pentru panoul absolut. */
+        .slova-blog-sidebar-categories {
+            position: relative;
+        }
+        .slova-blog-sidebar-categories__toggle {
+            cursor: pointer;
+        }
+        .slova-blog-sidebar-categories__chevron {
+            display: block;
+        }
+        .slova-blog-sidebar-categories__chevron.is-open {
+            transform: rotate(180deg);
+        }
+
+        /* Panoul deschis = OVERLAY absolut, scos COMPLET din fluxul documentului.
+           Indiferent de timing/Alpine/tranziții, deschiderea NU poate muta
+           articolele (plutește peste ele) → zero CLS. Cardul rămâne doar bara
+           de titlu, cu înălțime fixă. */
+        .slova-blog-sidebar-categories__collapse {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 30;
+            margin-top: .5rem;
+            padding: .25rem 1.25rem 1rem;
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: .75rem;
+            box-shadow: 0 12px 28px rgba(17, 30, 30, 0.12);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-6px);
+            transition: opacity .18s ease, transform .18s ease, visibility .18s;
+        }
+        .slova-blog-sidebar-categories__collapse.is-open {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .slova-blog-sidebar-categories__list {
+            margin-top: 0;
+        }
+    }
+</style>
