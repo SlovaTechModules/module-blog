@@ -13,27 +13,42 @@ if (!$categories) {
 }
 ?>
 
-<aside class="slova-blog-sidebar-categories" aria-label="<?= $escaper->escapeHtmlAttr(__('Categorii de articole')) ?>">
-    <h3 class="slova-blog-sidebar-categories__title">
-        <?= $escaper->escapeHtml(__('Categorii de articole')) ?>
-    </h3>
-    <ul class="slova-blog-sidebar-categories__list">
-        <li class="slova-blog-sidebar-categories__item<?= $block->isAllActive() ? ' is-current' : '' ?>">
-            <a href="<?= $escaper->escapeUrl($block->getAllPostsUrl()) ?>">
-                <span class="slova-blog-sidebar-categories__name"><?= $escaper->escapeHtml(__('Toate articolele')) ?></span>
-                <span class="slova-blog-sidebar-categories__count">(<?= (int)$block->getTotalPostCount() ?>)</span>
-            </a>
-        </li>
-        <?php foreach ($categories as $category): ?>
-            <?php $count = $block->getPostCount($category); ?>
-            <li class="slova-blog-sidebar-categories__item<?= $block->isCurrent($category) ? ' is-current' : '' ?>">
-                <a href="<?= $escaper->escapeUrl($block->getCategoryUrl($category)) ?>">
-                    <span class="slova-blog-sidebar-categories__name"><?= $escaper->escapeHtml($category->getName()) ?></span>
-                    <span class="slova-blog-sidebar-categories__count">(<?= (int)$count ?>)</span>
-                </a>
-            </li>
-        <?php endforeach; ?>
-    </ul>
+<aside class="slova-blog-sidebar-categories"
+       x-data="{ open: false }"
+       aria-label="<?= $escaper->escapeHtmlAttr(__('Categorii de articole')) ?>">
+    <button type="button"
+            class="slova-blog-sidebar-categories__toggle"
+            @click="open = !open"
+            :aria-expanded="open ? 'true' : 'false'">
+        <span class="slova-blog-sidebar-categories__title">
+            <?= $escaper->escapeHtml(__('Categorii de articole')) ?>
+        </span>
+        <svg class="slova-blog-sidebar-categories__chevron" :class="{ 'is-open': open }"
+             viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.17l3.71-3.94a.75.75 0 1 1 1.08 1.04l-4.25 4.5a.75.75 0 0 1-1.08 0l-4.25-4.5a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" />
+        </svg>
+    </button>
+    <div class="slova-blog-sidebar-categories__collapse" :class="{ 'is-open': open }">
+        <div class="slova-blog-sidebar-categories__collapse-inner">
+            <ul class="slova-blog-sidebar-categories__list">
+                <li class="slova-blog-sidebar-categories__item<?= $block->isAllActive() ? ' is-current' : '' ?>">
+                    <a href="<?= $escaper->escapeUrl($block->getAllPostsUrl()) ?>">
+                        <span class="slova-blog-sidebar-categories__name"><?= $escaper->escapeHtml(__('Toate articolele')) ?></span>
+                        <span class="slova-blog-sidebar-categories__count">(<?= (int)$block->getTotalPostCount() ?>)</span>
+                    </a>
+                </li>
+                <?php foreach ($categories as $category): ?>
+                    <?php $count = $block->getPostCount($category); ?>
+                    <li class="slova-blog-sidebar-categories__item<?= $block->isCurrent($category) ? ' is-current' : '' ?>">
+                        <a href="<?= $escaper->escapeUrl($block->getCategoryUrl($category)) ?>">
+                            <span class="slova-blog-sidebar-categories__name"><?= $escaper->escapeHtml($category->getName()) ?></span>
+                            <span class="slova-blog-sidebar-categories__count">(<?= (int)$count ?>)</span>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
 </aside>
 
 <style>
@@ -45,19 +60,50 @@ if (!$categories) {
         margin-bottom: 1.5rem;
     }
 
+    .slova-blog-sidebar-categories__toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .5rem;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background: none;
+        border: 0;
+        text-align: left;
+        color: inherit;
+        cursor: default;
+    }
+
     .slova-blog-sidebar-categories__title {
         font-size: 1.125rem;
         font-weight: 700;
-        margin: 0 0 .75rem;
         color: var(--color-dark, #111e1e);
-        padding-bottom: .625rem;
-        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .slova-blog-sidebar-categories__chevron {
+        width: 1.25rem;
+        height: 1.25rem;
+        flex-shrink: 0;
+        color: var(--color-primary, #009999);
+        display: none;
+        transition: transform .2s ease;
+    }
+
+    .slova-blog-sidebar-categories__collapse {
+        display: grid;
+        grid-template-rows: 1fr;
+    }
+
+    .slova-blog-sidebar-categories__collapse-inner {
+        min-height: 0;
+        overflow: hidden;
     }
 
     .slova-blog-sidebar-categories__list {
         list-style: none;
         padding: 0;
-        margin: 0;
+        margin: .75rem 0 0;
     }
 
     .slova-blog-sidebar-categories__item {
@@ -99,5 +145,58 @@ if (!$categories) {
 
     .wishlist-widget .card {
         margin-bottom: 1.5rem;
+    }
+
+    /* ── Sub 1280: single column, categorii ca dropdown primul pe pagină,
+          restul coloanei ascuns complet pe mobil + tabletă ── */
+    @media (max-width: 1279px) {
+        .slova-blog-page .columns {
+            grid-template-columns: minmax(0px, 1fr);
+            grid-template-rows: auto;
+        }
+        .slova-blog-page .columns > .column.main {
+            order: 0;
+            grid-row: auto;
+        }
+        .slova-blog-page .sidebar-additional {
+            display: contents;
+        }
+        .slova-blog-page .sidebar-additional > * {
+            display: none !important;
+        }
+        .slova-blog-page .slova-blog-sidebar-categories {
+            display: block !important;
+            order: -1;
+            margin-bottom: 0;
+        }
+
+        .slova-blog-sidebar-categories__toggle {
+            cursor: pointer;
+        }
+        .slova-blog-sidebar-categories__list {
+            margin-top: 0;
+            padding-top: .75rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .slova-blog-sidebar-categories__collapse-inner {
+            opacity: 0;
+            transition: opacity .25s ease;
+        }
+        .slova-blog-sidebar-categories__collapse.is-open .slova-blog-sidebar-categories__collapse-inner {
+            opacity: 1;
+        }
+        .slova-blog-sidebar-categories__chevron {
+            display: block;
+        }
+        .slova-blog-sidebar-categories__chevron.is-open {
+            transform: rotate(180deg);
+        }
+        .slova-blog-sidebar-categories__collapse {
+            grid-template-rows: 0fr;
+            transition: grid-template-rows .28s ease;
+        }
+        .slova-blog-sidebar-categories__collapse.is-open {
+            grid-template-rows: 1fr;
+        }
     }
 </style>

@@ -3,6 +3,7 @@
       layout="2columns-right"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
+        <attribute name="class" value="slova-blog-page"/>
         <referenceBlock name="page.main.title" remove="true"/>
         <referenceBlock name="head.additional">
             <block class="Slova\Blog\Block\Head\StructuredData"
