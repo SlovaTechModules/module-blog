@@ -128,9 +128,11 @@ declare(strict_types=1);
             display: block;
         }
 
-        /* Ancoră pentru panoul absolut. */
+        /* Ancoră pentru panoul absolut + bară compactă (mai puțin padding vertical
+           decât cardul de desktop, ca titlul să fie aproape de listă). */
         .slova-blog-sidebar-categories {
             position: relative;
+            padding: 1rem 1.25rem;
         }
         .slova-blog-sidebar-categories__toggle {
             cursor: pointer;
@@ -145,22 +147,28 @@ declare(strict_types=1);
         /* Panoul deschis = OVERLAY absolut, scos COMPLET din fluxul documentului.
            Indiferent de timing/Alpine/tranziții, deschiderea NU poate muta
            articolele (plutește peste ele) → zero CLS. Cardul rămâne doar bara
-           de titlu, cu înălțime fixă. */
+           de titlu, cu înălțime fixă. Panoul se ATAȘEAZĂ de bară (fără margin,
+           fără border-top dublu, colțuri jos rotunjite) → un singur dropdown
+           unificat, nu două carduri cu gol între ele. */
+        .slova-blog-sidebar-categories.is-open {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
         .slova-blog-sidebar-categories__collapse {
             position: absolute;
             top: 100%;
             left: 0;
             right: 0;
             z-index: 30;
-            margin-top: .5rem;
             padding: .25rem 1.25rem 1rem;
             background: #fff;
             border: 1px solid #e5e7eb;
-            border-radius: .75rem;
-            box-shadow: 0 12px 28px rgba(17, 30, 30, 0.12);
+            border-top: 0;
+            border-radius: 0 0 .75rem .75rem;
+            box-shadow: 0 14px 28px rgba(17, 30, 30, 0.12);
             opacity: 0;
             visibility: hidden;
-            transform: translateY(-6px);
+            transform: translateY(-4px);
             transition: opacity .18s ease, transform .18s ease, visibility .18s;
         }
         .slova-blog-sidebar-categories__collapse.is-open {

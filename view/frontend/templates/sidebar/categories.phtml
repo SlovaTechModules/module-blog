@@ -15,6 +15,7 @@ if (!$categories) {
 
 <aside class="slova-blog-sidebar-categories"
        x-data="{ open: false }"
+       :class="{ 'is-open': open }"
        @click.outside="open = false"
        @keydown.escape="open = false"
        aria-label="<?= $escaper->escapeHtmlAttr(__('Categorii de articole')) ?>">
