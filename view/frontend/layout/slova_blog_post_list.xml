@@ -3,6 +3,7 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <attribute name="class" value="slova-blog-page"/>
+        <referenceBlock name="wishlist_sidebar" remove="true"/>
         <referenceBlock name="head.additional">
             <block class="Magento\Framework\View\Element\Template"
                    name="slova.blog.head.list.css"

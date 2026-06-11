@@ -5,6 +5,7 @@
     <body>
         <attribute name="class" value="slova-blog-page"/>
         <referenceBlock name="page.main.title" remove="true"/>
+        <referenceBlock name="wishlist_sidebar" remove="true"/>
         <referenceBlock name="head.additional">
             <block class="Slova\Blog\Block\Head\StructuredData"
                    name="slova.blog.post.structured.data"
