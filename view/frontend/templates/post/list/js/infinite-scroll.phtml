@@ -70,6 +70,11 @@ use Slova\Blog\Block\PostList;
 
     function tryRestore() {
         if (!isMobile()) return false;
+        // Hard refresh: NU restaura. tryRestore face append de articole + scrollTo(scrollY)
+        // DUPĂ primul paint → pagina „sare" masiv + ghosting (mobil-only, exact simptomul
+        // raportat). La reload pornim fresh (pagina 1, sus). Back/forward restaurează normal.
+        var navEntry = performance.getEntriesByType('navigation')[0];
+        if (navEntry && navEntry.type === 'reload') return false;
         try {
             var saved = sessionStorage.getItem(STORAGE_KEY);
             if (!saved) return false;
