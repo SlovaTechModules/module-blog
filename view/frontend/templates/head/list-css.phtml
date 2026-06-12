@@ -196,20 +196,3 @@ declare(strict_types=1);
         }
     }
 </style>
-<script>
-/* Lista de blog: la RELOAD scrollat în jos, infinite scroll-ul nu mai e încărcat →
-   pagina e scurtă → scroll restoration al browserului nimerește greșit (banda + primul
-   card apar în mijloc, apoi sar = „horror"; DevTools nu-l prinde, e scroll-position).
-   DOAR la reload: browserul NU restaurează → rămâi sus (ca la PDP). Navigare/back rămân
-   pe auto (back restaurează normal). Resetăm la plecare ca să nu rămână 'manual' pe alte
-   pagini (auto-ul global pe restul site-ului e neatins). */
-if ('scrollRestoration' in history) {
-    var srNav = performance.getEntriesByType('navigation')[0];
-    if (srNav && srNav.type === 'reload') {
-        history.scrollRestoration = 'manual';
-    }
-    addEventListener('pagehide', function () {
-        if (history.scrollRestoration === 'manual') history.scrollRestoration = 'auto';
-    });
-}
-</script>

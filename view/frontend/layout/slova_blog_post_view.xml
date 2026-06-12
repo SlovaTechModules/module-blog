@@ -13,6 +13,9 @@
             <block class="Magento\Framework\View\Element\Template"
                    name="slova.blog.head.sidebar.css"
                    template="Slova_Blog::head/sidebar-css.phtml"/>
+            <block class="Magento\Framework\View\Element\Template"
+                   name="slova.blog.head.scroll.restoration"
+                   template="Slova_Blog::head/scroll-restoration.phtml"/>
         </referenceBlock>
         <referenceContainer name="columns.top">
             <block class="Slova\Blog\Block\HeaderBand"
