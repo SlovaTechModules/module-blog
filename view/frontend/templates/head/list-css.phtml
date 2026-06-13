@@ -173,15 +173,11 @@ declare(strict_types=1);
         }
     }
 
+    /* Tabletă (768–1279px): 2 coloane, carduri verticale ca pe desktop.
+       Sub 768px rămâne layoutul orizontal pe 1 coloană (mobil). */
     @media (min-width: 768px) {
-        .slova-blog-card {
-            grid-template-columns: 200px 1fr;
-        }
-    }
-
-    @media (min-width: 1280px) {
         .slova-blog-list {
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 1.25rem;
         }
         .slova-blog-card {
@@ -193,6 +189,13 @@ declare(strict_types=1);
         }
         .slova-blog-card__title {
             font-size: 1.125rem;
+        }
+    }
+
+    /* Desktop (≥1280px): 3 coloane (cardurile sunt deja verticale din regula de tabletă). */
+    @media (min-width: 1280px) {
+        .slova-blog-list {
+            grid-template-columns: 1fr 1fr 1fr;
         }
     }
 </style>
