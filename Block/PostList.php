@@ -65,7 +65,8 @@ class PostList extends Template implements IdentityInterface
             }
 
             $page = max(1, (int)$this->getRequest()->getParam('p', 1));
-            $collection->setPageSize(self::PAGE_SIZE)->setCurPage($page);
+            $pageSize = (int)($this->getData('page_size') ?: self::PAGE_SIZE);
+            $collection->setPageSize($pageSize)->setCurPage($page);
 
             $this->collection = $collection;
         }
