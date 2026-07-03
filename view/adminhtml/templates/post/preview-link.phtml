@@ -8,8 +8,8 @@ $url = $block->getPostUrl();
             <strong><?= /** @noEscape */ __('URL public:') ?></strong>
         </p>
         <p style="margin: 0;">
-            <a href="<?= $block->escapeUrl($url) ?>" target="_blank" rel="noopener" style="word-break: break-all;">
-                <?= $block->escapeHtml($url) ?> ↗
+            <a href="<?= $escaper->escapeUrl($url) ?>" target="_blank" rel="noopener" style="word-break: break-all;">
+                <?= $escaper->escapeHtml($url) ?> ↗
             </a>
         </p>
     <?php else: ?>

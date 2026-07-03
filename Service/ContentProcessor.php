@@ -79,7 +79,7 @@ class ContentProcessor
                 }
 
                 $webpSrcset = $webp1x . ' 1x' . ($webp2x !== $webp1x && $webp2x !== '' ? ', ' . $webp2x . ' 2x' : '');
-                $jpgSrcset  = $jpg1x  . ' 1x' . ($jpg2x  !== $jpg1x  && $jpg2x  !== '' ? ', ' . $jpg2x  . ' 2x' : '');
+                $jpgSrcset  = $jpg1x  . ' 1x' . ($jpg2x  !== $jpg1x && $jpg2x  !== '' ? ', ' . $jpg2x  . ' 2x' : '');
 
                 $attrs['src']    = $jpg1x;
                 $attrs['srcset'] = $jpgSrcset;

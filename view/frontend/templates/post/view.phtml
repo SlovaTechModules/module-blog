@@ -62,7 +62,7 @@ $itemRenderer = $block->getLayout()->getBlock('product_list_item')
         $sideText = $block->getSanitizedSideText();
         $sideImgPath = $block->getSideImagePath();
         $sideAlt = $block->getSideImageAlt() ?: $post->getTitle();
-    ?>
+        ?>
         <section class="slova-blog-post__intro">
             <?php if ($sideText !== ''): ?>
                 <div class="slova-blog-post__intro-text">
@@ -101,7 +101,8 @@ $itemRenderer = $block->getLayout()->getBlock('product_list_item')
     </div>
 </article>
 
-<?php $prevPost = $block->getPreviousPost(); $nextPost = $block->getNextPost(); ?>
+<?php $prevPost = $block->getPreviousPost();
+$nextPost = $block->getNextPost(); ?>
 <?php if ($prevPost || $nextPost): ?>
     <nav class="slova-blog-post__nav" aria-label="<?= $escaper->escapeHtmlAttr(__('Navigare articole')) ?>">
         <?php if ($prevPost): ?>
