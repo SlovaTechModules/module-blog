@@ -19,7 +19,7 @@ It started as the blog of [caruselbooks.ro](https://caruselbooks.ro), a children
 - [The blog on your home page](#the-blog-on-your-home-page)
 - [Settings](#settings)
 - [URLs](#urls) · [SEO](#seo) · [Images and speed](#images-and-speed)
-- [Customizing](#customizing) · [For developers](#for-developers)
+- [Customizing](#customizing) · [For developers](#for-developers) · [Troubleshooting](#troubleshooting)
 - [Upgrading and uninstalling](#upgrading-and-uninstalling) · [License](#license)
 
 ## What makes it different
@@ -385,6 +385,66 @@ Templates can be overridden in your theme under `Slova_Blog/templates/` as usual
 - **URLs:** `Slova\Blog\Model\Url` builds the public addresses; `bin/magento slova:blog:url-rewrites` rebuilds them.
 - **Images:** `Slova\Blog\ViewModel\Image::picture()` renders a WebP `<picture>` with width and height for any media path.
 - **Content Security Policy:** the module allows `i.ytimg.com` (video thumbnails) and YouTube / Vimeo frames. Images from other domains inside your posts need to be allowed by your store's CSP, as anywhere else in Magento.
+
+## Troubleshooting
+
+### The preview link stopped working
+
+Preview links are private and expire after one hour. Press **Preview** again in the post editor for a fresh link.
+
+### Did Preview save my post?
+
+It depends on the post:
+
+- **A draft** (new or inactive) is saved first, still inactive, then shown. It stays off the site either way.
+- **A live post** is never saved by Preview. Visitors keep seeing the saved version until you press **Save**.
+
+### My changes don't show on the storefront
+
+Check that you pressed **Save**: Preview alone never changes a live post. A post whose publish date is in the future stays hidden until that date. After changing a widget, flush the cache: `bin/magento cache:flush`.
+
+### The Latest Posts widget is empty or out of date
+
+1. Flush the cache after any change to the widget.
+2. Check its **Storefront Properties**: the store views, and the layout update that places it (for the home page: *Specified Page* → *CMS Home Page*, container *Main Content Area*). See [The blog on your home page](#the-blog-on-your-home-page).
+3. Check the **Category** option: with a category selected, only its posts are shown.
+4. Only live posts are listed: active, with the publish date reached.
+
+### Blog URLs return 404 after changing the URL prefix
+
+Saving a new prefix in the settings rebuilds the blog's addresses, and the old ones stop working. If search engines already know the old addresses, add redirects for them under *Marketing → SEO & Search → URL Rewrites*. If you changed the prefix with `bin/magento config:set`, or added a store view, rebuild the addresses yourself:
+
+```bash
+bin/magento slova:blog:url-rewrites
+```
+
+### "These SKUs were not found and have been ignored"
+
+The post was saved, but the related products slider only shows SKUs that exist in your catalog. The message lists the ones it could not find: correct or remove them and save again.
+
+### The featured image is missing at the top of a post
+
+That is on purpose: each picture is shown once per page. If the featured image is also the intro image or appears in the content, the banner at the top is left out. The image is still used on the post's card in the lists.
+
+### I replaced an image but the old one still shows
+
+Resized copies are made on the first visit and kept in `pub/media/slova_blog_resized`. An image uploaded in the editor always gets a new name, so it gets new copies too. If you replaced a file under the same name directly on the server, delete that folder; the copies are rebuilt on the next visit.
+
+### My video doesn't appear
+
+Write `[youtube:VIDEO_ID]`, where `VIDEO_ID` is the part after `v=` in the YouTube address. The post shows a thumbnail that links to the video: nothing from YouTube loads until a visitor clicks, which is intended.
+
+### The posts are the same in every store view
+
+By design: one set of posts serves all store views. The settings (title, URL prefixes, colors) and the addresses can differ per store view.
+
+### Authors, comments, tags, Page Builder or GraphQL
+
+Not included in this version. See [What makes it different](#what-makes-it-different) for what the module does and does not do.
+
+### An installation command fails
+
+Check the [requirements](#requirements) first, in particular the PHP **GD** and **intl** extensions. `setup:di:compile` is needed only in production mode. If a command still fails, run it again with `-vvv` and open an issue on GitHub with the output.
 
 ## Upgrading and uninstalling
 
