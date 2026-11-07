@@ -10,8 +10,8 @@ It started as the blog of [caruselbooks.ro](https://caruselbooks.ro), a children
 
 ## Contents
 
-- [What makes it different](#what-makes-it-different)
 - [Requirements](#requirements) · [Installation](#installation) · [Quick start](#quick-start)
+- [What makes it different](#what-makes-it-different)
 - [Writing a post, step by step](#writing-a-post-step-by-step)
 - [Preview, Save Draft and View Post](#preview-save-draft-and-view-post)
 - [Categories](#categories)
@@ -20,7 +20,35 @@ It started as the blog of [caruselbooks.ro](https://caruselbooks.ro), a children
 - [Settings](#settings)
 - [URLs](#urls) · [SEO](#seo) · [Images and speed](#images-and-speed)
 - [Customizing](#customizing) · [For developers](#for-developers) · [Troubleshooting](#troubleshooting)
-- [Upgrading and uninstalling](#upgrading-and-uninstalling) · [License](#license)
+- [Upgrading and uninstalling](#upgrading-and-uninstalling) · [More from Slova](#more-from-slova) · [License](#license)
+
+## Requirements
+
+| | |
+|---|---|
+| [Magento Open Source](https://business.adobe.com/products/magento/open-source.html) | 2.4.8 (tested on 2.4.8-p5) |
+| [Hyvä Theme](https://www.hyva.io/) | 1.4 or newer (tested on 1.5.3) |
+| PHP | 8.3 – 8.4, with the GD (WebP support) and intl extensions |
+
+`hyva-themes/magento2-theme-module` comes from Hyvä's own Composer repository, which every Hyvä store already has. Adobe Commerce has not been tested yet.
+
+## Installation
+
+```bash
+composer require slova/module-blog
+bin/magento module:enable Slova_Blog
+bin/magento setup:upgrade
+bin/magento setup:di:compile          # production mode only
+bin/magento cache:flush
+```
+
+## Quick start
+
+1. **Create a category** under *Content → Blog → Categories* (for example "News").
+2. **Write a post** under *Content → Blog → Posts → New Post*: a title, a short description, some content and a featured image. Press *Preview* to see it, then *Save*.
+3. **Open `/blog`** on your store: the post is there.
+4. **Link the blog** from your menu or footer, and [add the latest posts to your home page](#the-blog-on-your-home-page).
+5. **Review the settings** under *Content → Blog → Settings*: blog title, URL, colors.
 
 ## What makes it different
 
@@ -52,34 +80,6 @@ It started as the blog of [caruselbooks.ro](https://caruselbooks.ro), a children
 - **English and Romanian** included.
 
 **What it does not do:** authors, comments and tags; separate content per store view (one set of posts serves all store views); Page Builder; GraphQL; Luma storefronts.
-
-## Requirements
-
-| | |
-|---|---|
-| Magento Open Source | 2.4.8 (tested on 2.4.8-p5) |
-| Hyvä Theme | 1.4 or newer (tested on 1.5.3) |
-| PHP | 8.3 – 8.4, with the GD (WebP support) and intl extensions |
-
-`hyva-themes/magento2-theme-module` comes from Hyvä's own Composer repository, which every Hyvä store already has. Adobe Commerce has not been tested yet.
-
-## Installation
-
-```bash
-composer require slova/module-blog
-bin/magento module:enable Slova_Blog
-bin/magento setup:upgrade
-bin/magento setup:di:compile          # production mode only
-bin/magento cache:flush
-```
-
-## Quick start
-
-1. **Create a category** under *Content → Blog → Categories* (for example "News").
-2. **Write a post** under *Content → Blog → Posts → New Post*: a title, a short description, some content and a featured image. Press *Preview* to see it, then *Save*.
-3. **Open `/blog`** on your store: the post is there.
-4. **Link the blog** from your menu or footer, and [add the latest posts to your home page](#the-blog-on-your-home-page).
-5. **Review the settings** under *Content → Blog → Settings*: blog title, URL, colors.
 
 ## Writing a post, step by step
 
@@ -291,7 +291,7 @@ The widget's cards use the featured image, cropped to 16:9, and take your accent
 | Setting | Default | Effect on the storefront |
 |---|---|---|
 | **Blog Title** | "Blog", translated | The title band on the blog home, the browser tab, the breadcrumbs. |
-| **URL Prefix** | `blog` | The blog's address: `/blog`, posts at `/blog/post-url-key`. Several levels are allowed (`news/blog`). See [URLs](#urls). |
+| **URL Prefix** | `blog` | The blog's address: `/blog`, posts at `/blog/post-url-key`. Several levels are allowed (`news/blog`). **Choose it before you publish:** changing it later makes the old addresses stop working. See [URLs](#urls). |
 | **Category URL Prefix** | `category` | Category pages at `/blog/category/category-url-key`. |
 | **Meta Title** | the blog title | Browser tab and search results for the blog home. |
 | **Meta Description** | empty | Search result snippet for the blog home. |
@@ -424,7 +424,7 @@ The post was saved, but the related products slider only shows SKUs that exist i
 
 ### The featured image is missing at the top of a post
 
-That is on purpose: each picture is shown once per page. If the featured image is also the intro image or appears in the content, the banner at the top is left out. The image is still used on the post's card in the lists.
+Check **Show Featured Image as Hero** in the post editor: switched off, the featured image stays on the card only. Switched on, the banner is still left out when the same picture is the intro image or appears in the content, because each picture is shown once per page. To get the banner back, remove the picture from the content or choose another intro image. The featured image is still used on the post's card in the lists.
 
 ### I replaced an image but the old one still shows
 
@@ -459,6 +459,15 @@ bin/magento module:uninstall Slova_Blog --remove-data
 ```
 
 Uninstalling with `--remove-data` drops the blog tables and deletes the blog's URL rewrites and settings. Remove the widget instances you created first. Uploaded images stay in `pub/media/slova/blog` and the resized copies in `pub/media/slova_blog_resized`; delete those folders yourself if you no longer need them.
+
+## More from Slova
+
+Other modules for Magento 2 stores on Hyvä, built and run on a real store:
+
+- [Cookie Consent](https://slova.tech/modules/cookie-consent/): a free GDPR cookie banner with Google Consent Mode v2.
+- [Discovery](https://slova.tech/modules/discovery/): search-as-you-type for Hyvä and ElasticSuite.
+- [Bestsellers](https://slova.tech/modules/bestsellers/): bestseller lists built from paid orders.
+- [All modules](https://slova.tech/modules/)
 
 ## License
 
