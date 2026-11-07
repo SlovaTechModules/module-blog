@@ -35,6 +35,7 @@ Blog,Blog
 "The accent color must be a hex color such as #0f766e, or empty.","Culoarea de accent trebuie să fie un cod hex, de exemplu #0f766e, sau să rămână goală."
 """%1"" cannot be used in a URL. Use letters, digits and hyphens.","„%1” nu poate fi folosit într-un URL. Folosește litere, cifre și cratime."
 "-- None --","-- Niciunul --"
+"All categories","Toate categoriile"
 "Could not move uploaded image.","Imaginea încărcată nu a putut fi mutată."
 "Choose Image","Alege imaginea"
 "INDEX, FOLLOW","INDEX, FOLLOW"
@@ -54,6 +55,7 @@ Loading...,"Se încarcă..."
 "Next post","Articol următor"
 "Post categories","Categorii de articole"
 "All posts","Toate articolele"
+"View all posts","Vezi toate articolele"
 "Preparing the preview...","Se pregătește previzualizarea..."
 Posts,Articole
 Categories,Categorii
@@ -86,7 +88,15 @@ Display,Afișare
 Images,Imagini
 "Resize and Convert to WebP","Redimensionează și convertește în WebP"
 "Post images, including those inside the content, are resized for each screen and served as WebP with a JPEG fallback. Copies are kept in pub/media/slova_blog_resized; delete that folder to rebuild them.","Imaginile articolelor, inclusiv cele din conținut, sunt redimensionate pentru fiecare ecran și servite ca WebP, cu JPEG ca rezervă. Copiile stau în pub/media/slova_blog_resized; șterge folderul ca să fie refăcute."
+"Slova Blog: Latest Posts","Slova Blog: Articole recente"
+"The newest blog posts as cards, with a link to the blog","Cele mai noi articole din blog, ca carduri, cu link spre blog"
+Heading,"Titlu secțiune"
+"Leave empty to show no heading.","Lasă gol pentru a nu afișa titlul."
+"Number of Posts","Număr de articole"
+"From 1 to 12.","Între 1 și 12."
 Category,Categorie
+"Show Short Description","Afișează descrierea scurtă"
+"Show ""View All Posts"" Link","Afișează linkul „Vezi toate articolele”"
 Name,Nume
 "URL Key","Cheie URL"
 "Leave empty to generate it from the name.","Lasă gol pentru generare automată din nume."

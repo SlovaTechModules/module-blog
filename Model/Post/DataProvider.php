@@ -6,7 +6,9 @@ namespace Slova\Blog\Model\Post;
 use Magento\Backend\Model\UrlInterface as BackendUrlInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\Request\DataPersistorInterface;
+use Magento\Framework\Filesystem;
 use Magento\Framework\UrlInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Ui\DataProvider\AbstractDataProvider;
@@ -32,6 +34,7 @@ class DataProvider extends AbstractDataProvider
         private readonly ProductRepositoryInterface $productRepository,
         private readonly SearchCriteriaBuilder $searchCriteriaBuilder,
         private readonly BackendUrlInterface $backendUrl,
+        private readonly Filesystem $filesystem,
         array $meta = [],
         array $data = []
     ) {
@@ -91,10 +94,10 @@ class DataProvider extends AbstractDataProvider
                 if (!empty($data[$field]) && !is_array($data[$field])) {
                     $value = (string)$data[$field];
                     $relativePath = str_contains($value, '/') ? ltrim($value, '/') : 'slova/blog/' . $value;
-                    $data[$field] = [[
-                        'name' => $value,
-                        'url'  => $mediaUrl . $relativePath,
-                    ]];
+                    $data[$field] = [array_merge(
+                        ['name' => $value, 'url' => $mediaUrl . $relativePath],
+                        $this->getFileInfo($relativePath)
+                    )];
                 }
             }
 
@@ -114,6 +117,25 @@ class DataProvider extends AbstractDataProvider
         }
 
         return $this->loadedData;
+    }
+
+    /**
+     * Size and MIME type of a media file, so the image uploader shows "1080x460, 120 KB"
+     * instead of "NaN undefined" for images saved earlier.
+     *
+     * @param string $relativePath
+     * @return array{size?:int,type?:string}
+     */
+    private function getFileInfo(string $relativePath): array
+    {
+        $media = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
+        if (!$media->isFile($relativePath)) {
+            return [];
+        }
+        $info = $media->stat($relativePath);
+        $absolute = $media->getAbsolutePath($relativePath);
+        $type = function_exists('mime_content_type') ? (string)mime_content_type($absolute) : '';
+        return array_filter(['size' => (int)($info['size'] ?? 0), 'type' => $type]);
     }
 
     private function productIdsToSkus(array $productIds): string

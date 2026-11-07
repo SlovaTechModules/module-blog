@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!-- "Slova Blog: Latest Posts": the newest posts as cards, for the home page or any CMS page/block. -->
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
+    <widget id="slova_blog_latest_posts" class="Slova\Blog\Block\Widget\LatestPosts" is_email_compatible="false">
+        <label translate="true">Slova Blog: Latest Posts</label>
+        <description translate="true">The newest blog posts as cards, with a link to the blog</description>
+        <parameters>
+            <parameter name="title" xsi:type="text" visible="true" sort_order="10">
+                <label translate="true">Heading</label>
+                <description translate="true">Leave empty to show no heading.</description>
+            </parameter>
+            <parameter name="posts_count" xsi:type="text" visible="true" required="true" sort_order="20">
+                <label translate="true">Number of Posts</label>
+                <description translate="true">From 1 to 12.</description>
+                <value>3</value>
+            </parameter>
+            <parameter name="category_id" xsi:type="select" visible="true" sort_order="30"
+                       source_model="Slova\Blog\Model\Config\Source\WidgetCategory">
+                <label translate="true">Category</label>
+            </parameter>
+            <parameter name="show_excerpt" xsi:type="select" visible="true" sort_order="40"
+                       source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show Short Description</label>
+            </parameter>
+            <parameter name="show_link" xsi:type="select" visible="true" sort_order="50"
+                       source_model="Magento\Config\Model\Config\Source\Yesno">
+                <label translate="true">Show "View All Posts" Link</label>
+            </parameter>
+        </parameters>
+    </widget>
+</widgets>

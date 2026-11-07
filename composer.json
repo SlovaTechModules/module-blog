@@ -33,6 +33,7 @@
         "magento/module-theme": "^101.1.8",
         "magento/module-ui": "^101.2.8",
         "magento/module-url-rewrite": "^102.0.7",
+        "magento/module-widget": "^101.2.8",
         "hyva-themes/magento2-theme-module": "^1.4"
     },
     "autoload": {

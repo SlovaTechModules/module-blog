@@ -1,0 +1,2 @@
+# README screenshots stay in the repository but not in Composer downloads.
+/docs export-ignore
