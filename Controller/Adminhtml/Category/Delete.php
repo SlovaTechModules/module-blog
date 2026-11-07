@@ -24,7 +24,7 @@ class Delete extends Category
         $resultRedirect = $this->resultRedirectFactory->create();
 
         if (!$id) {
-            $this->messageManager->addErrorMessage(__('Categorie invalidă.'));
+            $this->messageManager->addErrorMessage(__('Invalid category.'));
             return $resultRedirect->setPath('*/*/');
         }
 
@@ -32,10 +32,10 @@ class Delete extends Category
             $model = $this->categoryFactory->create();
             $this->categoryResource->load($model, $id);
             if (!$model->getId()) {
-                throw new \Magento\Framework\Exception\NoSuchEntityException(__('Categorie inexistentă.'));
+                throw new \Magento\Framework\Exception\NoSuchEntityException(__('This category no longer exists.'));
             }
             $this->categoryResource->delete($model);
-            $this->messageManager->addSuccessMessage(__('Categoria a fost ștearsă.'));
+            $this->messageManager->addSuccessMessage(__('The category has been deleted.'));
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
         }

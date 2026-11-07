@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- Thumbnails of the [youtube:ID] shortcode and YouTube / Vimeo embeds in post content. -->
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="img-src">
+            <values>
+                <value id="slova_blog_ytimg" type="host">i.ytimg.com</value>
+            </values>
+        </policy>
+        <policy id="frame-src">
+            <values>
+                <value id="slova_blog_youtube" type="host">www.youtube.com</value>
+                <value id="slova_blog_youtube_nocookie" type="host">www.youtube-nocookie.com</value>
+                <value id="slova_blog_vimeo" type="host">player.vimeo.com</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

@@ -5,7 +5,7 @@
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">slova_blog_category_form.slova_blog_category_form_data_source</item>
         </item>
-        <item name="label" xsi:type="string" translate="true">Categorie</item>
+        <item name="label" xsi:type="string" translate="true">Category</item>
         <item name="template" xsi:type="string">templates/form/collapsible</item>
     </argument>
     <settings>
@@ -53,7 +53,7 @@
         <field name="name" sortOrder="10" formElement="input">
             <settings>
                 <dataType>text</dataType>
-                <label translate="true">Nume</label>
+                <label translate="true">Name</label>
                 <dataScope>name</dataScope>
                 <validation>
                     <rule name="required-entry" xsi:type="boolean">true</rule>
@@ -65,13 +65,13 @@
                 <dataType>text</dataType>
                 <label translate="true">URL Key</label>
                 <dataScope>url_key</dataScope>
-                <notice translate="true">Lasă gol pentru generare automată. Va apărea ca /jurnal-de-bord/categorie/{url_key}</notice>
+                <notice translate="true">Leave empty to generate it from the name.</notice>
             </settings>
         </field>
         <field name="is_active" sortOrder="30" formElement="checkbox">
             <settings>
                 <dataType>boolean</dataType>
-                <label translate="true">Activ</label>
+                <label translate="true">Active</label>
                 <dataScope>is_active</dataScope>
             </settings>
             <formElements>
@@ -91,7 +91,7 @@
                 <dataType>number</dataType>
                 <label translate="true">Sort Order</label>
                 <dataScope>sort_order</dataScope>
-                <notice translate="true">Categoriile se afișează în această ordine. Cel mai mic apare primul.</notice>
+                <notice translate="true">Categories are listed in this order, lowest first.</notice>
             </settings>
         </field>
     </fieldset>

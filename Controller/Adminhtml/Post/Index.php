@@ -20,7 +20,7 @@ class Index extends Post
     {
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('Slova_Blog::post');
-        $resultPage->getConfig()->getTitle()->prepend(__('Articole Jurnal'));
+        $resultPage->getConfig()->getTitle()->prepend(__('Blog Posts'));
         return $resultPage;
     }
 }

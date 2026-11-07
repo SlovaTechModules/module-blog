@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
+    <!-- Public URLs come from URL rewrites built from the URL prefix setting;
+         this front name is only their internal target (and the default prefix). -->
     <router id="standard">
-        <route id="slova_blog" frontName="jurnal-de-bord">
+        <route id="slova_blog" frontName="blog">
             <module name="Slova_Blog"/>
         </route>
     </router>

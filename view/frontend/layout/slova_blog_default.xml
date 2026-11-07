@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Shared by every blog page: styles in <head> (before first paint, so nothing shifts),
+ * the title band, the categories (a dropdown above the content below 1280px, a list in
+ * the sidebar above), the sidebar CMS block and the scripts.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <attribute name="class" value="slova-blog-page"/>
+        <referenceBlock name="page.main.title" remove="true"/>
+        <referenceBlock name="wishlist_sidebar" remove="true"/>
+        <referenceBlock name="catalog.compare.sidebar" remove="true"/>
+        <referenceBlock name="sale.reorder.sidebar" remove="true"/>
+        <referenceBlock name="head.additional">
+            <block class="Magento\Framework\View\Element\Template"
+                   name="slova.blog.head.base.css"
+                   template="Slova_Blog::head/base-css.phtml">
+                <arguments>
+                    <argument name="style_view_model" xsi:type="object">Slova\Blog\ViewModel\Style</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+        <referenceContainer name="columns.top">
+            <block class="Slova\Blog\Block\HeaderBand"
+                   name="slova.blog.header.band"
+                   template="Slova_Blog::header-band.phtml"/>
+        </referenceContainer>
+        <referenceContainer name="content">
+            <container name="slova.blog.categories.mobile"
+                       htmlTag="div"
+                       htmlClass="slova-blog-categories-mobile"
+                       before="-">
+                <block class="Slova\Blog\Block\Sidebar\Categories"
+                       name="slova.blog.categories.mobile.block"
+                       template="Slova_Blog::sidebar/categories.phtml"/>
+            </container>
+        </referenceContainer>
+        <referenceContainer name="sidebar.additional">
+            <block class="Slova\Blog\Block\Sidebar\Categories"
+                   name="slova.blog.sidebar.categories"
+                   template="Slova_Blog::sidebar/categories.phtml"
+                   before="-"/>
+            <block class="Slova\Blog\Block\Sidebar\CmsBlock"
+                   name="slova.blog.sidebar.cms"
+                   after="slova.blog.sidebar.categories"/>
+        </referenceContainer>
+        <referenceContainer name="before.body.end">
+            <block class="Magento\Framework\View\Element\Template"
+                   name="slova.blog.js"
+                   template="Slova_Blog::js/blog.phtml"/>
+        </referenceContainer>
+    </body>
+</page>

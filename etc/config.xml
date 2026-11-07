@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <slova_blog>
+            <general>
+                <url_prefix>blog</url_prefix>
+                <category_url_prefix>category</category_url_prefix>
+            </general>
+            <list>
+                <posts_per_page>12</posts_per_page>
+            </list>
+            <display>
+                <title_band>1</title_band>
+            </display>
+            <images>
+                <responsive>1</responsive>
+            </images>
+        </slova_blog>
+        <system>
+            <media_storage_configuration>
+                <allowed_resources>
+                    <media_gallery_image_folders>
+                        <!-- Post images live in pub/media/slova/blog: list the folder in the media gallery. -->
+                        <slova>slova</slova>
+                    </media_gallery_image_folders>
+                </allowed_resources>
+            </media_storage_configuration>
+        </system>
+    </default>
+</config>

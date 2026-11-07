@@ -5,7 +5,7 @@
         <item name="js_config" xsi:type="array">
             <item name="provider" xsi:type="string">slova_blog_post_form.slova_blog_post_form_data_source</item>
         </item>
-        <item name="label" xsi:type="string" translate="true">Articol</item>
+        <item name="label" xsi:type="string" translate="true">Post</item>
         <item name="template" xsi:type="string">templates/form/collapsible</item>
     </argument>
     <settings>
@@ -53,7 +53,7 @@
         <field name="title" sortOrder="10" formElement="input">
             <settings>
                 <dataType>text</dataType>
-                <label translate="true">Titlu</label>
+                <label translate="true">Title</label>
                 <dataScope>title</dataScope>
                 <validation>
                     <rule name="required-entry" xsi:type="boolean">true</rule>
@@ -65,15 +65,15 @@
                 <dataType>text</dataType>
                 <label translate="true">URL Key</label>
                 <dataScope>url_key</dataScope>
-                <notice translate="true">Lasă gol pentru generare automată din titlu. Va apărea ca /jurnal-de-bord/{url_key}</notice>
+                <notice translate="true">Leave empty to generate it from the title.</notice>
             </settings>
         </field>
         <field name="short_content" sortOrder="30" formElement="textarea">
             <settings>
                 <dataType>text</dataType>
-                <label translate="true">Descriere scurtă</label>
+                <label translate="true">Short Description</label>
                 <dataScope>short_content</dataScope>
-                <notice translate="true">Apare pe card în listing. 1-2 propoziții. Fără HTML.</notice>
+                <notice translate="true">Shown on the post card in the list. One or two sentences, no HTML.</notice>
             </settings>
         </field>
         <field name="content" sortOrder="40" formElement="wysiwyg">
@@ -88,7 +88,7 @@
                 </item>
             </argument>
             <settings>
-                <label translate="true">Conținut</label>
+                <label translate="true">Content</label>
                 <dataType>text</dataType>
                 <dataScope>content</dataScope>
             </settings>
@@ -102,10 +102,10 @@
         </field>
         <field name="featured_image" sortOrder="50" formElement="imageUploader">
             <settings>
-                <label translate="true">Imagine reprezentativă</label>
+                <label translate="true">Featured Image</label>
                 <componentType>imageUploader</componentType>
                 <dataScope>featured_image</dataScope>
-                <notice translate="true">Apare pe card (thumbnail) și pe pagina articolului (hero). Raport recomandat 16:9.</notice>
+                <notice translate="true">Used on the post card and, as a hero, on the post page. Recommended ratio 16:9.</notice>
             </settings>
             <formElements>
                 <imageUploader>
@@ -123,17 +123,17 @@
         <field name="featured_image_alt" sortOrder="55" formElement="input">
             <settings>
                 <dataType>text</dataType>
-                <label translate="true">Text alternativ imagine</label>
+                <label translate="true">Featured Image Alt Text</label>
                 <dataScope>featured_image_alt</dataScope>
-                <notice translate="true">Descrierea imaginii pentru accesibilitate și SEO.</notice>
+                <notice translate="true">Describes the image for screen readers and search engines.</notice>
             </settings>
         </field>
         <field name="thumbnail_mobile" sortOrder="56" formElement="imageUploader">
             <settings>
-                <label translate="true">Thumbnail mobil (opțional)</label>
+                <label translate="true">Mobile Thumbnail (optional)</label>
                 <componentType>imageUploader</componentType>
                 <dataScope>thumbnail_mobile</dataScope>
-                <notice translate="true">Folosită pe card sub 768px. Raport recomandat 1:1. Lasă gol pentru a folosi imaginea reprezentativă pe ambele viewport-uri.</notice>
+                <notice translate="true">Used on the post card below 768px. Recommended ratio 1:1. Leave empty to use the featured image everywhere.</notice>
             </settings>
             <formElements>
                 <imageUploader>
@@ -151,17 +151,17 @@
         <field name="thumbnail_mobile_alt" sortOrder="58" formElement="input">
             <settings>
                 <dataType>text</dataType>
-                <label translate="true">Text alternativ thumbnail mobil</label>
+                <label translate="true">Mobile Thumbnail Alt Text</label>
                 <dataScope>thumbnail_mobile_alt</dataScope>
-                <notice translate="true">Opțional. Dacă lipsește, se folosește textul alternativ al imaginii reprezentative.</notice>
+                <notice translate="true">Optional. Falls back to the featured image alt text.</notice>
             </settings>
         </field>
         <field name="show_featured_image" sortOrder="59" formElement="checkbox">
             <settings>
                 <dataType>boolean</dataType>
-                <label translate="true">Afișează imaginea ca hero pe pagina articolului</label>
+                <label translate="true">Show Featured Image as Hero</label>
                 <dataScope>show_featured_image</dataScope>
-                <notice translate="true">Imaginea reprezentativă se folosește mereu pe card. Aici alegi dacă apare și ca bandă lată sus, pe pagina articolului. Dezactivează când folosești o secțiune intro mai jos.</notice>
+                <notice translate="true">The featured image is always used on the post card. Choose whether it also appears as a wide banner at the top of the post page. Turn it off when you use the intro section below.</notice>
             </settings>
             <formElements>
                 <checkbox>
@@ -178,7 +178,7 @@
         <field name="category_ids" sortOrder="60" formElement="multiselect">
             <settings>
                 <dataType>int</dataType>
-                <label translate="true">Categorii</label>
+                <label translate="true">Categories</label>
                 <dataScope>category_ids</dataScope>
             </settings>
             <formElements>
@@ -192,15 +192,15 @@
         <field name="related_skus" sortOrder="70" formElement="textarea">
             <settings>
                 <dataType>text</dataType>
-                <label translate="true">Cărți menționate (SKU-uri)</label>
+                <label translate="true">Related Products (SKUs)</label>
                 <dataScope>related_skus</dataScope>
-                <notice translate="true">SKU-uri separate prin virgulă. Ex: 9786068739571, 9786060970095. SKU-urile necunoscute sunt ignorate.</notice>
+                <notice translate="true">Comma-separated SKUs, shown in a product slider under the post. Unknown SKUs are ignored.</notice>
             </settings>
         </field>
         <field name="is_active" sortOrder="80" formElement="checkbox">
             <settings>
                 <dataType>boolean</dataType>
-                <label translate="true">Activ</label>
+                <label translate="true">Active</label>
                 <dataScope>is_active</dataScope>
             </settings>
             <formElements>
@@ -218,9 +218,9 @@
         <field name="published_at" sortOrder="90" formElement="date">
             <settings>
                 <dataType>text</dataType>
-                <label translate="true">Publicat la</label>
+                <label translate="true">Published At</label>
                 <dataScope>published_at</dataScope>
-                <notice translate="true">Lasă gol pentru a folosi data creării. Setează o dată viitoare pentru a programa publicarea.</notice>
+                <notice translate="true">Leave empty to use the creation date. Set a future date to schedule the post.</notice>
             </settings>
             <formElements>
                 <date>
@@ -238,7 +238,7 @@
 
     <fieldset name="intro">
         <settings>
-            <label translate="true">Secțiune intro (alternativă la hero)</label>
+            <label translate="true">Intro Section (alternative to the hero)</label>
             <collapsible>true</collapsible>
             <opened>false</opened>
         </settings>
@@ -250,17 +250,17 @@
             </argument>
             <settings>
                 <dataType>text</dataType>
-                <label translate="true">Text intro</label>
+                <label translate="true">Intro Text</label>
                 <dataScope>side_text</dataScope>
-                <notice translate="true">Apare în coloana stângă, aliniat la dreapta. Pentru bold (aldine), încadrează textul în &lt;strong&gt;…&lt;/strong&gt;. Pentru italic, în &lt;em&gt;…&lt;/em&gt;. Exemplu: o carte &lt;em&gt;extraordinară&lt;/em&gt; despre &lt;strong&gt;curaj&lt;/strong&gt;. Apasă Enter pentru linie nouă, Enter dublu pentru paragraf nou. Restul tagurilor HTML sunt ignorate.</notice>
+                <notice translate="true">Shown in the left column, aligned right. For bold, wrap text in &lt;strong&gt;…&lt;/strong&gt;; for italic, in &lt;em&gt;…&lt;/em&gt;. Example: a &lt;em&gt;wonderful&lt;/em&gt; story about &lt;strong&gt;courage&lt;/strong&gt;. Press Enter for a new line and Enter twice for a new paragraph. Other HTML tags are ignored.</notice>
             </settings>
         </field>
         <field name="side_image" sortOrder="20" formElement="imageUploader">
             <settings>
-                <label translate="true">Imagine intro</label>
+                <label translate="true">Intro Image</label>
                 <componentType>imageUploader</componentType>
                 <dataScope>side_image</dataScope>
-                <notice translate="true">Apare în coloana dreaptă, aliniată la stânga. Orice raport — portret/pătrat/peisaj — se afișează la dimensiunea naturală în coloană.</notice>
+                <notice translate="true">Shown in the right column, aligned left. Any ratio (portrait, square or landscape) is shown at its natural size.</notice>
             </settings>
             <formElements>
                 <imageUploader>
@@ -278,7 +278,7 @@
         <field name="side_image_alt" sortOrder="30" formElement="input">
             <settings>
                 <dataType>text</dataType>
-                <label translate="true">Text alternativ imagine intro</label>
+                <label translate="true">Intro Image Alt Text</label>
                 <dataScope>side_image_alt</dataScope>
             </settings>
         </field>
@@ -295,7 +295,7 @@
                 <dataType>text</dataType>
                 <label translate="true">Meta Title</label>
                 <dataScope>meta_title</dataScope>
-                <notice translate="true">Dacă lipsește, se folosește titlul articolului.</notice>
+                <notice translate="true">Falls back to the post title.</notice>
             </settings>
         </field>
         <field name="meta_description" sortOrder="20" formElement="textarea">
@@ -303,7 +303,7 @@
                 <dataType>text</dataType>
                 <label translate="true">Meta Description</label>
                 <dataScope>meta_description</dataScope>
-                <notice translate="true">Dacă lipsește, se folosește descrierea scurtă.</notice>
+                <notice translate="true">Falls back to the short description.</notice>
             </settings>
         </field>
         <field name="meta_robots" sortOrder="30" formElement="select">
@@ -325,7 +325,7 @@
                 <label translate="true">Open Graph Image</label>
                 <componentType>imageUploader</componentType>
                 <dataScope>og_image</dataScope>
-                <notice translate="true">Apare la share pe Facebook/WhatsApp. Dacă lipsește, se folosește imaginea reprezentativă. Recomandat 1200x630.</notice>
+                <notice translate="true">Shown when the post is shared on social networks. Falls back to the featured image. Recommended size 1200×630.</notice>
             </settings>
             <formElements>
                 <imageUploader>

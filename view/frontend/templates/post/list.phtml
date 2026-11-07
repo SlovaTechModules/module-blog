@@ -1,65 +1,67 @@
 <?php
+/**
+ * Slova_Blog — post cards of the blog home and category pages.
+ * Phones get one column and load the next pages while scrolling (js/blog.phtml);
+ * larger screens get two or three columns and a pager.
+ * Copyright © Slova. Licensed under the MIT License, see LICENSE.
+ */
+
 declare(strict_types=1);
 
-use Hyva\Theme\Model\ViewModelRegistry;
 use Magento\Framework\Escaper;
 use Slova\Blog\Block\PostList;
-use Slova\Imaging\ViewModel\Image as ImageVm;
+use Slova\Blog\ViewModel\Image;
 
 /** @var PostList $block */
 /** @var Escaper $escaper */
-/** @var ViewModelRegistry $viewModels */
 
-/** @var ImageVm $imageVm */
-$imageVm = $viewModels->require(ImageVm::class);
-
+/** @var Image $imageVm */
+$imageVm = $block->getData('image_view_model');
 $posts = $block->getPosts();
-$totalCount = (int)$posts->getSize();
+$mobileMax = PostList::MOBILE_BREAKPOINT_PX - 1;
 ?>
+<?php if (!$block->isTitleBandEnabled()): ?>
+    <h1 class="slova-blog-heading"><?= $escaper->escapeHtml($block->getHeading()) ?></h1>
+<?php endif; ?>
 
-<?php if ($totalCount === 0): ?>
-    <div class="slova-blog-empty">
-        <p><?= $escaper->escapeHtml(__('Nu există încă articole publicate.')) ?></p>
-    </div>
-<?php else: ?>
+<?php if (!(int)$posts->getSize()): ?>
+    <p class="slova-blog-empty"><?= $escaper->escapeHtml(__('No posts have been published yet.')) ?></p>
+    <?php return; ?>
+<?php endif; ?>
 
-<section id="product-list"
+<section id="slova-blog-list"
          class="slova-blog-section"
          data-current-page="<?= (int)$block->getCurrentPage() ?>"
          data-last-page="<?= (int)$block->getLastPage() ?>"
-         aria-label="<?= $escaper->escapeHtmlAttr(__('Listă articole')) ?>"
-         tabindex="-1">
-    <ul id="product-grid" role="list" class="slova-blog-list">
-        <?php foreach ($posts->getItems() as $i => $post): ?>
+         aria-label="<?= $escaper->escapeHtmlAttr(__('Blog posts')) ?>">
+    <ul id="slova-blog-grid" class="slova-blog-list" role="list">
+        <?php foreach (array_values($posts->getItems()) as $i => $post): ?>
             <?php
-            $postUrl       = $block->getPostUrl((string)$post->getUrlKey());
-            $imgPath       = $block->getFeaturedImagePath($post);
-            $mobilePath    = $block->getThumbnailMobilePath($post);
-            $categories    = $block->getCategoriesForPost($post);
-            $shortContent  = trim((string)$post->getShortContent());
-            $isLcp         = ($i === 0);
-            $alt           = (string)($post->getFeaturedImageAlt() ?: $post->getTitle());
-            $altMobile     = (string)($post->getThumbnailMobileAlt() ?: $alt);
-            $loading       = $isLcp ? 'eager' : 'lazy';
-            $fetchPriority = $isLcp ? 'high' : 'auto';
+            $postUrl = $block->getPostUrl((string)$post->getUrlKey());
+            $imgPath = $block->getFeaturedImagePath($post);
+            $mobilePath = $block->getThumbnailMobilePath($post);
+            $alt = (string)($post->getFeaturedImageAlt() ?: $post->getTitle());
+            $isFirst = $i === 0 && $block->getCurrentPage() === 1;
+            $loading = $isFirst ? 'eager' : 'lazy';
             ?>
             <li>
                 <article class="slova-blog-card">
-                    <a href="<?= $escaper->escapeUrl($postUrl) ?>" class="slova-blog-card__thumb" aria-hidden="true" tabindex="-1">
+                    <a href="<?= $escaper->escapeUrl($postUrl) ?>" class="slova-blog-card__thumb" tabindex="-1" aria-hidden="true">
                         <?php if ($imgPath && $mobilePath): ?>
                             <picture>
-                                <source type="image/webp"
-                                        media="(max-width: <?= PostList::MOBILE_BREAKPOINT_PX - 1 ?>px)"
-                                        srcset="<?= $escaper->escapeUrl($block->processImage($mobilePath, 480, 'webp')) ?> 1x, <?= $escaper->escapeUrl($block->processImage($mobilePath, 960, 'webp')) ?> 2x">
-                                <source type="image/webp"
-                                        srcset="<?= $escaper->escapeUrl($block->processImage($imgPath, 480, 'webp')) ?> 1x, <?= $escaper->escapeUrl($block->processImage($imgPath, 960, 'webp')) ?> 2x">
-                                <source media="(max-width: <?= PostList::MOBILE_BREAKPOINT_PX - 1 ?>px)"
-                                        srcset="<?= $escaper->escapeUrl($block->processImage($mobilePath, 480, 'jpg')) ?> 1x, <?= $escaper->escapeUrl($block->processImage($mobilePath, 960, 'jpg')) ?> 2x">
-                                <img src="<?= $escaper->escapeUrl($block->processImage($imgPath, 480, 'jpg')) ?>"
-                                     srcset="<?= $escaper->escapeUrl($block->processImage($imgPath, 480, 'jpg')) ?> 1x, <?= $escaper->escapeUrl($block->processImage($imgPath, 960, 'jpg')) ?> 2x"
+                                <?php if ($block->isResponsiveImagesEnabled()): ?>
+                                    <source type="image/webp" media="(max-width: <?= (int)$mobileMax ?>px)"
+                                            srcset="<?= $escaper->escapeHtml($imageVm->srcset($mobilePath, 480, 'webp')) ?>">
+                                    <source type="image/webp"
+                                            srcset="<?= $escaper->escapeHtml($imageVm->srcset($imgPath, 480, 'webp')) ?>">
+                                <?php endif; ?>
+                                <source media="(max-width: <?= (int)$mobileMax ?>px)"
+                                        srcset="<?= $escaper->escapeHtml($imageVm->srcset($mobilePath, 480, 'jpg')) ?>">
+                                <img src="<?= $escaper->escapeUrl($imageVm->url($imgPath, 480, 'jpg')) ?>"
+                                     srcset="<?= $escaper->escapeHtml($imageVm->srcset($imgPath, 480, 'jpg')) ?>"
                                      alt="<?= $escaper->escapeHtmlAttr($alt) ?>"
-                                     loading="<?= $escaper->escapeHtmlAttr($loading) ?>"
-                                     <?php if ($fetchPriority !== 'auto'): ?>fetchpriority="<?= $escaper->escapeHtmlAttr($fetchPriority) ?>"<?php endif; ?>
+                                     loading="<?= /* @noEscape */ $loading ?>"
+                                     <?php if ($isFirst): ?>fetchpriority="high"<?php endif; ?>
                                      class="slova-blog-card__img">
                             </picture>
                         <?php elseif ($imgPath): ?>
@@ -68,28 +70,22 @@ $totalCount = (int)$posts->getSize();
                                 480,
                                 alt: $alt,
                                 loading: $loading,
-                                fetchPriority: $fetchPriority,
+                                fetchPriority: $isFirst ? 'high' : 'auto',
                                 imgClass: 'slova-blog-card__img'
                             ) ?>
                         <?php else: ?>
-                            <span class="slova-blog-card__placeholder" aria-hidden="true"></span>
+                            <span class="slova-blog-card__placeholder"></span>
                         <?php endif; ?>
                     </a>
                     <div class="slova-blog-card__body">
                         <h2 class="slova-blog-card__title">
-                            <a href="<?= $escaper->escapeUrl($postUrl) ?>">
-                                <?= $escaper->escapeHtml($post->getTitle()) ?>
-                            </a>
+                            <a href="<?= $escaper->escapeUrl($postUrl) ?>"><?= $escaper->escapeHtml($post->getTitle()) ?></a>
                         </h2>
-                        <p class="slova-blog-card__excerpt">
-                            <?= $escaper->escapeHtml($shortContent) ?>
-                        </p>
+                        <p class="slova-blog-card__excerpt"><?= $escaper->escapeHtml(trim((string)$post->getShortContent())) ?></p>
                         <div class="slova-blog-card__meta">
-                            <?php foreach ($categories as $cat): ?>
-                                <a href="<?= $escaper->escapeUrl($block->getCategoryUrl((string)$cat->getUrlKey())) ?>"
-                                   class="slova-blog-card__category">
-                                    <?= $escaper->escapeHtml($cat->getName()) ?>
-                                </a>
+                            <?php foreach ($block->getCategoriesForPost($post) as $category): ?>
+                                <a href="<?= $escaper->escapeUrl($block->getCategoryUrl((string)$category->getUrlKey())) ?>"
+                                   class="slova-blog-pill"><?= $escaper->escapeHtml($category->getName()) ?></a>
                             <?php endforeach; ?>
                         </div>
                     </div>
@@ -98,11 +94,16 @@ $totalCount = (int)$posts->getSize();
         <?php endforeach; ?>
     </ul>
 
-    <div class="slova-blog-pager hidden md:block">
+    <div class="slova-blog-pager">
         <?= /* @noEscape */ $block->getPagerHtml() ?>
     </div>
 
-    <?= /* @noEscape */ $block->fetchView($block->getTemplateFile('Slova_Blog::post/list/js/infinite-scroll.phtml')) ?>
+    <div class="slova-blog-scroll-status" data-slova-blog-loader hidden>
+        <span class="slova-blog-scroll-status__spinner" aria-hidden="true"></span>
+        <span><?= $escaper->escapeHtml(__('Loading...')) ?></span>
+    </div>
+    <div class="slova-blog-scroll-status" data-slova-blog-end hidden>
+        <?= $escaper->escapeHtml(__('You have seen all posts')) ?>
+    </div>
+    <div class="slova-blog-scroll-sentinel" data-slova-blog-sentinel></div>
 </section>
-
-<?php endif; ?>

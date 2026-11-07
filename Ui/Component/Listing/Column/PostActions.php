@@ -34,14 +34,14 @@ class PostActions extends Column
             $item[$this->getData('name')] = [
                 'edit' => [
                     'href'  => $this->urlBuilder->getUrl('slova_blog/post/edit', ['post_id' => $id]),
-                    'label' => __('Editează'),
+                    'label' => __('Edit'),
                 ],
                 'delete' => [
                     'href'    => $this->urlBuilder->getUrl('slova_blog/post/delete', ['post_id' => $id]),
-                    'label'   => __('Șterge'),
+                    'label'   => __('Delete'),
                     'confirm' => [
-                        'title'   => __('Șterge articol'),
-                        'message' => __('Sigur ștergi acest articol?'),
+                        'title'   => __('Delete Post'),
+                        'message' => __('Are you sure you want to delete this post?'),
                     ],
                 ],
             ];

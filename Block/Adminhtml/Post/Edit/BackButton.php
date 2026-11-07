@@ -10,7 +10,7 @@ class BackButton extends GenericButton implements ButtonProviderInterface
     public function getButtonData(): array
     {
         return [
-            'label'      => __('Înapoi'),
+            'label'      => __('Back'),
             'on_click'   => sprintf("location.href = '%s';", $this->getUrl('slova_blog/post/index')),
             'class'      => 'back',
             'sort_order' => 10,

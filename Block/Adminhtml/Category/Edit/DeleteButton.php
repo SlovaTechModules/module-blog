@@ -14,11 +14,11 @@ class DeleteButton extends GenericButton implements ButtonProviderInterface
             return [];
         }
         return [
-            'label'      => __('Șterge categoria'),
+            'label'      => __('Delete Category'),
             'class'      => 'delete',
             'on_click'   => sprintf(
                 "deleteConfirm('%s', '%s')",
-                __('Sigur ștergi această categorie?'),
+                __('Are you sure you want to delete this category?'),
                 $this->getUrl('slova_blog/category/delete', ['category_id' => $id])
             ),
             'sort_order' => 20,

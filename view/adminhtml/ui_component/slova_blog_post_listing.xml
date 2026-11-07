@@ -11,7 +11,7 @@
             <button name="add">
                 <url path="slova_blog/post/newAction"/>
                 <class>primary</class>
-                <label translate="true">Articol nou</label>
+                <label translate="true">New Post</label>
             </button>
         </buttons>
         <spinner>slova_blog_post_columns</spinner>
@@ -41,11 +41,11 @@
             <action name="delete">
                 <settings>
                     <type>delete</type>
-                    <label translate="true">Șterge</label>
+                    <label translate="true">Delete</label>
                     <url path="slova_blog/post/massDelete"/>
                     <confirm>
-                        <message translate="true">Sigur ștergi articolele selectate?</message>
-                        <title translate="true">Șterge articole</title>
+                        <message translate="true">Are you sure you want to delete the selected posts?</message>
+                        <title translate="true">Delete Posts</title>
                     </confirm>
                 </settings>
             </action>
@@ -68,7 +68,7 @@
         <column name="title" sortOrder="30">
             <settings>
                 <filter>text</filter>
-                <label translate="true">Titlu</label>
+                <label translate="true">Title</label>
                 <sortable>true</sortable>
             </settings>
         </column>
@@ -82,7 +82,7 @@
             <settings>
                 <filter>select</filter>
                 <dataType>select</dataType>
-                <label translate="true">Activ</label>
+                <label translate="true">Active</label>
                 <options class="Magento\Config\Model\Config\Source\Yesno"/>
             </settings>
         </column>
@@ -90,7 +90,7 @@
             <settings>
                 <filter>dateRange</filter>
                 <dataType>date</dataType>
-                <label translate="true">Publicat</label>
+                <label translate="true">Published</label>
                 <sortable>true</sortable>
                 <sorting>desc</sorting>
             </settings>
@@ -99,14 +99,14 @@
             <settings>
                 <filter>dateRange</filter>
                 <dataType>date</dataType>
-                <label translate="true">Modificat</label>
+                <label translate="true">Modified</label>
                 <visible>false</visible>
             </settings>
         </column>
         <actionsColumn name="actions" sortOrder="80" class="Slova\Blog\Ui\Component\Listing\Column\PostActions">
             <settings>
                 <indexField>post_id</indexField>
-                <label translate="true">Acțiuni</label>
+                <label translate="true">Actions</label>
             </settings>
         </actionsColumn>
     </columns>

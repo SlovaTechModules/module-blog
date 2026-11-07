@@ -1,20 +1,28 @@
 <?php
-/** @var \Slova\Blog\Block\Adminhtml\Post\Edit\PreviewLink $block */
+/**
+ * Slova_Blog
+ * Copyright © Slova. Licensed under the MIT License, see LICENSE.
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Slova\Blog\Block\Adminhtml\Post\Edit\PreviewLink;
+
+/** @var PreviewLink $block */
+/** @var Escaper $escaper */
+
 $url = $block->getPostUrl();
 ?>
-<div class="admin__field" style="padding: 1rem 0;">
+<div class="admin__field">
     <?php if ($url): ?>
-        <p style="margin: 0 0 .5rem;">
-            <strong><?= /** @noEscape */ __('URL public:') ?></strong>
-        </p>
-        <p style="margin: 0;">
-            <a href="<?= $escaper->escapeUrl($url) ?>" target="_blank" rel="noopener" style="word-break: break-all;">
+        <p><strong><?= $escaper->escapeHtml(__('Public URL:')) ?></strong></p>
+        <p>
+            <a href="<?= $escaper->escapeUrl($url) ?>" target="_blank" rel="noopener">
                 <?= $escaper->escapeHtml($url) ?> ↗
             </a>
         </p>
     <?php else: ?>
-        <p style="margin: 0; color: #777;">
-            <?= /** @noEscape */ __('Salvează articolul pentru a vedea URL-ul public.') ?>
-        </p>
+        <p><?= $escaper->escapeHtml(__('Save the post to see its public URL.')) ?></p>
     <?php endif; ?>
 </div>

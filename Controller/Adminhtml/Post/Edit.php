@@ -30,7 +30,7 @@ class Edit extends Post
         if ($id) {
             $this->postResource->load($model, (int)$id);
             if (!$model->getId()) {
-                $this->messageManager->addErrorMessage(__('Articolul nu există.'));
+                $this->messageManager->addErrorMessage(__('This post no longer exists.'));
                 return $this->resultRedirectFactory->create()->setPath('*/*/');
             }
         }
@@ -40,7 +40,7 @@ class Edit extends Post
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('Slova_Blog::post');
         $resultPage->getConfig()->getTitle()->prepend(
-            $model->getId() ? __('Editează: %1', $model->getTitle()) : __('Articol nou')
+            $model->getId() ? __('Edit: %1', $model->getTitle()) : __('New Post')
         );
         return $resultPage;
     }

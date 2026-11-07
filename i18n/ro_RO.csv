@@ -1,0 +1,130 @@
+Back,Înapoi
+"Delete Category","Șterge categoria"
+"Are you sure you want to delete this category?","Sigur ștergi această categorie?"
+"Save and Continue Edit","Salvează și continuă"
+Save,Salvează
+"Delete Post","Șterge articol"
+"Are you sure you want to delete this post?","Sigur ștergi acest articol?"
+Home,Acasă
+"Go to Home Page","Mergi la prima pagină"
+"Invalid category.","Categorie invalidă."
+"This category no longer exists.","Categorie inexistentă."
+"The category has been deleted.","Categoria a fost ștearsă."
+"Edit: %1","Editează: %1"
+"New Category","Categorie nouă"
+"Blog Categories","Categorii Jurnal"
+"A total of %1 category(ies) have been deleted.","%1 categorii șterse."
+"The category has been saved.","Categoria a fost salvată."
+"Something went wrong while saving: %1","Eroare la salvare: %1"
+"Invalid post.","Articol invalid."
+"This post no longer exists.","Articol inexistent."
+"The post has been deleted.","Articolul a fost șters."
+"New Post","Articol nou"
+"Blog Posts","Articole Jurnal"
+"A total of %1 post(s) have been deleted.","%1 articole șterse."
+"The post has been saved.","Articolul a fost salvat."
+"These SKUs were not found and have been ignored: %1","SKU-uri negăsite (ignorate): %1"
+Blog,Blog
+"Featured in this post","Produse din articol"
+"The accent color must be a hex color such as #0f766e, or empty.","Culoarea de accent trebuie să fie un cod hex, de exemplu #0f766e, sau să rămână goală."
+"""%1"" cannot be used in a URL. Use letters, digits and hyphens.","„%1” nu poate fi folosit într-un URL. Folosește litere, cifre și cratime."
+"-- None --","-- Niciunul --"
+"Could not move uploaded image.","Imaginea încărcată nu a putut fi mutată."
+"Choose Image","Alege imaginea"
+"INDEX, FOLLOW","INDEX, FOLLOW"
+"NOINDEX, FOLLOW","NOINDEX, FOLLOW"
+"INDEX, NOFOLLOW","INDEX, NOFOLLOW"
+"NOINDEX, NOFOLLOW","NOINDEX, NOFOLLOW"
+"Watch on YouTube","Vezi pe YouTube"
+Edit,Editează
+Delete,Șterge
+"Public URL:","URL public:"
+"Save the post to see its public URL.","Salvează articolul pentru a vedea URL-ul public."
+"No posts have been published yet.","Nu există încă articole publicate."
+"Blog posts","Listă articole"
+Loading...,"Se încarcă..."
+"You have seen all posts","Ai văzut toate articolele"
+"Post navigation","Navigare articole"
+"Previous post","Articol anterior"
+"Next post","Articol următor"
+"Post categories","Categorii de articole"
+"All posts","Toate articolele"
+Posts,Articole
+Categories,Categorii
+"Blog (Slova)","Blog (Slova)"
+Settings,Setări
+Slova,Slova
+General,General
+"Blog Title","Titlul blogului"
+"Shown in the title band, the browser tab and the breadcrumbs. Leave empty for ""Blog"", translated into the store language.","Apare în banda de titlu, în tab-ul browserului și în breadcrumbs. Lasă gol pentru „Blog”, tradus în limba magazinului."
+"URL Prefix","Prefix URL"
+"The blog lives at /prefix, posts at /prefix/post-url-key. Lowercase letters, digits, hyphens; use / for more levels (news/blog). Saving rebuilds the blog URLs; old URLs stop working.","Blogul se află la /prefix, articolele la /prefix/cheie-url-articol. Litere mici, cifre, cratime; folosește / pentru mai multe niveluri (noutati/blog). La salvare, URL-urile blogului se refac; cele vechi nu mai funcționează."
+"Category URL Prefix","Prefix URL categorii"
+"Category pages live at /prefix/category-prefix/category-url-key.","Paginile de categorie se află la /prefix/prefix-categorie/cheie-url-categorie."
+"Meta Title","Meta Title"
+"For the blog home page. Leave empty to use the blog title.","Pentru prima pagină a blogului. Lasă gol pentru a folosi titlul blogului."
+"Meta Description","Meta Description"
+"For the blog home page.","Pentru prima pagină a blogului."
+"Post List","Lista de articole"
+"Posts per Page","Articole pe pagină"
+"On phones the next pages load as the visitor scrolls; larger screens get a pager.","Pe telefon, paginile următoare se încarcă pe măsură ce vizitatorul derulează; pe ecranele mai mari apare paginarea."
+Display,Afișare
+"Show Title Band","Afișează banda de titlu"
+"A full-width band under the header with the blog or category name.","O bandă pe toată lățimea, sub header, cu numele blogului sau al categoriei."
+"Accent Color","Culoare de accent"
+"A hex color such as #0f766e, used for the title band, links, category labels and card borders. Leave empty to use your theme's primary color.","Un cod hex, de exemplu #0f766e, folosit pentru banda de titlu, linkuri, etichetele de categorie și marginile cardurilor. Lasă gol pentru a folosi culoarea principală a temei."
+"Sidebar CMS Block","Bloc CMS în coloana laterală"
+"Shown in the sidebar under the categories, on the post list and on posts (desktop only).","Apare în coloana laterală, sub categorii, pe lista de articole și pe articole (doar pe desktop)."
+"Related Products Heading","Titlul produselor din articol"
+"Above the product slider under a post. Leave empty for ""Featured in this post"", translated into the store language.","Deasupra caruselului de produse de sub articol. Lasă gol pentru „Produse din articol” (tradus în limba magazinului)."
+Images,Imagini
+"Resize and Convert to WebP","Redimensionează și convertește în WebP"
+"Post images, including those inside the content, are resized for each screen and served as WebP with a JPEG fallback. Copies are kept in pub/media/slova_blog_resized; delete that folder to rebuild them.","Imaginile articolelor, inclusiv cele din conținut, sunt redimensionate pentru fiecare ecran și servite ca WebP, cu JPEG ca rezervă. Copiile stau în pub/media/slova_blog_resized; șterge folderul ca să fie refăcute."
+Category,Categorie
+Name,Nume
+"URL Key","Cheie URL"
+"Leave empty to generate it from the name.","Lasă gol pentru generare automată din nume."
+Active,Activ
+"Sort Order","Ordine de afișare"
+"Categories are listed in this order, lowest first.","Categoriile se afișează în această ordine. Cel mai mic apare primul."
+"Are you sure you want to delete the selected categories?","Sigur ștergi categoriile selectate?"
+"Delete Categories","Șterge categorii"
+ID,ID
+Actions,Acțiuni
+Post,Articol
+Title,Titlu
+"Leave empty to generate it from the title.","Lasă gol pentru generare automată din titlu."
+"Short Description","Descriere scurtă"
+"Shown on the post card in the list. One or two sentences, no HTML.","Apare pe card în listing. 1-2 propoziții. Fără HTML."
+Content,Conținut
+"Featured Image","Imagine reprezentativă"
+"Used on the post card and, as a hero, on the post page. Recommended ratio 16:9.","Apare pe card (thumbnail) și pe pagina articolului (hero). Raport recomandat 16:9."
+"Featured Image Alt Text","Text alternativ imagine"
+"Describes the image for screen readers and search engines.","Descrierea imaginii pentru accesibilitate și SEO."
+"Mobile Thumbnail (optional)","Thumbnail mobil (opțional)"
+"Used on the post card below 768px. Recommended ratio 1:1. Leave empty to use the featured image everywhere.","Folosită pe card sub 768px. Raport recomandat 1:1. Lasă gol pentru a folosi imaginea reprezentativă pe ambele viewport-uri."
+"Mobile Thumbnail Alt Text","Text alternativ thumbnail mobil"
+"Optional. Falls back to the featured image alt text.","Opțional. Dacă lipsește, se folosește textul alternativ al imaginii reprezentative."
+"Show Featured Image as Hero","Afișează imaginea ca hero pe pagina articolului"
+"The featured image is always used on the post card. Choose whether it also appears as a wide banner at the top of the post page. Turn it off when you use the intro section below.","Imaginea reprezentativă se folosește mereu pe card. Aici alegi dacă apare și ca bandă lată sus, pe pagina articolului. Dezactivează când folosești o secțiune intro mai jos."
+"Related Products (SKUs)","Produse menționate (SKU-uri)"
+"Comma-separated SKUs, shown in a product slider under the post. Unknown SKUs are ignored.","SKU-uri separate prin virgulă, afișate într-un carusel de produse sub articol. SKU-urile necunoscute sunt ignorate."
+"Published At","Publicat la"
+"Leave empty to use the creation date. Set a future date to schedule the post.","Lasă gol pentru a folosi data creării. Setează o dată viitoare pentru a programa publicarea."
+"Intro Section (alternative to the hero)","Secțiune intro (alternativă la hero)"
+"Intro Text","Text intro"
+"Shown in the left column, aligned right. For bold, wrap text in <strong>…</strong>; for italic, in <em>…</em>. Example: a <em>wonderful</em> story about <strong>courage</strong>. Press Enter for a new line and Enter twice for a new paragraph. Other HTML tags are ignored.","Apare în coloana stângă, aliniat la dreapta. Pentru bold (aldine), încadrează textul în <strong>…</strong>. Pentru italic, în <em>…</em>. Exemplu: o poveste <em>extraordinară</em> despre <strong>curaj</strong>. Apasă Enter pentru linie nouă, Enter dublu pentru paragraf nou. Restul tagurilor HTML sunt ignorate."
+"Intro Image","Imagine intro"
+"Shown in the right column, aligned left. Any ratio (portrait, square or landscape) is shown at its natural size.","Apare în coloana dreaptă, aliniată la stânga. Orice raport — portret/pătrat/peisaj — se afișează la dimensiunea naturală în coloană."
+"Intro Image Alt Text","Text alternativ imagine intro"
+SEO,SEO
+"Falls back to the post title.","Dacă lipsește, se folosește titlul articolului."
+"Falls back to the short description.","Dacă lipsește, se folosește descrierea scurtă."
+"Meta Robots","Meta Robots"
+"Open Graph Image","Imagine Open Graph"
+"Shown when the post is shared on social networks. Falls back to the featured image. Recommended size 1200×630.","Apare la distribuirea articolului pe rețelele sociale. Dacă lipsește, se folosește imaginea reprezentativă. Recomandat 1200×630."
+Preview,Previzualizare
+"Are you sure you want to delete the selected posts?","Sigur ștergi articolele selectate?"
+"Delete Posts","Șterge articole"
+Published,Publicat
+Modified,Modificat

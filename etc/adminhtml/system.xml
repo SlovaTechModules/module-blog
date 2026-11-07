@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <!-- Declared here too: other Slova modules may declare the same tab; Magento
+             merges identical ids, and this module must not depend on any of them. -->
+        <tab id="slova" translate="label" sortOrder="400">
+            <label>Slova</label>
+        </tab>
+        <!-- Every comment is on ONE line: Magento translates it by its exact text,
+             so line breaks and indentation would have to be repeated in i18n/*.csv. -->
+        <section id="slova_blog" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Blog</label>
+            <tab>slova</tab>
+            <resource>Slova_Blog::config</resource>
+
+            <group id="general" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General</label>
+                <field id="title" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Blog Title</label>
+                    <comment>Shown in the title band, the browser tab and the breadcrumbs. Leave empty for "Blog", translated into the store language.</comment>
+                </field>
+                <field id="url_prefix" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>URL Prefix</label>
+                    <backend_model>Slova\Blog\Model\Config\Backend\UrlPath</backend_model>
+                    <comment>The blog lives at /prefix, posts at /prefix/post-url-key. Lowercase letters, digits, hyphens; use / for more levels (news/blog). Saving rebuilds the blog URLs; old URLs stop working.</comment>
+                </field>
+                <field id="category_url_prefix" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Category URL Prefix</label>
+                    <backend_model>Slova\Blog\Model\Config\Backend\UrlPath</backend_model>
+                    <comment>Category pages live at /prefix/category-prefix/category-url-key.</comment>
+                </field>
+                <field id="meta_title" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Meta Title</label>
+                    <comment>For the blog home page. Leave empty to use the blog title.</comment>
+                </field>
+                <field id="meta_description" translate="label comment" type="textarea" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Meta Description</label>
+                    <comment>For the blog home page.</comment>
+                </field>
+            </group>
+
+            <group id="list" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Post List</label>
+                <field id="posts_per_page" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Posts per Page</label>
+                    <validate>required-entry validate-digits validate-greater-than-zero</validate>
+                    <comment>On phones the next pages load as the visitor scrolls; larger screens get a pager.</comment>
+                </field>
+            </group>
+
+            <group id="display" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Display</label>
+                <field id="title_band" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Show Title Band</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>A full-width band under the header with the blog or category name.</comment>
+                </field>
+                <field id="accent_color" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Accent Color</label>
+                    <backend_model>Slova\Blog\Model\Config\Backend\Color</backend_model>
+                    <comment>A hex color such as #0f766e, used for the title band, links, category labels and card borders. Leave empty to use your theme's primary color.</comment>
+                </field>
+                <field id="sidebar_cms_block" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sidebar CMS Block</label>
+                    <source_model>Slova\Blog\Model\Config\Source\CmsBlock</source_model>
+                    <comment>Shown in the sidebar under the categories, on the post list and on posts (desktop only).</comment>
+                </field>
+                <field id="related_title" translate="label comment" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Related Products Heading</label>
+                    <comment>Above the product slider under a post. Leave empty for "Featured in this post", translated into the store language.</comment>
+                </field>
+            </group>
+
+            <group id="images" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Images</label>
+                <field id="responsive" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0" canRestore="1">
+                    <label>Resize and Convert to WebP</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Post images, including those inside the content, are resized for each screen and served as WebP with a JPEG fallback. Copies are kept in pub/media/slova_blog_resized; delete that folder to rebuild them.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

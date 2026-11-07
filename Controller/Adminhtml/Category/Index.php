@@ -20,7 +20,7 @@ class Index extends Category
     {
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('Slova_Blog::category');
-        $resultPage->getConfig()->getTitle()->prepend(__('Categorii Jurnal'));
+        $resultPage->getConfig()->getTitle()->prepend(__('Blog Categories'));
         return $resultPage;
     }
 }

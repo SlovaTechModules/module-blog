@@ -30,7 +30,7 @@ class Edit extends Category
         if ($id) {
             $this->categoryResource->load($model, (int)$id);
             if (!$model->getId()) {
-                $this->messageManager->addErrorMessage(__('Categoria nu există.'));
+                $this->messageManager->addErrorMessage(__('This category no longer exists.'));
                 return $this->resultRedirectFactory->create()->setPath('*/*/');
             }
         }
@@ -40,7 +40,7 @@ class Edit extends Category
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('Slova_Blog::category');
         $resultPage->getConfig()->getTitle()->prepend(
-            $model->getId() ? __('Editează: %1', $model->getName()) : __('Categorie nouă')
+            $model->getId() ? __('Edit: %1', $model->getName()) : __('New Category')
         );
         return $resultPage;
     }

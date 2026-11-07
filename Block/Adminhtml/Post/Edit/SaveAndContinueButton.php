@@ -10,7 +10,7 @@ class SaveAndContinueButton extends GenericButton implements ButtonProviderInter
     public function getButtonData(): array
     {
         return [
-            'label'          => __('Salvează și continuă'),
+            'label'          => __('Save and Continue Edit'),
             'class'          => 'save',
             'data_attribute' => [
                 'mage-init' => ['button' => ['event' => 'saveAndContinueEdit']],

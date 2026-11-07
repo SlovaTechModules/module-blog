@@ -45,7 +45,7 @@ class DataProvider extends AbstractDataProvider
         $galleryConfig = [
             'mediaGallery' => [
                 'openDialogUrl'   => $this->backendUrl->getUrl('cms/wysiwyg_images/index'),
-                'openDialogTitle' => (string) __('Alege imaginea'),
+                'openDialogTitle' => (string) __('Choose Image'),
                 'storeId'         => (int) $this->storeManager->getStore()->getId(),
             ],
         ];

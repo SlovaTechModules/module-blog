@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
-    <module name="Slova_Blog">
+    <!-- setup_version: Magento looks for Setup\Uninstall only in modules listed in setup_module. -->
+    <module name="Slova_Blog" setup_version="1.0.0">
         <sequence>
             <module name="Magento_Catalog"/>
-            <module name="Magento_UrlRewrite"/>
             <module name="Magento_Cms"/>
-            <module name="Slova_Core"/>
-            <module name="Carusel_Collections"/>
+            <module name="Magento_Sitemap"/>
+            <module name="Magento_Store"/>
+            <module name="Magento_UrlRewrite"/>
+            <module name="Hyva_Theme"/>
         </sequence>
     </module>
 </config>

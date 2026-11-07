@@ -29,7 +29,7 @@ class MassDelete extends Post
             $this->postResource->delete($item);
             $count++;
         }
-        $this->messageManager->addSuccessMessage(__('%1 articole șterse.', $count));
+        $this->messageManager->addSuccessMessage(__('A total of %1 post(s) have been deleted.', $count));
 
         return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/');
     }

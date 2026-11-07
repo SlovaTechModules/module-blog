@@ -1,92 +1,77 @@
 <?php
+/**
+ * Slova_Blog — a single post.
+ * Styles are in head/post-css.phtml, so the hero and intro have their size before
+ * the first paint.
+ * Copyright © Slova. Licensed under the MIT License, see LICENSE.
+ */
+
 declare(strict_types=1);
 
 use Hyva\Theme\Model\ViewModelRegistry;
 use Hyva\Theme\ViewModel\ProductListItem;
-use Magento\Catalog\Block\Product\ReviewRendererInterface as ProductReviewRenderer;
+use Magento\Catalog\Block\Product\ReviewRendererInterface;
 use Magento\Framework\Escaper;
-use Magento\Framework\View\Element\Template;
 use Slova\Blog\Block\PostView;
-use Slova\Imaging\ViewModel\Image as ImageVm;
+use Slova\Blog\ViewModel\Image;
 
 /** @var PostView $block */
 /** @var Escaper $escaper */
 /** @var ViewModelRegistry $viewModels */
-
-/** @var ImageVm $imageVm */
-$imageVm = $viewModels->require(ImageVm::class);
-
-/** @var ProductListItem $productListItemViewModel */
-$productListItemViewModel = $viewModels->require(ProductListItem::class);
 
 $post = $block->getPost();
 if (!$post) {
     return;
 }
 
-$imgPath = $block->getFeaturedImagePath();
-$categories = $block->getCategories();
-$relatedProducts = $block->getRelatedProducts();
+/** @var Image $imageVm */
+$imageVm = $block->getData('image_view_model');
 $date = $block->getFormattedDate();
-$isoDate = $block->getIsoDate();
-$canonicalUrl = $block->getCanonicalUrl();
-$ogImage = $block->getOgImageUrl();
-
-$itemRenderer = $block->getLayout()->getBlock('product_list_item')
-    ?: $block->getLayout()->createBlock(Template::class);
+$showHero = $block->shouldShowFeaturedImage();
 ?>
-
-<article class="slova-blog-post" itemscope itemtype="https://schema.org/Article">
-    <meta itemprop="mainEntityOfPage" content="<?= $escaper->escapeHtmlAttr($canonicalUrl) ?>">
-
+<article class="slova-blog-post">
     <header class="slova-blog-post__header">
-        <h1 class="slova-blog-post__title" itemprop="headline">
-            <?= $escaper->escapeHtml($post->getTitle()) ?>
-        </h1>
+        <h1 class="slova-blog-post__title"><?= $escaper->escapeHtml($post->getTitle()) ?></h1>
         <div class="slova-blog-post__meta">
-            <?php foreach ($categories as $cat): ?>
-                <a href="<?= $escaper->escapeUrl($block->getCategoryUrl((string)$cat->getUrlKey())) ?>"
-                   class="slova-blog-post__category">
-                    <?= $escaper->escapeHtml($cat->getName()) ?>
-                </a>
+            <?php foreach ($block->getCategories() as $category): ?>
+                <a href="<?= $escaper->escapeUrl($block->getCategoryUrl((string)$category->getUrlKey())) ?>"
+                   class="slova-blog-pill"><?= $escaper->escapeHtml($category->getName()) ?></a>
             <?php endforeach; ?>
-            <?php if ($date): ?>
-                <time class="slova-blog-post__date" datetime="<?= $escaper->escapeHtmlAttr($isoDate) ?>" itemprop="datePublished">
+            <?php if ($date !== ''): ?>
+                <time class="slova-blog-post__date" datetime="<?= $escaper->escapeHtml($block->getIsoDate()) ?>">
                     <?= $escaper->escapeHtml($date) ?>
                 </time>
             <?php endif; ?>
         </div>
     </header>
 
-    <?php if ($block->hasSideSection()):
+    <?php if ($block->hasSideSection()): ?>
+        <?php
         $sideText = $block->getSanitizedSideText();
         $sideImgPath = $block->getSideImagePath();
-        $sideAlt = $block->getSideImageAlt() ?: $post->getTitle();
         ?>
-        <section class="slova-blog-post__intro">
+        <section class="slova-blog-post__intro<?= $sideText === '' || $sideImgPath === '' ? ' is-single' : '' ?>">
             <?php if ($sideText !== ''): ?>
-                <div class="slova-blog-post__intro-text">
-                    <?= /* @noEscape */ $sideText ?>
-                </div>
+                <div class="slova-blog-post__intro-text"><?= /* @noEscape */ $sideText ?></div>
             <?php endif; ?>
             <?php if ($sideImgPath !== ''): ?>
                 <div class="slova-blog-post__intro-image">
                     <?= /* @noEscape */ $imageVm->picture(
                         $sideImgPath,
                         480,
-                        alt: (string)$sideAlt,
-                        loading: $block->shouldShowFeaturedImage() ? 'lazy' : 'eager',
-                        fetchPriority: $block->shouldShowFeaturedImage() ? 'auto' : 'high'
+                        alt: $block->getSideImageAlt() ?: (string)$post->getTitle(),
+                        loading: $showHero ? 'lazy' : 'eager',
+                        fetchPriority: $showHero ? 'auto' : 'high'
                     ) ?>
                 </div>
             <?php endif; ?>
         </section>
     <?php endif; ?>
 
-    <?php if ($block->shouldShowFeaturedImage()): ?>
+    <?php if ($showHero): ?>
         <figure class="slova-blog-post__hero">
             <?= /* @noEscape */ $imageVm->picture(
-                $imgPath,
+                $block->getFeaturedImagePath(),
                 900,
                 alt: (string)($post->getFeaturedImageAlt() ?: $post->getTitle()),
                 loading: 'eager',
@@ -96,356 +81,65 @@ $itemRenderer = $block->getLayout()->getBlock('product_list_item')
         </figure>
     <?php endif; ?>
 
-    <div class="slova-blog-post__content" itemprop="articleBody">
+    <div class="slova-blog-post__content">
         <?= /* @noEscape */ $block->getProcessedContent() ?>
     </div>
 </article>
 
-<?php $prevPost = $block->getPreviousPost();
-$nextPost = $block->getNextPost(); ?>
+<?php
+$prevPost = $block->getPreviousPost();
+$nextPost = $block->getNextPost();
+?>
 <?php if ($prevPost || $nextPost): ?>
-    <nav class="slova-blog-post__nav" aria-label="<?= $escaper->escapeHtmlAttr(__('Navigare articole')) ?>">
+    <nav class="slova-blog-post__nav" aria-label="<?= $escaper->escapeHtmlAttr(__('Post navigation')) ?>">
         <?php if ($prevPost): ?>
-            <a href="<?= $escaper->escapeUrl($prevPost['url']) ?>" class="slova-blog-post__nav-link slova-blog-post__nav-prev" rel="prev">
-                <span class="slova-blog-post__nav-label">← <?= $escaper->escapeHtml(__('Articol anterior')) ?></span>
+            <a href="<?= $escaper->escapeUrl($prevPost['url']) ?>" class="slova-blog-post__nav-link" rel="prev">
+                <span class="slova-blog-post__nav-label">← <?= $escaper->escapeHtml(__('Previous post')) ?></span>
                 <span class="slova-blog-post__nav-title"><?= $escaper->escapeHtml($prevPost['title']) ?></span>
             </a>
         <?php else: ?>
             <span></span>
         <?php endif; ?>
         <?php if ($nextPost): ?>
-            <a href="<?= $escaper->escapeUrl($nextPost['url']) ?>" class="slova-blog-post__nav-link slova-blog-post__nav-next" rel="next">
-                <span class="slova-blog-post__nav-label"><?= $escaper->escapeHtml(__('Articol următor')) ?> →</span>
+            <a href="<?= $escaper->escapeUrl($nextPost['url']) ?>" class="slova-blog-post__nav-link slova-blog-post__nav-link--next" rel="next">
+                <span class="slova-blog-post__nav-label"><?= $escaper->escapeHtml(__('Next post')) ?> →</span>
                 <span class="slova-blog-post__nav-title"><?= $escaper->escapeHtml($nextPost['title']) ?></span>
             </a>
-        <?php else: ?>
-            <span></span>
         <?php endif; ?>
     </nav>
 <?php endif; ?>
 
-<?php if (!empty($relatedProducts)): ?>
-    <?php $sliderName = 'slova-blog-related-' . (int)$post->getId(); ?>
-    <section class="slova-blog-related"
-             id="<?= $escaper->escapeHtmlAttr($sliderName) ?>"
-             aria-label="<?= $escaper->escapeHtmlAttr(__('File din povestea')) ?>"
-             x-data
-             x-snap-slider.auto-pager.group-pager
-             x-defer="intersect">
-        <div class="slova-blog-related__head">
-            <h2 class="slova-blog-related__title">
-                <?= $escaper->escapeHtml(__('File din povestea')) ?>
-            </h2>
-        </div>
-        <div class="snap-track md:[--snap-cols:2] lg:[--snap-cols:3] xl:[--snap-cols:4]"
-             data-track tabindex="0" aria-live="polite">
-            <?php foreach ($relatedProducts as $product): ?>
-                <div class="flex flex-col slider-card" role="tabpanel">
-                    <?= /* @noEscape */ $productListItemViewModel->getItemHtmlWithRenderer(
-                        $itemRenderer,
-                        $product,
-                        $block,
-                        'grid',
-                        ProductReviewRenderer::SHORT_VIEW,
-                        'category_page_grid',
-                        false
-                    ) ?>
-                </div>
-            <?php endforeach; ?>
-        </div>
-        <div class="snap-pager" data-pager style="visibility:hidden"></div>
-    </section>
+<?php $relatedProducts = $block->getRelatedProducts(); ?>
+<?php if ($relatedProducts): ?>
+    <?php
+    /** @var ProductListItem $productListItem */
+    $productListItem = $viewModels->require(ProductListItem::class);
+    $itemRenderer = $block->getLayout()->getBlock('product_list_item');
+    $relatedTitle = $block->getRelatedTitle();
+    ?>
+    <?php if ($itemRenderer): ?>
+        <section class="slova-blog-related snap-slider"
+                 aria-label="<?= $escaper->escapeHtmlAttr($relatedTitle) ?>"
+                 x-data
+                 x-snap-slider.auto-pager.group-pager
+                 x-defer="intersect">
+            <h2 class="slova-blog-related__title"><?= $escaper->escapeHtml($relatedTitle) ?></h2>
+            <div class="snap-track" data-track tabindex="0">
+                <?php foreach ($relatedProducts as $product): ?>
+                    <div class="slova-blog-related__item">
+                        <?= /* @noEscape */ $productListItem->getItemHtmlWithRenderer(
+                            $itemRenderer,
+                            $product,
+                            $block,
+                            'grid',
+                            ReviewRendererInterface::SHORT_VIEW,
+                            'category_page_grid',
+                            false
+                        ) ?>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <div class="snap-pager" data-pager></div>
+        </section>
+    <?php endif; ?>
 <?php endif; ?>
-
-<style>
-    .slova-blog-post {
-        padding: 0;
-    }
-
-    .slova-blog-post__header {
-        margin-bottom: 1.5rem;
-        padding-bottom: 1.25rem;
-        border-bottom: 1px solid #e5e7eb;
-    }
-
-    .slova-blog-post__title {
-        font-size: 1.75rem;
-        line-height: 1.2;
-        font-weight: 700;
-        color: var(--color-dark, #111e1e);
-        margin: 0 0 .75rem;
-    }
-
-    .slova-blog-post__meta {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 0.5rem 0.75rem;
-        font-size: 0.875rem;
-        color: #6b7280;
-    }
-
-    .slova-blog-post__category {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.125rem 0.625rem;
-        border-radius: 9999px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        color: var(--color-primary, #009999);
-        background: rgba(0, 153, 153, 0.08);
-        text-decoration: none;
-    }
-
-    .slova-blog-post__category:hover {
-        background: rgba(0, 153, 153, 0.16);
-    }
-
-    .slova-blog-post__date::before {
-        content: "·";
-        margin-right: 0.5rem;
-        color: #9ca3af;
-    }
-
-    .slova-blog-post__hero {
-        margin: 0 0 1.5rem;
-        border-radius: 0.5rem;
-        overflow: hidden;
-        aspect-ratio: 21 / 9;
-        background: transparent;
-    }
-
-    .slova-blog-post__intro {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2.5rem;
-        margin: 0 0 1.5rem;
-        align-items: stretch;
-    }
-
-    .slova-blog-post__intro-text {
-        text-align: left;
-        font-size: 1.05rem;
-        line-height: 1.6;
-        color: #1f2937;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .slova-blog-post__intro-text p {
-        margin: 0 0 0.75em;
-    }
-
-    .slova-blog-post__intro-text p:last-child {
-        margin-bottom: 0;
-    }
-
-    .slova-blog-post__intro-image {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 0;
-    }
-
-    .slova-blog-post__intro-image picture,
-    .slova-blog-post__intro-image img {
-        max-width: 100%;
-        max-height: 480px;
-        width: auto;
-        height: auto;
-        display: block;
-        border-radius: 0.5rem;
-    }
-
-    @media (max-width: 767px) {
-        .slova-blog-post__intro {
-            grid-template-columns: 1fr;
-            gap: 1.25rem;
-        }
-    }
-
-    @media (min-width: 1280px) {
-        .slova-blog-post__intro-text {
-            text-align: right;
-            align-items: flex-end;
-        }
-        .slova-blog-post__intro-image {
-            justify-content: flex-start;
-        }
-    }
-
-    .slova-blog-post__hero picture,
-    .slova-blog-post__hero img,
-    .slova-blog-post__hero-img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        display: block;
-    }
-
-    .slova-blog-post__content {
-        font-size: 1rem;
-        line-height: 1.7;
-        color: #1f2937;
-    }
-
-    .slova-blog-post__content p {
-        margin: 0 0 1em;
-    }
-
-    .slova-blog-post__content h2,
-    .slova-blog-post__content h3 {
-        margin: 1.5em 0 0.5em;
-        font-weight: 700;
-        line-height: 1.3;
-        color: var(--color-dark, #111e1e);
-    }
-
-    .slova-blog-post__content h2 { font-size: 1.5rem; }
-    .slova-blog-post__content h3 { font-size: 1.25rem; }
-
-    .slova-blog-post__content a {
-        color: var(--color-primary, #009999);
-        text-decoration: underline;
-    }
-
-    .slova-blog-post__content img,
-    .slova-blog-post__content iframe {
-        max-width: 100%;
-        height: auto;
-        border-radius: 0.5rem;
-        margin: 1rem 0;
-    }
-
-    .slova-blog-post__content iframe {
-        aspect-ratio: 16 / 9;
-        width: 100%;
-    }
-
-    .slova-blog-post__content blockquote {
-        margin: 1.5em 0;
-        padding: 1em 1.25em;
-        border-left: 3px solid var(--color-primary, #009999);
-        background: rgba(0, 153, 153, 0.04);
-        font-style: italic;
-        color: #4b5563;
-    }
-
-    .slova-blog-yt {
-        position: relative;
-        display: block;
-        margin: 1.25rem 0;
-        border-radius: 0.5rem;
-        overflow: hidden;
-        aspect-ratio: 16 / 9;
-        background: #000;
-    }
-
-    .slova-blog-yt img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        margin: 0 !important;
-        border-radius: 0 !important;
-        opacity: 0.92;
-        transition: opacity .2s;
-    }
-
-    .slova-blog-yt:hover img {
-        opacity: 1;
-    }
-
-    .slova-blog-yt__btn {
-        position: absolute;
-        inset: 0;
-        margin: auto;
-        width: 64px;
-        height: 64px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(0, 0, 0, .7);
-        color: #fff;
-        font-size: 1.75rem;
-        border-radius: 9999px;
-        text-shadow: 0 1px 2px rgba(0, 0, 0, .4);
-        transition: background .2s;
-    }
-
-    .slova-blog-yt:hover .slova-blog-yt__btn {
-        background: var(--color-secondary, #FF5533);
-    }
-
-    .slova-blog-post__nav {
-        margin-top: 2.5rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid #e5e7eb;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1.5rem;
-    }
-
-    .slova-blog-post__nav-link {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        text-decoration: none;
-        color: var(--color-dark, #111e1e);
-        padding: 0.75rem 0;
-        transition: color 0.15s;
-    }
-
-    .slova-blog-post__nav-link:hover {
-        color: var(--color-primary, #009999);
-    }
-
-    .slova-blog-post__nav-next {
-        text-align: right;
-    }
-
-    .slova-blog-post__nav-label {
-        font-size: 0.8125rem;
-        color: #6b7280;
-        font-weight: 500;
-    }
-
-    .slova-blog-post__nav-title {
-        font-size: 1rem;
-        font-weight: 600;
-        line-height: 1.3;
-    }
-
-    @media (max-width: 639px) {
-        .slova-blog-post__nav {
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-        }
-        .slova-blog-post__nav-next {
-            text-align: left;
-        }
-    }
-
-    .slova-blog-related {
-        margin-top: 2.5rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid #e5e7eb;
-    }
-
-    .slova-blog-related__head {
-        margin-bottom: 1rem;
-    }
-
-    .slova-blog-related__title {
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin: 0;
-        color: var(--color-dark, #111e1e);
-    }
-
-    @media (min-width: 640px) {
-        .slova-blog-post__title {
-            font-size: 2.25rem;
-        }
-    }
-</style>

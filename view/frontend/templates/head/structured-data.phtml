@@ -1,4 +1,9 @@
 <?php
+/**
+ * Slova_Blog — canonical link and JSON-LD of a post page.
+ * Copyright © Slova. Licensed under the MIT License, see LICENSE.
+ */
+
 declare(strict_types=1);
 
 use Magento\Framework\Escaper;
@@ -9,10 +14,6 @@ use Slova\Blog\Block\Head\StructuredData;
 
 $canonical = $block->getCanonicalUrl();
 $json = $block->getJsonLd();
-
-if ($canonical === '' && $json === '') {
-    return;
-}
 ?>
 <?php if ($canonical !== ''): ?>
 <link rel="canonical" href="<?= $escaper->escapeUrl($canonical) ?>">

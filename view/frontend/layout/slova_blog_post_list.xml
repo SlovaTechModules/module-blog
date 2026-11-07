@@ -1,64 +1,21 @@
 <?xml version="1.0"?>
+<!-- Post list: the blog home and category pages. -->
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <update handle="slova_blog_default"/>
     <body>
-        <attribute name="class" value="slova-blog-page"/>
-        <referenceBlock name="wishlist_sidebar" remove="true"/>
         <referenceBlock name="head.additional">
             <block class="Magento\Framework\View\Element\Template"
                    name="slova.blog.head.list.css"
                    template="Slova_Blog::head/list-css.phtml"/>
-            <block class="Magento\Framework\View\Element\Template"
-                   name="slova.blog.head.sidebar.css"
-                   template="Slova_Blog::head/sidebar-css.phtml"/>
         </referenceBlock>
-        <referenceBlock name="page.main.title" remove="true"/>
-        <referenceContainer name="columns.top">
-            <block class="Slova\Blog\Block\HeaderBand"
-                   name="slova.blog.header.band"
-                   template="Slova_Blog::header-band.phtml">
-                <arguments>
-                    <argument name="default_title" xsi:type="string" translate="true">Jurnal de bord</argument>
-                </arguments>
-            </block>
-        </referenceContainer>
         <referenceContainer name="content">
-            <container name="slova.blog.categories.mobile"
-                       htmlTag="div"
-                       htmlClass="slova-blog-categories-mobile"
-                       before="-">
-                <block class="Slova\Blog\Block\Sidebar\Categories"
-                       name="slova.blog.categories.mobile.block"
-                       template="Slova_Blog::sidebar/categories.phtml"
-                       cacheable="true"/>
-            </container>
             <block class="Slova\Blog\Block\PostList"
                    name="slova.blog.post.list"
-                   template="Slova_Blog::post/list.phtml"
-                   cacheable="true"/>
-        </referenceContainer>
-        <referenceContainer name="sidebar.additional">
-            <block class="Slova\Blog\Block\Sidebar\Categories"
-                   name="slova.blog.sidebar.categories"
-                   template="Slova_Blog::sidebar/categories.phtml"
-                   before="-"
-                   cacheable="true"/>
-            <container name="slova.blog.sidebar.banner.wrap"
-                       htmlTag="div"
-                       htmlClass="slova-blog-sidebar-banner">
-                <block class="Magento\Cms\Block\Block"
-                       name="slova.blog.sidebar.banner">
-                    <arguments>
-                        <argument name="block_id" xsi:type="string">pdp_left_column_banner</argument>
-                    </arguments>
-                </block>
-            </container>
-            <block class="Carusel\Collections\Block\Frontend\BestsellerProducts"
-                   name="slova.blog.sidebar.bestsellers"
-                   template="Carusel_Collections::product/bestsellers-sidebar.phtml"
-                   cacheable="true">
+                   template="Slova_Blog::post/list.phtml">
                 <arguments>
-                    <argument name="product_count" xsi:type="number">5</argument>
+                    <argument name="apply_page_meta" xsi:type="boolean">true</argument>
+                    <argument name="image_view_model" xsi:type="object">Slova\Blog\ViewModel\Image</argument>
                 </arguments>
             </block>
         </referenceContainer>

@@ -24,7 +24,7 @@ class Delete extends Post
         $resultRedirect = $this->resultRedirectFactory->create();
 
         if (!$id) {
-            $this->messageManager->addErrorMessage(__('Articol invalid.'));
+            $this->messageManager->addErrorMessage(__('Invalid post.'));
             return $resultRedirect->setPath('*/*/');
         }
 
@@ -32,10 +32,10 @@ class Delete extends Post
             $model = $this->postFactory->create();
             $this->postResource->load($model, $id);
             if (!$model->getId()) {
-                throw new \Magento\Framework\Exception\NoSuchEntityException(__('Articol inexistent.'));
+                throw new \Magento\Framework\Exception\NoSuchEntityException(__('This post no longer exists.'));
             }
             $this->postResource->delete($model);
-            $this->messageManager->addSuccessMessage(__('Articolul a fost șters.'));
+            $this->messageManager->addSuccessMessage(__('The post has been deleted.'));
         } catch (\Exception $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
         }

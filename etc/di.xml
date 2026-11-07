@@ -70,4 +70,18 @@
         </arguments>
     </type>
 
+    <type name="Slova\Blog\Console\Command\RegenerateUrlRewrites">
+        <arguments>
+            <argument name="urlRewriteGenerator" xsi:type="object">Slova\Blog\Model\UrlRewriteGenerator\Proxy</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="slova_blog_url_rewrites" xsi:type="object">Slova\Blog\Console\Command\RegenerateUrlRewrites</item>
+            </argument>
+        </arguments>
+    </type>
+
 </config>

@@ -1,0 +1,204 @@
+<?php
+/**
+ * Slova_Blog — styles shared by every blog page, in <head>.
+ *
+ * Layout rules must be known before the first paint: rendered later in the body, the
+ * sidebar and dropdown would first paint in the wrong place and then jump (layout shift).
+ *
+ * Colors follow the Hyvä theme (--color-primary, --color-fg …). To restyle, override the
+ * --slova-blog-* custom properties on .slova-blog-page in your theme, e.g.
+ *   .slova-blog-page { --slova-blog-band-bg: linear-gradient(90deg, #ecfeff, #0e7490, #ecfeff); }
+ * Copyright © Slova. Licensed under the MIT License, see LICENSE.
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Slova\Blog\ViewModel\Style;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+/** @var Style $style */
+$style = $block->getData('style_view_model');
+$accent = $style->getAccentColor();
+?>
+<style>
+    .slova-blog-page {
+        --slova-blog-accent: var(--color-primary, #1d4ed8);
+        --slova-blog-fg: var(--color-fg, #111827);
+        --slova-blog-muted: var(--color-fg-secondary, #6b7280);
+        --slova-blog-surface: #fff;
+        --slova-blog-line: #e5e7eb;
+        --slova-blog-radius: 0.75rem;
+        --slova-blog-card-border: color-mix(in srgb, var(--slova-blog-accent) 18%, #fff);
+        --slova-blog-card-border-hover: var(--slova-blog-accent);
+        --slova-blog-pill-bg: color-mix(in srgb, var(--slova-blog-accent) 9%, transparent);
+        --slova-blog-pill-bg-hover: color-mix(in srgb, var(--slova-blog-accent) 18%, transparent);
+        --slova-blog-band-bg: var(--slova-blog-accent);
+        --slova-blog-band-fg: var(--color-on-primary, #fff);
+    }
+<?php if ($accent !== ''): ?>
+    .slova-blog-page { --slova-blog-accent: <?= /* @noEscape */ $accent /* validated #rgb or #rrggbb */ ?>; }
+<?php endif; ?>
+
+    .slova-blog-band {
+        width: 100vw;
+        margin-inline: calc(50% - 50vw);
+        margin-bottom: 2rem;
+        background: var(--slova-blog-band-bg);
+        color: var(--slova-blog-band-fg);
+    }
+    .slova-blog-band__inner {
+        max-width: 80rem;
+        margin-inline: auto;
+        padding: 1.5rem 1rem;
+    }
+    .slova-blog-band__title {
+        margin: 0;
+        font-size: 1.5rem;
+        line-height: 1.25;
+        font-weight: 700;
+        text-align: center;
+        color: inherit;
+    }
+    @media (min-width: 768px) {
+        .slova-blog-band__inner { padding-block: 2rem; }
+        .slova-blog-band__title { font-size: 2.25rem; }
+    }
+
+    .slova-blog-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.125rem 0.625rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        line-height: 1.5;
+        color: var(--slova-blog-accent);
+        background: var(--slova-blog-pill-bg);
+        text-decoration: none;
+    }
+    .slova-blog-pill:hover { background: var(--slova-blog-pill-bg-hover); }
+
+    /* Categories: a list in the sidebar on desktop. */
+    .slova-blog-categories-mobile { display: none; }
+    .slova-blog-categories {
+        margin-bottom: 1.5rem;
+        padding: 1.25rem;
+        border: 1px solid var(--slova-blog-line);
+        border-radius: var(--slova-blog-radius);
+        background: var(--slova-blog-surface);
+    }
+    .slova-blog-categories__toggle {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: inherit;
+        text-align: left;
+        cursor: default;
+    }
+    .slova-blog-categories__title {
+        font-size: 1.125rem;
+        line-height: 1.3;
+        font-weight: 700;
+        color: var(--slova-blog-fg);
+    }
+    .slova-blog-categories__chevron {
+        display: none;
+        flex-shrink: 0;
+        width: 1.25rem;
+        height: 1.25rem;
+        color: var(--slova-blog-accent);
+        transition: transform 0.2s ease;
+    }
+    .slova-blog-categories__list {
+        margin: 0.75rem 0 0;
+        padding: 0;
+        list-style: none;
+    }
+    .slova-blog-categories__item {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--slova-blog-line);
+    }
+    .slova-blog-categories__item:last-child { border-bottom: 0; }
+    .slova-blog-categories__item a {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 0.5rem;
+        color: var(--slova-blog-fg);
+        font-size: 0.9375rem;
+        text-decoration: none;
+    }
+    .slova-blog-categories__item a:hover .slova-blog-categories__name,
+    .slova-blog-categories__item.is-current .slova-blog-categories__name {
+        color: var(--slova-blog-accent);
+        font-weight: 600;
+    }
+    .slova-blog-categories__count {
+        flex-shrink: 0;
+        color: var(--slova-blog-muted);
+        font-size: 0.8125rem;
+        font-variant-numeric: tabular-nums;
+    }
+    .slova-blog-sidebar-banner { margin-bottom: 1.5rem; }
+
+    /* Below 1280px: one column; the sidebar is hidden and the copy of the categories
+       rendered at the top of the content becomes a dropdown. No reordering, so the
+       first paint is already final. The open panel floats over the posts. */
+    @media (max-width: 1279px) {
+        .slova-blog-page .columns {
+            grid-template-columns: minmax(0, 1fr);
+            grid-template-rows: auto;
+        }
+        .slova-blog-page .columns > .column.main {
+            order: 0;
+            grid-row: auto;
+        }
+        .slova-blog-page .sidebar-additional { display: none; }
+        .slova-blog-categories-mobile { display: block; }
+
+        .slova-blog-categories {
+            position: relative;
+            padding: 1rem 1.25rem;
+        }
+        .slova-blog-categories__toggle { cursor: pointer; }
+        .slova-blog-categories__chevron { display: block; }
+        .slova-blog-categories.is-open {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .slova-blog-categories.is-open .slova-blog-categories__chevron { transform: rotate(180deg); }
+        .slova-blog-categories__panel {
+            position: absolute;
+            top: 100%;
+            left: -1px;
+            right: -1px;
+            z-index: 30;
+            padding: 0.25rem 1.25rem 1rem;
+            border: 1px solid var(--slova-blog-line);
+            border-top: 0;
+            border-radius: 0 0 var(--slova-blog-radius) var(--slova-blog-radius);
+            background: var(--slova-blog-surface);
+            box-shadow: 0 14px 28px rgb(0 0 0 / 0.12);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-4px);
+            transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+        }
+        .slova-blog-categories.is-open .slova-blog-categories__panel {
+            opacity: 1;
+            visibility: visible;
+            transform: none;
+        }
+        .slova-blog-categories__list { margin-top: 0; }
+    }
+</style>

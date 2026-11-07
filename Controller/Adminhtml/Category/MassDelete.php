@@ -29,7 +29,7 @@ class MassDelete extends Category
             $this->categoryResource->delete($item);
             $count++;
         }
-        $this->messageManager->addSuccessMessage(__('%1 categorii șterse.', $count));
+        $this->messageManager->addSuccessMessage(__('A total of %1 category(ies) have been deleted.', $count));
 
         return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/');
     }

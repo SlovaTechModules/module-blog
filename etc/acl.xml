@@ -5,9 +5,16 @@
         <resources>
             <resource id="Magento_Backend::admin">
                 <resource id="Magento_Backend::content">
-                    <resource id="Slova_Blog::blog" title="Jurnal de bord" sortOrder="80">
-                        <resource id="Slova_Blog::post" title="Articole" sortOrder="10"/>
-                        <resource id="Slova_Blog::category" title="Categorii" sortOrder="20"/>
+                    <resource id="Slova_Blog::blog" title="Blog" translate="title" sortOrder="80">
+                        <resource id="Slova_Blog::post" title="Posts" translate="title" sortOrder="10"/>
+                        <resource id="Slova_Blog::category" title="Categories" translate="title" sortOrder="20"/>
+                    </resource>
+                </resource>
+                <resource id="Magento_Backend::stores">
+                    <resource id="Magento_Backend::stores_settings">
+                        <resource id="Magento_Config::config">
+                            <resource id="Slova_Blog::config" title="Blog (Slova)" translate="title" sortOrder="30"/>
+                        </resource>
                     </resource>
                 </resource>
             </resource>

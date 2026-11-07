@@ -10,7 +10,7 @@ class SaveButton extends GenericButton implements ButtonProviderInterface
     public function getButtonData(): array
     {
         return [
-            'label'          => __('Salvează'),
+            'label'          => __('Save'),
             'class'          => 'save primary',
             'data_attribute' => [
                 'mage-init' => ['button' => ['event' => 'save']],

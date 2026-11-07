@@ -1,201 +1,164 @@
 <?php
 /**
- * Slova_Blog — CSS critic pentru lista de articole, randat în <head>.
- *
- * Trebuie să stea în <head> (NU inline în body) ca regulile de geometrie
- * (grid carduri + rezervarea cutiei imaginii) să fie în CSSOM înainte de
- * primul paint. Altfel prima imagine (eager/fetchpriority=high) se pictează
- * la dimensiunea ei naturală înainte ca stilul din body să fie parsat → CLS.
+ * Slova_Blog — post list styles, in <head>: the card grid and the image boxes must be
+ * known before the first (eager) image paints, or the page shifts.
+ * Copyright © Slova. Licensed under the MIT License, see LICENSE.
  */
+
 declare(strict_types=1);
 ?>
 <style>
+    .slova-blog-heading {
+        margin: 0 0 1.5rem;
+        font-size: 1.75rem;
+        line-height: 1.2;
+        font-weight: 700;
+        color: var(--slova-blog-fg);
+    }
     .slova-blog-empty {
         padding: 3rem 1rem;
         text-align: center;
-        color: #6b7280;
+        color: var(--slova-blog-muted);
     }
-
     .slova-blog-list {
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
         gap: 1rem;
-        list-style: none;
-        padding: 0;
         margin: 0;
+        padding: 0;
+        list-style: none;
     }
-
-    .slova-blog-list > li {
-        display: contents;
-    }
+    .slova-blog-list > li { display: contents; }
 
     .slova-blog-card {
         display: grid;
-        grid-template-columns: 120px 1fr;
+        grid-template-columns: 120px minmax(0, 1fr);
         gap: 1rem;
         padding: 1rem;
-        background: #fff;
-        border: 2px solid #D0E5E5;
-        border-radius: 0.75rem;
+        border: 2px solid var(--slova-blog-card-border);
+        border-radius: var(--slova-blog-radius);
+        background: var(--slova-blog-surface);
         transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
     }
-
     .slova-blog-card:hover {
-        border-color: transparent;
-        background-image:
-            linear-gradient(#fff, #fff),
-            linear-gradient(135deg, var(--color-primary, #009999), var(--color-secondary, #FF5533));
-        background-origin: border-box;
-        background-clip: padding-box, border-box;
+        border-color: var(--slova-blog-card-border-hover);
         transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(0, 153, 153, 0.12);
+        box-shadow: 0 8px 24px color-mix(in srgb, var(--slova-blog-accent) 14%, transparent);
     }
-
     .slova-blog-card__thumb {
         display: block;
         aspect-ratio: 1;
         overflow: hidden;
         border-radius: 0.5rem;
-        background: transparent;
     }
-
-    .slova-blog-card__img,
     .slova-blog-card__thumb picture,
-    .slova-blog-card__thumb img {
+    .slova-blog-card__thumb img,
+    .slova-blog-card__img {
+        display: block;
         width: 100%;
         height: 100%;
         object-fit: contain;
-        display: block;
     }
-
     .slova-blog-card__placeholder {
         display: block;
         width: 100%;
         height: 100%;
-        background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+        background: var(--slova-blog-pill-bg);
     }
-
     .slova-blog-card__body {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
         min-width: 0;
     }
-
     .slova-blog-card__title {
+        display: -webkit-box;
+        margin: 0;
+        min-height: calc(1.3em * 2);
+        overflow: hidden;
         font-size: 1.125rem;
         line-height: 1.3;
         font-weight: 600;
-        margin: 0;
-        min-height: calc(1.3em * 2);
-        display: -webkit-box;
         -webkit-line-clamp: 2;
         line-clamp: 2;
         -webkit-box-orient: vertical;
-        overflow: hidden;
     }
-
     .slova-blog-card__title a {
-        color: var(--color-dark, #111e1e);
+        color: var(--slova-blog-fg);
         text-decoration: none;
     }
-
-    .slova-blog-card__title a:hover {
-        color: var(--color-primary, #009999);
-    }
-
+    .slova-blog-card__title a:hover { color: var(--slova-blog-accent); }
     .slova-blog-card__excerpt {
-        font-size: 0.875rem;
-        line-height: 1.5;
-        color: #4b5563;
+        display: -webkit-box;
         margin: 0;
         min-height: calc(1.5em * 2);
-        display: -webkit-box;
+        overflow: hidden;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        color: var(--slova-blog-muted);
         -webkit-line-clamp: 2;
         line-clamp: 2;
         -webkit-box-orient: vertical;
-        overflow: hidden;
     }
-
     .slova-blog-card__meta {
         display: flex;
         flex-wrap: wrap;
-        align-items: center;
-        gap: 0.5rem 0.75rem;
-        font-size: 0.8125rem;
-        color: #6b7280;
+        gap: 0.5rem;
         margin-top: auto;
     }
 
-    .slova-blog-card__category {
-        display: inline-flex;
-        align-items: center;
-        padding: 0.125rem 0.625rem;
-        border-radius: 9999px;
-        font-size: 0.75rem;
-        font-weight: 500;
-        color: var(--color-primary, #009999);
-        background: rgba(0, 153, 153, 0.08);
-        text-decoration: none;
-    }
-
-    .slova-blog-card__category:hover {
-        background: rgba(0, 153, 153, 0.16);
-    }
-
-    .slova-blog-card__date::before {
-        content: "·";
-        margin-right: 0.5rem;
-        color: #9ca3af;
-    }
-
-    .slova-blog-card__meta > :first-child.slova-blog-card__date::before {
-        content: none;
-    }
-
+    /* Phones: the next pages load while scrolling, so the pager is hidden. */
     .slova-blog-pager {
-        margin-top: 2rem;
-        display: flex;
+        display: none;
         justify-content: center;
+        margin-top: 2rem;
     }
+    .slova-blog-scroll-sentinel { height: 1px; }
+    .slova-blog-scroll-status {
+        padding: 1.5rem 0;
+        text-align: center;
+        font-size: 0.875rem;
+        color: var(--slova-blog-muted);
+    }
+    .slova-blog-scroll-status[hidden] { display: none; }
+    .slova-blog-scroll-status__spinner {
+        display: inline-block;
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: 0.5rem;
+        vertical-align: middle;
+        border: 2px solid var(--slova-blog-card-border);
+        border-top-color: var(--slova-blog-accent);
+        border-radius: 50%;
+        animation: slova-blog-spin 0.7s linear infinite;
+    }
+    @keyframes slova-blog-spin { to { transform: rotate(360deg); } }
 
     @media (min-width: 640px) {
-        .slova-blog-list {
-            gap: 1.25rem;
-        }
+        .slova-blog-list { gap: 1.25rem; }
         .slova-blog-card {
-            grid-template-columns: 160px 1fr;
+            grid-template-columns: 160px minmax(0, 1fr);
             gap: 1.25rem;
             padding: 1.25rem;
         }
-        .slova-blog-card__title {
-            font-size: 1.25rem;
-        }
+        .slova-blog-card__title { font-size: 1.25rem; }
     }
 
-    /* Tabletă (768–1279px): 2 coloane, carduri verticale ca pe desktop.
-       Sub 768px rămâne layoutul orizontal pe 1 coloană (mobil). */
+    /* Tablet (768px and up): two columns of vertical cards, pager instead of scrolling. */
     @media (min-width: 768px) {
-        .slova-blog-list {
-            grid-template-columns: 1fr 1fr;
-            gap: 1.25rem;
-        }
+        .slova-blog-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
         .slova-blog-card {
-            grid-template-columns: 1fr;
+            grid-template-columns: minmax(0, 1fr);
             gap: 1rem;
         }
-        .slova-blog-card__thumb {
-            aspect-ratio: 16 / 9;
-        }
-        .slova-blog-card__title {
-            font-size: 1.125rem;
-        }
+        .slova-blog-card__thumb { aspect-ratio: 16 / 9; }
+        .slova-blog-card__title { font-size: 1.125rem; }
+        .slova-blog-pager { display: flex; }
+        .slova-blog-scroll-status { display: none; }
     }
 
-    /* Desktop (≥1280px): 3 coloane (cardurile sunt deja verticale din regula de tabletă). */
+    /* Desktop (1280px and up): three columns. */
     @media (min-width: 1280px) {
-        .slova-blog-list {
-            grid-template-columns: 1fr 1fr 1fr;
-        }
+        .slova-blog-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
 </style>

@@ -3,24 +3,35 @@
         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
     <menu>
         <add id="Slova_Blog::blog"
-             title="Jurnal de bord"
+             title="Blog"
+             translate="title"
              module="Slova_Blog"
              sortOrder="80"
              parent="Magento_Backend::content"
              resource="Slova_Blog::blog"/>
         <add id="Slova_Blog::post"
-             title="Articole"
+             title="Posts"
+             translate="title"
              module="Slova_Blog"
              sortOrder="10"
              parent="Slova_Blog::blog"
              resource="Slova_Blog::post"
              action="slova_blog/post/index"/>
         <add id="Slova_Blog::category"
-             title="Categorii"
+             title="Categories"
+             translate="title"
              module="Slova_Blog"
              sortOrder="20"
              parent="Slova_Blog::blog"
              resource="Slova_Blog::category"
              action="slova_blog/category/index"/>
+        <add id="Slova_Blog::config"
+             title="Settings"
+             translate="title"
+             module="Slova_Blog"
+             sortOrder="30"
+             parent="Slova_Blog::blog"
+             resource="Slova_Blog::config"
+             action="adminhtml/system_config/edit/section/slova_blog"/>
     </menu>
 </config>

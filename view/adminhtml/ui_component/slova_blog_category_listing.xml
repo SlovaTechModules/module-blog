@@ -11,7 +11,7 @@
             <button name="add">
                 <url path="slova_blog/category/newAction"/>
                 <class>primary</class>
-                <label translate="true">Categorie nouă</label>
+                <label translate="true">New Category</label>
             </button>
         </buttons>
         <spinner>slova_blog_category_columns</spinner>
@@ -41,11 +41,11 @@
             <action name="delete">
                 <settings>
                     <type>delete</type>
-                    <label translate="true">Șterge</label>
+                    <label translate="true">Delete</label>
                     <url path="slova_blog/category/massDelete"/>
                     <confirm>
-                        <message translate="true">Sigur ștergi categoriile selectate?</message>
-                        <title translate="true">Șterge categorii</title>
+                        <message translate="true">Are you sure you want to delete the selected categories?</message>
+                        <title translate="true">Delete Categories</title>
                     </confirm>
                 </settings>
             </action>
@@ -68,7 +68,7 @@
         <column name="name" sortOrder="30">
             <settings>
                 <filter>text</filter>
-                <label translate="true">Nume</label>
+                <label translate="true">Name</label>
                 <sortable>true</sortable>
                 <sorting>asc</sorting>
             </settings>
@@ -83,7 +83,7 @@
             <settings>
                 <filter>select</filter>
                 <dataType>select</dataType>
-                <label translate="true">Activ</label>
+                <label translate="true">Active</label>
                 <options class="Magento\Config\Model\Config\Source\Yesno"/>
             </settings>
         </column>
@@ -97,7 +97,7 @@
         <actionsColumn name="actions" sortOrder="70" class="Slova\Blog\Ui\Component\Listing\Column\CategoryActions">
             <settings>
                 <indexField>category_id</indexField>
-                <label translate="true">Acțiuni</label>
+                <label translate="true">Actions</label>
             </settings>
         </actionsColumn>
     </columns>

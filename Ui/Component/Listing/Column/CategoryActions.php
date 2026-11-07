@@ -34,14 +34,14 @@ class CategoryActions extends Column
             $item[$this->getData('name')] = [
                 'edit' => [
                     'href'  => $this->urlBuilder->getUrl('slova_blog/category/edit', ['category_id' => $id]),
-                    'label' => __('Editează'),
+                    'label' => __('Edit'),
                 ],
                 'delete' => [
                     'href'    => $this->urlBuilder->getUrl('slova_blog/category/delete', ['category_id' => $id]),
-                    'label'   => __('Șterge'),
+                    'label'   => __('Delete'),
                     'confirm' => [
-                        'title'   => __('Șterge categoria'),
-                        'message' => __('Sigur ștergi această categorie?'),
+                        'title'   => __('Delete Category'),
+                        'message' => __('Are you sure you want to delete this category?'),
                     ],
                 ],
             ];

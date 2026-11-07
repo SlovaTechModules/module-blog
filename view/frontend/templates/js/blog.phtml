@@ -1,0 +1,160 @@
+<?php
+/**
+ * Slova_Blog — scripts of the blog pages. Compatible with Hyvä's Alpine CSP build:
+ * the component is registered with Alpine.data and the inline script with HyvaCsp.
+ *
+ * - slovaBlogCategories: the categories dropdown below 1280px.
+ * - Infinite scroll on phones (below 768px): the next list pages are fetched and their
+ *   cards appended; on Back the loaded cards and scroll position come back, a reload
+ *   starts from the top.
+ * Copyright © Slova. Licensed under the MIT License, see LICENSE.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Magento\Framework\View\Element\Template;
+use Slova\Blog\Block\PostList;
+
+/** @var Template $block */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var HyvaCsp $hyvaCsp */
+$hyvaCsp = $viewModels->require(HyvaCsp::class);
+?>
+<script>
+(() => {
+    'use strict';
+
+    function slovaBlogCategories() {
+        return {
+            open: false,
+            toggle() { this.open = !this.open; },
+            close() { this.open = false; },
+            stateClass() { return this.open ? 'is-open' : ''; },
+            expanded() { return this.open ? 'true' : 'false'; }
+        };
+    }
+    window.addEventListener('alpine:init', () => Alpine.data('slovaBlogCategories', slovaBlogCategories), { once: true });
+
+    const section = document.getElementById('slova-blog-list');
+    const grid = document.getElementById('slova-blog-grid');
+    if (!section || !grid) {
+        return;
+    }
+
+    const MOBILE_MAX = <?= (int)(PostList::MOBILE_BREAKPOINT_PX - 1) ?>;
+    const isMobile = () => window.matchMedia('(max-width: ' + MOBILE_MAX + 'px)').matches;
+    const lastPage = parseInt(section.dataset.lastPage, 10) || 1;
+    const currentPage = parseInt(section.dataset.currentPage, 10) || 1;
+    const initialCount = grid.children.length;
+    const loader = section.querySelector('[data-slova-blog-loader]');
+    const endMessage = section.querySelector('[data-slova-blog-end]');
+    const sentinel = section.querySelector('[data-slova-blog-sentinel]');
+    const storageKey = 'slovaBlogScroll:' + location.pathname;
+    let nextPage = currentPage + 1;
+    let loading = false;
+    let observer = null;
+
+    const initAlpine = () => {
+        if (window.Alpine && typeof window.Alpine.initTree === 'function') {
+            window.Alpine.initTree(grid);
+        }
+    };
+    const showEnd = () => {
+        if (endMessage && isMobile()) {
+            endMessage.hidden = false;
+        }
+    };
+
+    const saveState = () => {
+        if (!isMobile() || nextPage <= currentPage + 1) {
+            return;
+        }
+        try {
+            const appended = Array.from(grid.children).slice(initialCount).map((li) => li.outerHTML).join('');
+            sessionStorage.setItem(storageKey, JSON.stringify({ html: appended, nextPage, scrollY: window.scrollY }));
+        } catch (e) { /* storage unavailable */ }
+    };
+
+    const restoreState = () => {
+        if (!isMobile() || currentPage > 1) {
+            return;
+        }
+        const navigation = performance.getEntriesByType('navigation')[0];
+        if (navigation && navigation.type === 'reload') {
+            return;
+        }
+        try {
+            const saved = JSON.parse(sessionStorage.getItem(storageKey) || 'null');
+            if (!saved || !saved.html || !saved.nextPage) {
+                return;
+            }
+            grid.insertAdjacentHTML('beforeend', saved.html);
+            nextPage = saved.nextPage;
+            initAlpine();
+            requestAnimationFrame(() => window.scrollTo(0, saved.scrollY || 0));
+        } catch (e) { /* ignore a broken entry */ }
+    };
+
+    const loadNextPage = () => {
+        if (loading || nextPage > lastPage || !isMobile()) {
+            return;
+        }
+        loading = true;
+        if (loader) {
+            loader.hidden = false;
+        }
+        const url = new URL(location.href);
+        url.searchParams.set('p', String(nextPage));
+        fetch(url.toString(), { credentials: 'same-origin' })
+            .then((response) => response.text())
+            .then((html) => {
+                const doc = new DOMParser().parseFromString(html, 'text/html');
+                const newGrid = doc.getElementById('slova-blog-grid');
+                if (newGrid) {
+                    const fragment = document.createDocumentFragment();
+                    Array.from(newGrid.children).forEach((li) => fragment.appendChild(document.adoptNode(li)));
+                    grid.appendChild(fragment);
+                    initAlpine();
+                }
+                nextPage++;
+                if (nextPage > lastPage) {
+                    showEnd();
+                    if (observer) {
+                        observer.disconnect();
+                    }
+                }
+                saveState();
+            })
+            .catch(() => { /* try again on the next intersection */ })
+            .finally(() => {
+                loading = false;
+                if (loader) {
+                    loader.hidden = true;
+                }
+            });
+    };
+
+    restoreState();
+    if (nextPage > lastPage) {
+        showEnd();
+    } else if (sentinel && 'IntersectionObserver' in window) {
+        observer = new IntersectionObserver((entries) => {
+            if (entries.some((entry) => entry.isIntersecting)) {
+                loadNextPage();
+            }
+        }, { rootMargin: '0px 0px 400px 0px' });
+        observer.observe(sentinel);
+    }
+
+    document.addEventListener('click', (event) => {
+        if (event.target.closest && event.target.closest('a[href]')) {
+            saveState();
+        }
+    });
+    window.addEventListener('pagehide', saveState);
+})();
+</script>
+<?php $hyvaCsp->registerInlineScript() ?>

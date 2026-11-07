@@ -1,4 +1,9 @@
 <?php
+/**
+ * Slova_Blog
+ * Copyright © Slova. Licensed under the MIT License, see LICENSE.
+ */
+
 declare(strict_types=1);
 
 namespace Slova\Blog\Block\Head;
@@ -6,112 +11,121 @@ namespace Slova\Blog\Block\Head;
 use Magento\Framework\Registry;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template;
+use Slova\Blog\Block\PostList;
+use Slova\Blog\Model\Category;
+use Slova\Blog\Model\Config;
+use Slova\Blog\Model\DateFormatter;
 use Slova\Blog\Model\Post;
 use Slova\Blog\Model\Url as BlogUrl;
 
+/**
+ * Canonical link and JSON-LD (Article + BreadcrumbList) of a post page.
+ */
 class StructuredData extends Template
 {
+    /**
+     * @param Template\Context $context
+     * @param Registry $registry
+     * @param BlogUrl $blogUrl
+     * @param Config $config
+     * @param DateFormatter $dateFormatter
+     * @param array $data
+     */
     public function __construct(
         Template\Context $context,
         private readonly Registry $registry,
         private readonly BlogUrl $blogUrl,
+        private readonly Config $config,
+        private readonly DateFormatter $dateFormatter,
         array $data = []
     ) {
         parent::__construct($context, $data);
     }
 
+    /**
+     * Public URL of the current post.
+     *
+     * @return string
+     */
     public function getCanonicalUrl(): string
     {
-        $post = $this->registry->registry('current_blog_post');
-        if (!$post instanceof Post) {
-            return '';
-        }
-        return $this->blogUrl->getPostUrl((string)$post->getUrlKey());
+        $post = $this->getPost();
+        return $post ? $this->blogUrl->getPostUrl((string)$post->getUrlKey()) : '';
     }
 
+    /**
+     * JSON-LD payload, or ''.
+     *
+     * @return string
+     */
     public function getJsonLd(): string
     {
-        $post = $this->registry->registry('current_blog_post');
-        if (!$post instanceof Post) {
+        $post = $this->getPost();
+        if (!$post) {
             return '';
         }
 
-        $storeUrl = $this->_storeManager->getStore()->getBaseUrl();
-        $storeName = (string)$this->_storeManager->getStore()->getName();
-        $mediaUrl = $this->_storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
+        $store = $this->_storeManager->getStore();
+        $storeUrl = (string)$store->getBaseUrl();
         $postUrl = $this->blogUrl->getPostUrl((string)$post->getUrlKey());
 
-        $publishedAt = $post->getPublishedAt() ?: $post->getCreatedAt();
-        $updatedAt = $post->getUpdatedAt();
+        $imagePath = PostList::resolveImagePath((string)($post->getOgImage() ?: $post->getFeaturedImage()));
+        $description = trim(strip_tags((string)($post->getMetaDescription() ?: $post->getShortContent())));
 
-        $image = (string)($post->getOgImage() ?: $post->getFeaturedImage());
-        if ($image !== '') {
-            $relativePath = str_contains($image, '/') ? ltrim($image, '/') : 'slova/blog/' . $image;
-            $imageUrl = $mediaUrl . $relativePath;
-        } else {
-            $imageUrl = '';
-        }
-        $description = (string)($post->getMetaDescription() ?: $post->getShortContent());
-
-        $article = [
+        $article = array_filter([
             '@type' => 'Article',
             '@id' => $postUrl . '#article',
             'headline' => (string)$post->getTitle(),
             'mainEntityOfPage' => ['@type' => 'WebPage', '@id' => $postUrl],
             'url' => $postUrl,
-            'inLanguage' => 'ro-RO',
-            'datePublished' => $publishedAt ? date('c', strtotime((string)$publishedAt)) : null,
-            'dateModified' => $updatedAt ? date('c', strtotime((string)$updatedAt)) : null,
+            'inLanguage' => $this->dateFormatter->getLanguageTag(),
+            'datePublished' => $this->dateFormatter->iso((string)($post->getPublishedAt() ?: $post->getCreatedAt())),
+            'dateModified' => $this->dateFormatter->iso((string)$post->getUpdatedAt()),
+            'image' => $imagePath !== '' ? $store->getBaseUrl(UrlInterface::URL_TYPE_MEDIA) . $imagePath : '',
+            'description' => $description,
             'publisher' => [
                 '@type' => 'Organization',
-                'name' => $storeName,
+                'name' => (string)$store->getFrontendName(),
                 'url' => $storeUrl,
             ],
+        ], static fn ($value) => $value !== '' && $value !== null);
+
+        $crumbs = [
+            ['name' => (string)__('Home'), 'item' => $storeUrl],
+            ['name' => $this->config->getTitle(), 'item' => $this->blogUrl->getBaseUrl()],
         ];
-
-        if ($imageUrl !== '') {
-            $article['image'] = $imageUrl;
-        }
-        if (trim(strip_tags($description)) !== '') {
-            $article['description'] = trim(strip_tags($description));
-        }
-
-        $crumbItems = [
-            ['@type' => 'ListItem', 'position' => 1, 'name' => 'Acasă', 'item' => $storeUrl],
-            ['@type' => 'ListItem', 'position' => 2, 'name' => 'Jurnal de bord', 'item' => $this->blogUrl->getBaseUrl()],
-        ];
-
-        $currentCategory = $this->registry->registry('current_blog_category');
-        $position = 3;
-        if ($currentCategory && $currentCategory->getId()) {
-            $crumbItems[] = [
-                '@type'    => 'ListItem',
-                'position' => $position++,
-                'name'     => (string)$currentCategory->getName(),
-                'item'     => $this->blogUrl->getCategoryUrl((string)$currentCategory->getUrlKey()),
+        $category = $this->registry->registry('current_blog_category');
+        if ($category instanceof Category && $category->getId()) {
+            $crumbs[] = [
+                'name' => (string)$category->getName(),
+                'item' => $this->blogUrl->getCategoryUrl((string)$category->getUrlKey()),
             ];
         }
-        $crumbItems[] = [
-            '@type'    => 'ListItem',
-            'position' => $position,
-            'name'     => (string)$post->getTitle(),
-            'item'     => $postUrl,
-        ];
+        $crumbs[] = ['name' => (string)$post->getTitle(), 'item' => $postUrl];
 
-        $breadcrumbs = [
-            '@type'           => 'BreadcrumbList',
-            'itemListElement' => $crumbItems,
-        ];
+        $items = [];
+        foreach ($crumbs as $i => $crumb) {
+            $items[] = ['@type' => 'ListItem', 'position' => $i + 1] + $crumb;
+        }
 
-        $payload = [
-            '@context' => 'https://schema.org',
-            '@graph' => [
-                array_filter($article, static fn ($v) => $v !== null && $v !== ''),
-                $breadcrumbs,
+        $json = json_encode(
+            [
+                '@context' => 'https://schema.org',
+                '@graph' => [$article, ['@type' => 'BreadcrumbList', 'itemListElement' => $items]],
             ],
-        ];
-
-        $json = json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG
+        );
         return $json !== false ? $json : '';
+    }
+
+    /**
+     * Current post.
+     *
+     * @return Post|null
+     */
+    private function getPost(): ?Post
+    {
+        $post = $this->registry->registry('current_blog_post');
+        return $post instanceof Post ? $post : null;
     }
 }

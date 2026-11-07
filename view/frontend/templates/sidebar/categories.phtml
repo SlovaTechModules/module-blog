@@ -1,4 +1,10 @@
 <?php
+/**
+ * Slova_Blog — category list. Rendered twice: in the sidebar (desktop) and above the
+ * content as a dropdown (below 1280px); the head styles show one or the other.
+ * Copyright © Slova. Licensed under the MIT License, see LICENSE.
+ */
+
 declare(strict_types=1);
 
 use Magento\Framework\Escaper;
@@ -12,44 +18,39 @@ if (!$categories) {
     return;
 }
 ?>
-
-<aside class="slova-blog-sidebar-categories"
-       x-data="{ open: false }"
-       :class="{ 'is-open': open }"
-       @click.outside="open = false"
-       @keydown.escape="open = false"
-       aria-label="<?= $escaper->escapeHtmlAttr(__('Categorii de articole')) ?>">
+<nav class="slova-blog-categories"
+     x-data="slovaBlogCategories"
+     :class="stateClass"
+     @click.outside="close"
+     @keydown.escape="close"
+     aria-label="<?= $escaper->escapeHtmlAttr(__('Post categories')) ?>">
     <button type="button"
-            class="slova-blog-sidebar-categories__toggle"
-            @click="open = !open"
-            :aria-expanded="open ? 'true' : 'false'">
-        <span class="slova-blog-sidebar-categories__title">
-            <?= $escaper->escapeHtml(__('Categorii de articole')) ?>
-        </span>
-        <svg class="slova-blog-sidebar-categories__chevron" :class="{ 'is-open': open }"
-             viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.17l3.71-3.94a.75.75 0 1 1 1.08 1.04l-4.25 4.5a.75.75 0 0 1-1.08 0l-4.25-4.5a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" />
+            class="slova-blog-categories__toggle"
+            @click="toggle"
+            :aria-expanded="expanded"
+            aria-expanded="false">
+        <span class="slova-blog-categories__title"><?= $escaper->escapeHtml(__('Post categories')) ?></span>
+        <svg class="slova-blog-categories__chevron" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.17l3.71-3.94a.75.75 0 1 1 1.08 1.04l-4.25 4.5a.75.75 0 0 1-1.08 0l-4.25-4.5a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd"/>
         </svg>
     </button>
-    <div class="slova-blog-sidebar-categories__collapse" :class="{ 'is-open': open }">
-        <div class="slova-blog-sidebar-categories__collapse-inner">
-            <ul class="slova-blog-sidebar-categories__list">
-                <li class="slova-blog-sidebar-categories__item<?= $block->isAllActive() ? ' is-current' : '' ?>">
-                    <a href="<?= $escaper->escapeUrl($block->getAllPostsUrl()) ?>">
-                        <span class="slova-blog-sidebar-categories__name"><?= $escaper->escapeHtml(__('Toate articolele')) ?></span>
-                        <span class="slova-blog-sidebar-categories__count">(<?= (int)$block->getTotalPostCount() ?>)</span>
+    <div class="slova-blog-categories__panel">
+        <ul class="slova-blog-categories__list">
+            <li class="slova-blog-categories__item<?= $block->isAllActive() ? ' is-current' : '' ?>">
+                <a href="<?= $escaper->escapeUrl($block->getAllPostsUrl()) ?>"<?= $block->isAllActive() ? ' aria-current="page"' : '' ?>>
+                    <span class="slova-blog-categories__name"><?= $escaper->escapeHtml(__('All posts')) ?></span>
+                    <span class="slova-blog-categories__count">(<?= (int)$block->getTotalPostCount() ?>)</span>
+                </a>
+            </li>
+            <?php foreach ($categories as $category): ?>
+                <?php $isCurrent = $block->isCurrent($category); ?>
+                <li class="slova-blog-categories__item<?= $isCurrent ? ' is-current' : '' ?>">
+                    <a href="<?= $escaper->escapeUrl($block->getCategoryUrl($category)) ?>"<?= $isCurrent ? ' aria-current="page"' : '' ?>>
+                        <span class="slova-blog-categories__name"><?= $escaper->escapeHtml($category->getName()) ?></span>
+                        <span class="slova-blog-categories__count">(<?= (int)$block->getPostCount($category) ?>)</span>
                     </a>
                 </li>
-                <?php foreach ($categories as $category): ?>
-                    <?php $count = $block->getPostCount($category); ?>
-                    <li class="slova-blog-sidebar-categories__item<?= $block->isCurrent($category) ? ' is-current' : '' ?>">
-                        <a href="<?= $escaper->escapeUrl($block->getCategoryUrl($category)) ?>">
-                            <span class="slova-blog-sidebar-categories__name"><?= $escaper->escapeHtml($category->getName()) ?></span>
-                            <span class="slova-blog-sidebar-categories__count">(<?= (int)$count ?>)</span>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
+            <?php endforeach; ?>
+        </ul>
     </div>
-</aside>
+</nav>

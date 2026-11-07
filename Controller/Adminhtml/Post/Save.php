@@ -1,4 +1,9 @@
 <?php
+/**
+ * Slova_Blog
+ * Copyright © Slova. Licensed under the MIT License, see LICENSE.
+ */
+
 declare(strict_types=1);
 
 namespace Slova\Blog\Controller\Adminhtml\Post;
@@ -6,18 +11,32 @@ namespace Slova\Blog\Controller\Adminhtml\Post;
 use Magento\Backend\App\Action\Context;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Framework\Api\SearchCriteriaBuilder;
+use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Slova\Blog\Controller\Adminhtml\Post;
 use Slova\Blog\Model\ImageUploader;
 use Slova\Blog\Model\PostFactory;
 use Slova\Blog\Model\ResourceModel\Post as PostResource;
-use Slova\Core\Helper\UrlKey;
+use Slova\Blog\Model\UrlKeyGenerator;
 
-class Save extends Post
+/**
+ * Save a post from the admin form.
+ */
+class Save extends Post implements HttpPostActionInterface
 {
     private const IMAGE_FIELDS = ['featured_image', 'og_image', 'side_image', 'thumbnail_mobile'];
 
+    /**
+     * @param Context $context
+     * @param DataPersistorInterface $dataPersistor
+     * @param PostFactory $postFactory
+     * @param PostResource $postResource
+     * @param ImageUploader $imageUploader
+     * @param ProductRepositoryInterface $productRepository
+     * @param SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param UrlKeyGenerator $urlKeyGenerator
+     */
     public function __construct(
         Context $context,
         private readonly DataPersistorInterface $dataPersistor,
@@ -26,11 +45,14 @@ class Save extends Post
         private readonly ImageUploader $imageUploader,
         private readonly ProductRepositoryInterface $productRepository,
         private readonly SearchCriteriaBuilder $searchCriteriaBuilder,
-        private readonly UrlKey $urlKeyHelper
+        private readonly UrlKeyGenerator $urlKeyGenerator
     ) {
         parent::__construct($context);
     }
 
+    /**
+     * @inheritDoc
+     */
     public function execute()
     {
         $data = $this->getRequest()->getPostValue();
@@ -45,7 +67,7 @@ class Save extends Post
         if ($id) {
             $this->postResource->load($model, $id);
             if (!$model->getId()) {
-                $this->messageManager->addErrorMessage(__('Articolul nu există.'));
+                $this->messageManager->addErrorMessage(__('This post no longer exists.'));
                 return $resultRedirect->setPath('*/*/');
             }
         }
@@ -64,7 +86,7 @@ class Save extends Post
 
         try {
             $this->postResource->save($model);
-            $this->messageManager->addSuccessMessage(__('Articolul a fost salvat.'));
+            $this->messageManager->addSuccessMessage(__('The post has been saved.'));
             $this->dataPersistor->clear('slova_blog_post');
 
             if ($this->getRequest()->getParam('back')) {
@@ -74,13 +96,19 @@ class Save extends Post
         } catch (LocalizedException $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
         } catch (\Exception $e) {
-            $this->messageManager->addExceptionMessage($e, __('Eroare la salvare: %1', $e->getMessage()));
+            $this->messageManager->addExceptionMessage($e, __('Something went wrong while saving: %1', $e->getMessage()));
         }
 
         $this->dataPersistor->set('slova_blog_post', $data);
         return $resultRedirect->setPath('*/*/edit', ['post_id' => $id]);
     }
 
+    /**
+     * Image uploader values → stored file names; new uploads move out of tmp.
+     *
+     * @param array $data
+     * @return array
+     */
     private function normalizeImages(array $data): array
     {
         foreach (self::IMAGE_FIELDS as $field) {
@@ -90,8 +118,8 @@ class Save extends Post
                 $fileName = $data[$field][0]['name'];
                 try {
                     $this->imageUploader->moveFileFromTmp($fileName);
-                } catch (\Exception $e) {
-                    // already moved
+                } catch (\Exception) {
+                    // Already moved by an earlier save.
                 }
                 $data[$field] = $fileName;
             }
@@ -102,16 +130,25 @@ class Save extends Post
         return $data;
     }
 
+    /**
+     * URL key from the field, else from the title.
+     *
+     * @param array $data
+     * @return array
+     */
     private function normalizeUrlKey(array $data): array
     {
-        if (empty($data['url_key']) && !empty($data['title'])) {
-            $data['url_key'] = $this->urlKeyHelper->normalizeUrlKey((string)$data['title']);
-        } elseif (!empty($data['url_key'])) {
-            $data['url_key'] = $this->urlKeyHelper->normalizeUrlKey((string)$data['url_key']);
-        }
+        $source = !empty($data['url_key']) ? (string)$data['url_key'] : (string)($data['title'] ?? '');
+        $data['url_key'] = $this->urlKeyGenerator->generate($source);
         return $data;
     }
 
+    /**
+     * Empty publish date → null (the creation date is used).
+     *
+     * @param array $data
+     * @return array
+     */
     private function normalizePublishedAt(array $data): array
     {
         if (empty($data['published_at'])) {
@@ -120,6 +157,12 @@ class Save extends Post
         return $data;
     }
 
+    /**
+     * Category ids as a list of integers.
+     *
+     * @param array $data
+     * @return array
+     */
     private function normalizeCategories(array $data): array
     {
         if (isset($data['category_ids']) && is_string($data['category_ids'])) {
@@ -129,38 +172,45 @@ class Save extends Post
         return $data;
     }
 
+    /**
+     * SKU list → product ids in the order entered; unknown SKUs are reported.
+     *
+     * @param array $data
+     * @return array
+     */
     private function normalizeProducts(array $data): array
     {
         $skuString = trim((string)($data['related_skus'] ?? ''));
         unset($data['related_skus']);
 
-        if ($skuString === '') {
-            $data['product_ids'] = [];
-            return $data;
-        }
-
-        $skus = array_filter(array_map('trim', preg_split('/[,\s]+/', $skuString) ?: []));
+        $skus = $skuString === '' ? [] : array_values(array_filter(array_map(
+            'trim',
+            preg_split('/[,\s]+/', $skuString) ?: []
+        )));
         if (!$skus) {
             $data['product_ids'] = [];
             return $data;
         }
 
-        $criteria = $this->searchCriteriaBuilder
-            ->addFilter('sku', $skus, 'in')
-            ->create();
-        $products = $this->productRepository->getList($criteria)->getItems();
-
-        $foundSkus = [];
-        $productIds = [];
-        foreach ($products as $product) {
-            $productIds[] = (int)$product->getId();
-            $foundSkus[] = strtolower((string)$product->getSku());
+        $criteria = $this->searchCriteriaBuilder->addFilter('sku', $skus, 'in')->create();
+        $idsBySku = [];
+        foreach ($this->productRepository->getList($criteria)->getItems() as $product) {
+            $idsBySku[strtolower((string)$product->getSku())] = (int)$product->getId();
         }
 
-        $missing = array_diff(array_map('strtolower', $skus), $foundSkus);
+        $productIds = [];
+        $missing = [];
+        foreach ($skus as $sku) {
+            $key = strtolower($sku);
+            if (isset($idsBySku[$key])) {
+                $productIds[] = $idsBySku[$key];
+            } else {
+                $missing[] = $sku;
+            }
+        }
         if ($missing) {
             $this->messageManager->addWarningMessage(
-                __('SKU-uri negăsite (ignorate): %1', implode(', ', $missing))
+                __('These SKUs were not found and have been ignored: %1', implode(', ', $missing))
             );
         }
 
