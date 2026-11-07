@@ -125,6 +125,9 @@ class StructuredData extends Template
      */
     private function getPost(): ?Post
     {
+        if ($this->registry->registry(\Slova\Blog\Controller\Post\Preview::REGISTRY_FLAG)) {
+            return null; // A preview is not the public page: no canonical, no structured data.
+        }
         $post = $this->registry->registry('current_blog_post');
         return $post instanceof Post ? $post : null;
     }

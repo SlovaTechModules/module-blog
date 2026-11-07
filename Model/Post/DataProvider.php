@@ -124,10 +124,16 @@ class DataProvider extends AbstractDataProvider
         $criteria = $this->searchCriteriaBuilder
             ->addFilter('entity_id', $productIds, 'in')
             ->create();
-        $products = $this->productRepository->getList($criteria)->getItems();
+        $skuById = [];
+        foreach ($this->productRepository->getList($criteria)->getItems() as $product) {
+            $skuById[(int)$product->getId()] = (string)$product->getSku();
+        }
+        // In the saved order, so saving again keeps the slider order.
         $skus = [];
-        foreach ($products as $product) {
-            $skus[] = $product->getSku();
+        foreach ($productIds as $id) {
+            if (isset($skuById[(int)$id])) {
+                $skus[] = $skuById[(int)$id];
+            }
         }
         return implode(', ', $skus);
     }

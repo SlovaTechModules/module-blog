@@ -18,6 +18,7 @@ use Magento\Framework\Registry;
 use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template;
 use Slova\Blog\Api\Data\PostInterface;
+use Slova\Blog\Controller\Post\Preview as PreviewController;
 use Slova\Blog\Model\Category;
 use Slova\Blog\Model\Config;
 use Slova\Blog\Model\DateFormatter;
@@ -354,14 +355,17 @@ class PostView extends Template implements IdentityInterface
             return $this;
         }
 
+        $isPreview = (bool)$this->registry->registry(PreviewController::REGISTRY_FLAG);
         $title = (string)($post->getMetaTitle() ?: $post->getTitle());
-        $this->pageConfig->getTitle()->set($title);
+        $this->pageConfig->getTitle()->set($isPreview ? (string)__('Preview: %1', $title) : $title);
 
         $description = trim(strip_tags((string)($post->getMetaDescription() ?: $post->getShortContent())));
         if ($description !== '') {
             $this->pageConfig->setDescription($description);
         }
-        $this->pageConfig->setRobots((string)($post->getMetaRobots() ?: 'INDEX,FOLLOW'));
+        $this->pageConfig->setRobots(
+            $isPreview ? 'NOINDEX,NOFOLLOW' : (string)($post->getMetaRobots() ?: 'INDEX,FOLLOW')
+        );
 
         $this->addSocialMetadata($post, $title, $description);
 

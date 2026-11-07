@@ -9,43 +9,33 @@ declare(strict_types=1);
 namespace Slova\Blog\Controller\Adminhtml\Post;
 
 use Magento\Backend\App\Action\Context;
-use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Slova\Blog\Controller\Adminhtml\Post;
-use Slova\Blog\Model\ImageUploader;
+use Slova\Blog\Model\Post\FormData;
 use Slova\Blog\Model\PostFactory;
 use Slova\Blog\Model\ResourceModel\Post as PostResource;
-use Slova\Blog\Model\UrlKeyGenerator;
 
 /**
- * Save a post from the admin form.
+ * Save a post from the admin form; with the "draft" parameter (Save Draft) the post is
+ * stored inactive and the editor stays open.
  */
 class Save extends Post implements HttpPostActionInterface
 {
-    private const IMAGE_FIELDS = ['featured_image', 'og_image', 'side_image', 'thumbnail_mobile'];
-
     /**
      * @param Context $context
      * @param DataPersistorInterface $dataPersistor
      * @param PostFactory $postFactory
      * @param PostResource $postResource
-     * @param ImageUploader $imageUploader
-     * @param ProductRepositoryInterface $productRepository
-     * @param SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param UrlKeyGenerator $urlKeyGenerator
+     * @param FormData $formData
      */
     public function __construct(
         Context $context,
         private readonly DataPersistorInterface $dataPersistor,
         private readonly PostFactory $postFactory,
         private readonly PostResource $postResource,
-        private readonly ImageUploader $imageUploader,
-        private readonly ProductRepositoryInterface $productRepository,
-        private readonly SearchCriteriaBuilder $searchCriteriaBuilder,
-        private readonly UrlKeyGenerator $urlKeyGenerator
+        private readonly FormData $formData
     ) {
         parent::__construct($context);
     }
@@ -72,24 +62,33 @@ class Save extends Post implements HttpPostActionInterface
             }
         }
 
-        $data = $this->normalizeImages($data);
-        $data = $this->normalizeUrlKey($data);
-        $data = $this->normalizePublishedAt($data);
-        $data = $this->normalizeProducts($data);
-        $data = $this->normalizeCategories($data);
-
-        if (empty($data['post_id'])) {
-            unset($data['post_id']);
+        $isDraft = (bool)$this->getRequest()->getParam('draft');
+        try {
+            $normalized = $this->formData->normalize($data);
+        } catch (LocalizedException $e) {
+            $this->messageManager->addErrorMessage($e->getMessage());
+            return $resultRedirect->setPath('*/*/edit', ['post_id' => $id]);
+        }
+        $data = $normalized['data'];
+        if ($isDraft) {
+            $data['is_active'] = 0;
+        }
+        if ($normalized['missing_skus']) {
+            $this->messageManager->addWarningMessage(
+                __('These SKUs were not found and have been ignored: %1', implode(', ', $normalized['missing_skus']))
+            );
         }
 
         $model->setData($data);
 
         try {
             $this->postResource->save($model);
-            $this->messageManager->addSuccessMessage(__('The post has been saved.'));
+            $this->messageManager->addSuccessMessage(
+                $isDraft ? __('The draft has been saved.') : __('The post has been saved.')
+            );
             $this->dataPersistor->clear('slova_blog_post');
 
-            if ($this->getRequest()->getParam('back')) {
+            if ($isDraft || $this->getRequest()->getParam('back')) {
                 return $resultRedirect->setPath('*/*/edit', ['post_id' => (int)$model->getId()]);
             }
             return $resultRedirect->setPath('*/*/');
@@ -101,120 +100,5 @@ class Save extends Post implements HttpPostActionInterface
 
         $this->dataPersistor->set('slova_blog_post', $data);
         return $resultRedirect->setPath('*/*/edit', ['post_id' => $id]);
-    }
-
-    /**
-     * Image uploader values → stored file names; new uploads move out of tmp.
-     *
-     * @param array $data
-     * @return array
-     */
-    private function normalizeImages(array $data): array
-    {
-        foreach (self::IMAGE_FIELDS as $field) {
-            if (isset($data[$field][0]['name']) && !isset($data[$field][0]['tmp_name'])) {
-                $data[$field] = $data[$field][0]['name'];
-            } elseif (isset($data[$field][0]['name'])) {
-                $fileName = $data[$field][0]['name'];
-                try {
-                    $this->imageUploader->moveFileFromTmp($fileName);
-                } catch (\Exception) {
-                    // Already moved by an earlier save.
-                }
-                $data[$field] = $fileName;
-            }
-            if (empty($data[$field])) {
-                $data[$field] = null;
-            }
-        }
-        return $data;
-    }
-
-    /**
-     * URL key from the field, else from the title.
-     *
-     * @param array $data
-     * @return array
-     */
-    private function normalizeUrlKey(array $data): array
-    {
-        $source = !empty($data['url_key']) ? (string)$data['url_key'] : (string)($data['title'] ?? '');
-        $data['url_key'] = $this->urlKeyGenerator->generate($source);
-        return $data;
-    }
-
-    /**
-     * Empty publish date → null (the creation date is used).
-     *
-     * @param array $data
-     * @return array
-     */
-    private function normalizePublishedAt(array $data): array
-    {
-        if (empty($data['published_at'])) {
-            $data['published_at'] = null;
-        }
-        return $data;
-    }
-
-    /**
-     * Category ids as a list of integers.
-     *
-     * @param array $data
-     * @return array
-     */
-    private function normalizeCategories(array $data): array
-    {
-        if (isset($data['category_ids']) && is_string($data['category_ids'])) {
-            $data['category_ids'] = array_filter(array_map('intval', explode(',', $data['category_ids'])));
-        }
-        $data['category_ids'] = isset($data['category_ids']) ? array_values((array)$data['category_ids']) : [];
-        return $data;
-    }
-
-    /**
-     * SKU list → product ids in the order entered; unknown SKUs are reported.
-     *
-     * @param array $data
-     * @return array
-     */
-    private function normalizeProducts(array $data): array
-    {
-        $skuString = trim((string)($data['related_skus'] ?? ''));
-        unset($data['related_skus']);
-
-        $skus = $skuString === '' ? [] : array_values(array_filter(array_map(
-            'trim',
-            preg_split('/[,\s]+/', $skuString) ?: []
-        )));
-        if (!$skus) {
-            $data['product_ids'] = [];
-            return $data;
-        }
-
-        $criteria = $this->searchCriteriaBuilder->addFilter('sku', $skus, 'in')->create();
-        $idsBySku = [];
-        foreach ($this->productRepository->getList($criteria)->getItems() as $product) {
-            $idsBySku[strtolower((string)$product->getSku())] = (int)$product->getId();
-        }
-
-        $productIds = [];
-        $missing = [];
-        foreach ($skus as $sku) {
-            $key = strtolower($sku);
-            if (isset($idsBySku[$key])) {
-                $productIds[] = $idsBySku[$key];
-            } else {
-                $missing[] = $sku;
-            }
-        }
-        if ($missing) {
-            $this->messageManager->addWarningMessage(
-                __('These SKUs were not found and have been ignored: %1', implode(', ', $missing))
-            );
-        }
-
-        $data['product_ids'] = $productIds;
-        return $data;
     }
 }

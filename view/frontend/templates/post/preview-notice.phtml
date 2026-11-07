@@ -1,0 +1,16 @@
+<?php
+/**
+ * Slova_Blog — notice on top of a post preview.
+ * Copyright © Slova. Licensed under the MIT License, see LICENSE.
+ */
+
+declare(strict_types=1);
+
+use Magento\Framework\Escaper;
+
+/** @var Escaper $escaper */
+?>
+<p class="slova-blog-preview-notice" role="status">
+    <strong><?= $escaper->escapeHtml(__('Preview')) ?></strong>
+    <?= $escaper->escapeHtml(__('This is the post as it is in the editor. This link is private and works for one hour.')) ?>
+</p>

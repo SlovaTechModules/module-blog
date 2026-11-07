@@ -12,6 +12,9 @@
         <buttons>
             <button name="back" class="Slova\Blog\Block\Adminhtml\Post\Edit\BackButton"/>
             <button name="delete" class="Slova\Blog\Block\Adminhtml\Post\Edit\DeleteButton"/>
+            <button name="view" class="Slova\Blog\Block\Adminhtml\Post\Edit\ViewButton"/>
+            <button name="preview" class="Slova\Blog\Block\Adminhtml\Post\Edit\PreviewButton"/>
+            <button name="save_draft" class="Slova\Blog\Block\Adminhtml\Post\Edit\SaveDraftButton"/>
             <button name="save" class="Slova\Blog\Block\Adminhtml\Post\Edit\SaveButton"/>
             <button name="save_and_continue" class="Slova\Blog\Block\Adminhtml\Post\Edit\SaveAndContinueButton"/>
         </buttons>
@@ -340,19 +343,6 @@
                 </imageUploader>
             </formElements>
         </field>
-    </fieldset>
-
-    <fieldset name="preview">
-        <settings>
-            <label translate="true">Preview</label>
-            <collapsible>true</collapsible>
-            <opened>false</opened>
-        </settings>
-        <htmlContent name="preview_link">
-            <block class="Slova\Blog\Block\Adminhtml\Post\Edit\PreviewLink"
-                   name="slova_blog_post_preview_link"
-                   template="Slova_Blog::post/preview-link.phtml"/>
-        </htmlContent>
     </fieldset>
 
 </form>

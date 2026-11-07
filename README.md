@@ -84,6 +84,15 @@ This drops the blog tables and deletes the blog's URL rewrites and settings. Upl
 
 ## Writing posts
 
+The post editor has the buttons WordPress users expect:
+
+| Button | What it does |
+|---|---|
+| **Preview** | Opens the post in a new tab exactly as it is in the editor, unsaved changes included, with a "Preview" notice. The link is private, not indexed, not cached, and expires after one hour. On a **draft** (a new post, or one that is not active) the draft is saved first, still inactive, so nothing is lost. On a **live** post nothing is saved: visitors keep seeing the saved version until you press Save. |
+| **Save Draft** | Saves the post as inactive and keeps the editor open. Shown on new and inactive posts. |
+| **View Post** | Opens the public page in a new tab. Shown when the post is live (active and its publish date has come). |
+| **Save** / **Save and Continue Edit** | Save with the *Active* switch as set in the form. |
+
 - **URL key** is made from the title when left empty, with accents turned into plain letters (`Știri și noutăți` → `stiri-si-noutati`).
 - **Short description** is the text on the card and the default meta description.
 - **Featured image** shows on the card and, unless *Show Featured Image as Hero* is off, as a 21:9 banner at the top of the post. A landscape image around 16:9 works best on cards.

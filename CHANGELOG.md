@@ -5,6 +5,8 @@
 First public release, free under the MIT License.
 
 - Posts and categories managed under **Content → Blog**: title, URL key, short description, WYSIWYG content, featured image, optional square thumbnail for phones, optional intro section (text and image side by side) instead of the hero, related products by SKU, publish date (a future date schedules the post), meta title, description, robots and Open Graph image.
+- Editor buttons as in WordPress: **Preview** (unsaved changes in a new tab through a private one-hour link; a draft is saved first, a live post never), **Save Draft** (saves inactive, stays in the editor) and **View Post** (opens the live page).
+- Uploading an image whose name is already used in `pub/media/slova/blog` keeps both files (the new one is renamed) instead of overwriting the other post's image. Related products keep their order when the post is saved again.
 - Blog home, category pages and posts on Hyvä: card grid (one column on phones, two on tablets, three on desktop), pager on larger screens and infinite scroll on phones, categories with post counts (a list in the sidebar, a dropdown on smaller screens), previous/next links within the category, related products slider with Hyvä's product cards.
 - URLs from your own prefix, per store view (`/blog`, `/news/blog`…), with a category prefix. Saving the settings rebuilds the URL rewrites; `bin/magento slova:blog:url-rewrites` does the same from the command line. Internal routes redirect (301) to the public URLs.
 - SEO: canonical links, Article and BreadcrumbList structured data, Open Graph and Twitter Card tags, posts, categories and the blog home in the XML sitemap.
