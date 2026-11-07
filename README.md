@@ -87,11 +87,13 @@ This drops the blog tables and deletes the blog's URL rewrites and settings. Upl
 - **URL key** is made from the title when left empty, with accents turned into plain letters (`Știri și noutăți` → `stiri-si-noutati`).
 - **Short description** is the text on the card and the default meta description.
 - **Featured image** shows on the card and, unless *Show Featured Image as Hero* is off, as a 21:9 banner at the top of the post. A landscape image around 16:9 works best on cards.
+- **Each image once per page.** If the featured image is also the intro image or is placed in the content, the hero is left out; if the intro image is placed in the content, the intro shows its text only. Images you put in the content are always kept. The same photo uploaded twice under different names counts as the same image.
 - **Mobile thumbnail** (optional) replaces the featured image on cards below 768px; a square image works best.
 - **Intro section**: plain text with `<strong>` and `<em>` (everything else is escaped); an empty line starts a new paragraph. With an image it shows as two columns.
 - **Related products**: SKUs separated by commas or spaces, in the order you want them. Unknown SKUs are reported when you save and ignored. Only enabled products visible in the catalog are shown.
 - **Categories**: a post can have several; the first one is its main category (breadcrumbs, highlighted category, previous/next links).
 - **Published at**: empty means the creation date; a date in the future keeps the post hidden until then.
+- **Images in the content** can be inserted from the editor's media gallery; `{{media url="…"}}` and the other CMS directives are resolved as on CMS pages.
 - **Videos**: `[youtube:VIDEO_ID]` in the content, or a YouTube / Vimeo embed, which is lazy-loaded.
 
 ## URLs

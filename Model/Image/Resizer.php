@@ -30,6 +30,9 @@ class Resizer
     private const QUALITY_WEBP = 75;
     private const QUALITY_JPEG = 78;
 
+    /** @var array<string,string|null> content hashes by media path, for this request */
+    private array $fingerprints = [];
+
     /**
      * @param Filesystem $filesystem
      * @param StoreManagerInterface $storeManager
@@ -117,6 +120,44 @@ class Resizer
             return [$srcW, $srcH];
         }
         return [$width, (int)round($srcH * $width / $srcW)];
+    }
+
+    /**
+     * Whether two media paths are the same picture: the same file, or two files with
+     * identical content (the same photo uploaded twice under different names).
+     *
+     * @param string $pathA
+     * @param string $pathB
+     * @return bool
+     */
+    public function isSameImage(string $pathA, string $pathB): bool
+    {
+        $pathA = ltrim($pathA, '/');
+        $pathB = ltrim($pathB, '/');
+        if ($pathA === '' || $pathB === '') {
+            return false;
+        }
+        if ($pathA === $pathB) {
+            return true;
+        }
+        $hashA = $this->fingerprint($pathA);
+        return $hashA !== null && $hashA === $this->fingerprint($pathB);
+    }
+
+    /**
+     * Content hash of a media file, or null when it cannot be read.
+     *
+     * @param string $path
+     * @return string|null
+     */
+    private function fingerprint(string $path): ?string
+    {
+        if (!array_key_exists($path, $this->fingerprints)) {
+            $absolute = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA)->getAbsolutePath($path);
+            $hash = is_file($absolute) ? md5_file($absolute) : false;
+            $this->fingerprints[$path] = $hash !== false ? $hash : null;
+        }
+        return $this->fingerprints[$path];
     }
 
     /**

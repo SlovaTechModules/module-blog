@@ -54,6 +54,25 @@ class ContentProcessor
     }
 
     /**
+     * Media paths (relative to pub/media) of the images in the HTML; external images are left out.
+     *
+     * @param string $html
+     * @return string[]
+     */
+    public function getMediaImagePaths(string $html): array
+    {
+        preg_match_all('/<img\b([^>]*)>/i', $html, $matches);
+        $paths = [];
+        foreach ($matches[1] as $rawAttributes) {
+            $path = $this->urlToMediaPath((string)($this->parseAttributes($rawAttributes)['src'] ?? ''));
+            if ($path !== null && $path !== '') {
+                $paths[] = $path;
+            }
+        }
+        return array_values(array_unique($paths));
+    }
+
+    /**
      * Rewrite every <img>.
      *
      * @param string $html

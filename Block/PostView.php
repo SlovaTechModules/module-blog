@@ -12,6 +12,7 @@ use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Attribute\Source\Status as ProductStatus;
 use Magento\Catalog\Model\Product\Visibility as ProductVisibility;
 use Magento\Catalog\Model\ResourceModel\Product\CollectionFactory as ProductCollectionFactory;
+use Magento\Cms\Model\Template\FilterProvider;
 use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Registry;
 use Magento\Framework\UrlInterface;
@@ -20,6 +21,7 @@ use Slova\Blog\Api\Data\PostInterface;
 use Slova\Blog\Model\Category;
 use Slova\Blog\Model\Config;
 use Slova\Blog\Model\DateFormatter;
+use Slova\Blog\Model\Image\Resizer;
 use Slova\Blog\Model\Post;
 use Slova\Blog\Model\ResourceModel\Category\CollectionFactory as CategoryCollectionFactory;
 use Slova\Blog\Model\SideTextFormatter;
@@ -33,6 +35,12 @@ use Slova\Blog\Service\ContentProcessor;
  */
 class PostView extends Template implements IdentityInterface
 {
+    /** @var string|null */
+    private ?string $filteredContent = null;
+
+    /** @var string[]|null media paths of the content's images */
+    private ?array $contentImagePaths = null;
+
     /**
      * @param Template\Context $context
      * @param Registry $registry
@@ -43,6 +51,8 @@ class PostView extends Template implements IdentityInterface
      * @param SideTextFormatter $sideTextFormatter
      * @param DateFormatter $dateFormatter
      * @param Config $config
+     * @param FilterProvider $filterProvider
+     * @param Resizer $resizer
      * @param array $data
      */
     public function __construct(
@@ -55,6 +65,8 @@ class PostView extends Template implements IdentityInterface
         private readonly SideTextFormatter $sideTextFormatter,
         private readonly DateFormatter $dateFormatter,
         private readonly Config $config,
+        private readonly FilterProvider $filterProvider,
+        private readonly Resizer $resizer,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -72,14 +84,14 @@ class PostView extends Template implements IdentityInterface
     }
 
     /**
-     * Content HTML ready for display.
+     * Content HTML ready for display: CMS directives such as {{media url="…"}} (images
+     * inserted from the editor's media gallery) resolved, then images and videos prepared.
      *
      * @return string
      */
     public function getProcessedContent(): string
     {
-        $post = $this->getPost();
-        return $post ? $this->contentProcessor->process((string)$post->getContent()) : '';
+        return $this->contentProcessor->process($this->getFilteredContent());
     }
 
     /**
@@ -95,12 +107,33 @@ class PostView extends Template implements IdentityInterface
     /**
      * Whether the featured image is shown as the hero.
      *
+     * Never when the same picture is already on the page, as the intro image or inside
+     * the content: an image is shown once per page (the card keeps using it).
+     *
      * @return bool
      */
     public function shouldShowFeaturedImage(): bool
     {
         $post = $this->getPost();
-        return $post && (int)$post->getShowFeaturedImage() === 1 && $this->getFeaturedImagePath() !== '';
+        $path = $this->getFeaturedImagePath();
+        if (!$post || (int)$post->getShowFeaturedImage() !== 1 || $path === '') {
+            return false;
+        }
+        if ($this->shouldShowSideImage() && $this->resizer->isSameImage($path, $this->getSideImagePath())) {
+            return false;
+        }
+        return !$this->isInContent($path);
+    }
+
+    /**
+     * Whether the intro image is shown: not when the same picture is inside the content.
+     *
+     * @return bool
+     */
+    public function shouldShowSideImage(): bool
+    {
+        $path = $this->getSideImagePath();
+        return $path !== '' && !$this->isInContent($path);
     }
 
     /**
@@ -140,7 +173,7 @@ class PostView extends Template implements IdentityInterface
      */
     public function hasSideSection(): bool
     {
-        return $this->getSideText() !== '' || $this->getSideImagePath() !== '';
+        return $this->getSideText() !== '' || $this->shouldShowSideImage();
     }
 
     /**
@@ -359,6 +392,41 @@ class PostView extends Template implements IdentityInterface
         }
 
         return $this;
+    }
+
+    /**
+     * Post content with CMS directives resolved (computed once).
+     *
+     * @return string
+     */
+    private function getFilteredContent(): string
+    {
+        if ($this->filteredContent === null) {
+            $content = (string)$this->getPost()?->getContent();
+            $this->filteredContent = trim($content) === ''
+                ? ''
+                : (string)$this->filterProvider->getPageFilter()->filter($content);
+        }
+        return $this->filteredContent;
+    }
+
+    /**
+     * Whether the picture at this media path is one of the content's images.
+     *
+     * @param string $path
+     * @return bool
+     */
+    private function isInContent(string $path): bool
+    {
+        if ($this->contentImagePaths === null) {
+            $this->contentImagePaths = $this->contentProcessor->getMediaImagePaths($this->getFilteredContent());
+        }
+        foreach ($this->contentImagePaths as $contentPath) {
+            if ($this->resizer->isSameImage($path, $contentPath)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

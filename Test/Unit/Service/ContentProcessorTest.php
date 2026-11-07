@@ -74,6 +74,15 @@ class ContentProcessorTest extends TestCase
         $this->assertStringContainsString(' allowfullscreen ', $html);
     }
 
+    public function testMediaImagePathsLeaveOutExternalImages(): void
+    {
+        $paths = $this->processor(true)->getMediaImagePaths(
+            '<img src="' . self::MEDIA . 'slova/blog/a.jpg"><img src="/media/wysiwyg/b.png">'
+            . '<img src="https://cdn.example.com/c.jpg"><img src="' . self::MEDIA . 'slova/blog/a.jpg">'
+        );
+        $this->assertSame(['slova/blog/a.jpg', 'wysiwyg/b.png'], $paths);
+    }
+
     public function testEmptyContent(): void
     {
         $this->assertSame('', $this->processor(true)->process('   '));

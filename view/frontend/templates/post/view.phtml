@@ -48,7 +48,7 @@ $showHero = $block->shouldShowFeaturedImage();
     <?php if ($block->hasSideSection()): ?>
         <?php
         $sideText = $block->getSanitizedSideText();
-        $sideImgPath = $block->getSideImagePath();
+        $sideImgPath = $block->shouldShowSideImage() ? $block->getSideImagePath() : '';
         ?>
         <section class="slova-blog-post__intro<?= $sideText === '' || $sideImgPath === '' ? ' is-single' : '' ?>">
             <?php if ($sideText !== ''): ?>
