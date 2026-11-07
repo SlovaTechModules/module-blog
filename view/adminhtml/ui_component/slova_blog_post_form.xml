@@ -164,7 +164,7 @@
                 <dataType>boolean</dataType>
                 <label translate="true">Show Featured Image as Hero</label>
                 <dataScope>show_featured_image</dataScope>
-                <notice translate="true">The featured image is always used on the post card. Choose whether it also appears as a wide banner at the top of the post page. Turn it off when you use the intro section below.</notice>
+                <notice translate="true">The featured image is always used on the post card. Choose whether it also appears as a wide banner at the top of the post page. Turn it off when you use the intro section below. Even when on, the banner is left out if the same picture is the intro image or appears in the content.</notice>
             </settings>
             <formElements>
                 <checkbox>

@@ -122,7 +122,7 @@ Content,Conținut
 "Mobile Thumbnail Alt Text","Text alternativ thumbnail mobil"
 "Optional. Falls back to the featured image alt text.","Opțional. Dacă lipsește, se folosește textul alternativ al imaginii reprezentative."
 "Show Featured Image as Hero","Afișează imaginea ca hero pe pagina articolului"
-"The featured image is always used on the post card. Choose whether it also appears as a wide banner at the top of the post page. Turn it off when you use the intro section below.","Imaginea reprezentativă se folosește mereu pe card. Aici alegi dacă apare și ca bandă lată sus, pe pagina articolului. Dezactivează când folosești o secțiune intro mai jos."
+"The featured image is always used on the post card. Choose whether it also appears as a wide banner at the top of the post page. Turn it off when you use the intro section below. Even when on, the banner is left out if the same picture is the intro image or appears in the content.","Imaginea reprezentativă se folosește mereu pe card. Aici alegi dacă apare și ca bandă lată sus, pe pagina articolului. Dezactivează când folosești o secțiune intro mai jos. Chiar activată, banda nu apare dacă aceeași imagine este imaginea din intro sau apare în conținut."
 "Related Products (SKUs)","Produse menționate (SKU-uri)"
 "Comma-separated SKUs, shown in a product slider under the post. Unknown SKUs are ignored.","SKU-uri separate prin virgulă, afișate într-un carusel de produse sub articol. SKU-urile necunoscute sunt ignorate."
 "Published At","Publicat la"

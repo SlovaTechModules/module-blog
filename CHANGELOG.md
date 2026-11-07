@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.1 — 2026-11-08
+
+- The note under **Show Featured Image as Hero** in the post editor now says that the banner is left out, even when switched on, if the same picture is the intro image or appears in the content. Until now the rule was only in the documentation, so a missing banner could look like a bug.
+- README: a Troubleshooting section; installation and Quick start come first; the URL prefix warning is also in the Settings table; links to Magento, Hyvä and related Slova modules.
+
 ## 1.0.0
 
 First public release, free under the MIT License.
