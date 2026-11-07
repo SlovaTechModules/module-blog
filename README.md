@@ -128,6 +128,8 @@ On the storefront:
 | **Mobile Thumbnail** (optional) | Replaces the featured image on **cards below 768 px** (phones), where the card is a small square next to the title. Use it when the wide image does not read well that small; a square image works best. |
 | **Show Featured Image as Hero** | On: the featured image is also the banner at the top of the post. Off: it stays on the card only. |
 
+**How the card frame is filled.** Card images sit in a 16:9 frame (a square on phones). By default they **fill** it: the image is scaled until the frame is covered and the rest is cropped, keeping the top of the picture, so heads are not cut off; every card then has the same margin on all sides of its picture. A very wide picture loses a lot on the sides in the square phone frame: give such posts a mobile thumbnail. If your card images must never be cropped (book covers, product photos on a transparent background), set **Card Images** to *Show the whole image* in the [settings](#settings).
+
 The hero on the storefront:
 
 ![A post with the featured image as hero](docs/images/post-hero.jpg)
@@ -298,6 +300,7 @@ The widget's cards use the featured image, cropped to 16:9, and take your accent
 | **Posts per Page** | 12 | Cards per page on the blog home and category pages. |
 | **Show Title Band** | Yes | The full-width colored band under the header. With No, the page shows its own heading instead. |
 | **Accent Color** | your theme's primary color | A hex color such as `#0f766e` for the title band, links, category labels, card borders and the widget. |
+| **Card Images** | Fill the frame | *Fill the frame*: card pictures cover their 16:9 frame (square on phones), cropped from the top down. *Show the whole image*: nothing is cropped; pictures of another shape leave empty space. Applies to the blog lists and the widget. |
 | **Sidebar CMS Block** | None | A CMS block under the categories in the sidebar (desktop). |
 | **Related Products Heading** | "Featured in this post", translated | The heading above the product slider. A bookshop might write "Books in this story". |
 | **Resize and Convert to WebP** | Yes | Turn off to serve the uploaded files unchanged. |

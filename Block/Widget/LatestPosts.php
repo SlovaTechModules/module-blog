@@ -200,6 +200,16 @@ class LatestPosts extends Template implements BlockInterface, IdentityInterface
     }
 
     /**
+     * Card image fit from the settings: "cover" or "contain".
+     *
+     * @return string
+     */
+    public function getCardImageFit(): string
+    {
+        return $this->config->getCardImageFit();
+    }
+
+    /**
      * @inheritDoc
      */
     public function getIdentities(): array

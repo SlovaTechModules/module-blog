@@ -143,3 +143,7 @@ SEO,SEO
 "Delete Posts","Șterge articole"
 Published,Publicat
 Modified,Modificat
+"Card Images","Imaginile din carduri"
+"Fill the frame (cropped, top kept)","Umple cadrul (decupată, cu partea de sus păstrată)"
+"Show the whole image","Imaginea întreagă"
+"Fill: every card image fills its frame (16:9, square on phones) and is cropped as needed, keeping the top so heads are not cut. Whole image: nothing is cropped; images of another shape leave empty space, best for book covers or product photos on a transparent background.","Umple: fiecare imagine umple cadrul cardului (16:9, pătrat pe telefon) și e decupată cât e nevoie, păstrând partea de sus, ca să nu taie capete. Imaginea întreagă: nimic nu e decupat; imaginile de altă formă lasă spațiu gol, potrivit pentru coperți de carte sau poze de produs pe fundal transparent."

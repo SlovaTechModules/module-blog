@@ -61,6 +61,11 @@
                     <backend_model>Slova\Blog\Model\Config\Backend\Color</backend_model>
                     <comment>A hex color such as #0f766e, used for the title band, links, category labels and card borders. Leave empty to use your theme's primary color.</comment>
                 </field>
+                <field id="card_image_fit" translate="label comment" type="select" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Card Images</label>
+                    <source_model>Slova\Blog\Model\Config\Source\CardImageFit</source_model>
+                    <comment>Fill: every card image fills its frame (16:9, square on phones) and is cropped as needed, keeping the top so heads are not cut. Whole image: nothing is cropped; images of another shape leave empty space, best for book covers or product photos on a transparent background.</comment>
+                </field>
                 <field id="sidebar_cms_block" translate="label comment" type="select" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Sidebar CMS Block</label>
                     <source_model>Slova\Blog\Model\Config\Source\CmsBlock</source_model>

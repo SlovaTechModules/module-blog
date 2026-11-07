@@ -21,6 +21,7 @@ if (!$posts) {
 $title = $block->getTitle();
 $allUrl = $block->getAllPostsUrl();
 $accent = $block->getAccentColor();
+$cover = $block->getCardImageFit() === 'cover';
 ?>
 <style>
     .slova-blog-widget {
@@ -28,6 +29,8 @@ $accent = $block->getAccentColor();
         --slova-blog-fg: var(--color-fg, #111827);
         --slova-blog-muted: var(--color-fg-secondary, #6b7280);
         --slova-blog-card-border: color-mix(in srgb, var(--slova-blog-accent) 18%, #fff);
+        --slova-blog-card-fit: <?= /* @noEscape */ $cover ? 'cover' : 'contain' ?>;
+        --slova-blog-card-position: <?= /* @noEscape */ $cover ? '50% 0' : '50% 50%' ?>;
         margin: 2.5rem 0;
     }
     .slova-blog-widget__head {
@@ -85,7 +88,8 @@ $accent = $block->getAccentColor();
         display: block;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: var(--slova-blog-card-fit);
+        object-position: var(--slova-blog-card-position);
     }
     .slova-blog-widget__placeholder {
         display: block;

@@ -24,6 +24,7 @@ class Config
     public const XML_POSTS_PER_PAGE = 'slova_blog/list/posts_per_page';
     public const XML_TITLE_BAND = 'slova_blog/display/title_band';
     public const XML_ACCENT_COLOR = 'slova_blog/display/accent_color';
+    public const XML_CARD_IMAGE_FIT = 'slova_blog/display/card_image_fit';
     public const XML_SIDEBAR_CMS_BLOCK = 'slova_blog/display/sidebar_cms_block';
     public const XML_RELATED_TITLE = 'slova_blog/display/related_title';
     public const XML_RESPONSIVE_IMAGES = 'slova_blog/images/responsive';
@@ -132,6 +133,18 @@ class Config
     {
         $color = $this->getString(self::XML_ACCENT_COLOR, $storeId);
         return preg_match('/^#(?:[0-9a-fA-F]{3}){1,2}$/', $color) ? $color : '';
+    }
+
+    /**
+     * How a card image fills its frame: "cover" (fill, cropped, top kept) or "contain"
+     * (the whole image, with empty space around it when the shapes differ).
+     *
+     * @param int|null $storeId
+     * @return string
+     */
+    public function getCardImageFit(?int $storeId = null): string
+    {
+        return $this->getString(self::XML_CARD_IMAGE_FIT, $storeId) === 'contain' ? 'contain' : 'cover';
     }
 
     /**

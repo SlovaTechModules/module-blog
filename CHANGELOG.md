@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0 — 2026-11-08
+
+- Card images now **fill** their frame (16:9, square on phones), cropped from the top so heads stay in, instead of being shown whole with empty space around them. Wide and narrow pictures now look the same size, and every card has the same margin above and beside its picture. Applies to the blog lists and the Latest Posts widget.
+- New setting **Card Images** (*Stores → Configuration → Slova → Blog → Display*): *Fill the frame* (default) or *Show the whole image*, the 1.0 behavior, for book covers or product photos that must not be cropped.
+
 ## 1.0.1 — 2026-11-08
 
 - The note under **Show Featured Image as Hero** in the post editor now says that the banner is left out, even when switched on, if the same picture is the intro image or appears in the content. Until now the rule was only in the documentation, so a missing banner could look like a bug.

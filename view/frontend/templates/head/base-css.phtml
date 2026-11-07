@@ -23,6 +23,7 @@ use Slova\Blog\ViewModel\Style;
 /** @var Style $style */
 $style = $block->getData('style_view_model');
 $accent = $style->getAccentColor();
+$cover = $style->getCardImageFit() === 'cover';
 ?>
 <style>
     .slova-blog-page {
@@ -38,6 +39,9 @@ $accent = $style->getAccentColor();
         --slova-blog-pill-bg-hover: color-mix(in srgb, var(--slova-blog-accent) 18%, transparent);
         --slova-blog-band-bg: var(--slova-blog-accent);
         --slova-blog-band-fg: var(--color-on-primary, #fff);
+        /* Card images: fill the frame from the top (heads stay in), or the whole image. */
+        --slova-blog-card-fit: <?= /* @noEscape */ $cover ? 'cover' : 'contain' ?>;
+        --slova-blog-card-position: <?= /* @noEscape */ $cover ? '50% 0' : '50% 50%' ?>;
     }
 <?php if ($accent !== ''): ?>
     .slova-blog-page { --slova-blog-accent: <?= /* @noEscape */ $accent /* validated #rgb or #rrggbb */ ?>; }

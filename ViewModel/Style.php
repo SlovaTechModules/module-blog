@@ -33,4 +33,14 @@ class Style implements ArgumentInterface
     {
         return $this->config->getAccentColor();
     }
+
+    /**
+     * Card image fit: "cover" or "contain".
+     *
+     * @return string
+     */
+    public function getCardImageFit(): string
+    {
+        return $this->config->getCardImageFit();
+    }
 }
