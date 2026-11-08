@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1 — 2026-11-08
+
+- Related products under a post now load every attribute marked *Used in Product Listing*, as category pages do. Product-card badges and labels that read such attributes (a gift or pre-order flag, for example) could be missing on the post page, and a special price scheduled for later could show early.
+
 ## 1.1.0 — 2026-11-08
 
 - Card images now **fill** their frame (16:9, square on phones), cropped from the top so heads stay in, instead of being shown whole with empty space around them. Wide and narrow pictures now look the same size, and every card has the same margin above and beside its picture. Applies to the blog lists and the Latest Posts widget.

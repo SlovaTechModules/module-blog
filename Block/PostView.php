@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Slova\Blog\Block;
 
+use Magento\Catalog\Model\Config as CatalogConfig;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Attribute\Source\Status as ProductStatus;
 use Magento\Catalog\Model\Product\Visibility as ProductVisibility;
@@ -42,6 +43,9 @@ class PostView extends Template implements IdentityInterface
     /** @var string[]|null media paths of the content's images */
     private ?array $contentImagePaths = null;
 
+    /** @var CatalogConfig */
+    private CatalogConfig $catalogConfig;
+
     /**
      * @param Template\Context $context
      * @param Registry $registry
@@ -55,6 +59,7 @@ class PostView extends Template implements IdentityInterface
      * @param FilterProvider $filterProvider
      * @param Resizer $resizer
      * @param array $data
+     * @param CatalogConfig|null $catalogConfig
      */
     public function __construct(
         Template\Context $context,
@@ -68,9 +73,12 @@ class PostView extends Template implements IdentityInterface
         private readonly Config $config,
         private readonly FilterProvider $filterProvider,
         private readonly Resizer $resizer,
-        array $data = []
+        array $data = [],
+        ?CatalogConfig $catalogConfig = null
     ) {
         parent::__construct($context, $data);
+        $this->catalogConfig = $catalogConfig
+            ?? \Magento\Framework\App\ObjectManager::getInstance()->get(CatalogConfig::class);
     }
 
     /**
@@ -290,7 +298,11 @@ class PostView extends Template implements IdentityInterface
         $collection = $this->productCollectionFactory->create();
         $collection->addIdFilter($ids)
             ->addStoreFilter()
-            ->addAttributeToSelect(['name', 'price', 'special_price', 'thumbnail', 'small_image', 'url_key', 'image'])
+            // Every "used in product listing" attribute, as on category pages, so the theme's
+            // product card gets the data its labels and badges read (e.g. a custom gift flag).
+            ->addAttributeToSelect($this->catalogConfig->getProductAttributes())
+            ->addAttributeToSelect(['name', 'price', 'special_price', 'special_from_date', 'special_to_date',
+                'thumbnail', 'small_image', 'url_key', 'image'])
             ->addAttributeToFilter('status', ProductStatus::STATUS_ENABLED)
             ->addAttributeToFilter('visibility', ['in' => [
                 ProductVisibility::VISIBILITY_IN_CATALOG,

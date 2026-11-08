@@ -2,7 +2,7 @@
     "name": "slova/module-blog",
     "description": "Free blog for Magento 2 on Hyvä: posts and categories, related products, clean URLs with your own prefix, WebP images, Article and BreadcrumbList structured data, sitemap, zero layout shift.",
     "type": "magento2-module",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "license": "MIT",
     "keywords": [
         "magento2",
