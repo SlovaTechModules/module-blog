@@ -472,8 +472,8 @@ Other modules for Magento 2 stores on Hyvä, built and run on a real store:
 - [Bestsellers](https://slova.tech/modules/bestsellers/): bestseller lists built from paid orders.
 - [All modules](https://slova.tech/modules/)
 
-## License
+## Support and license
+
+Bugs and questions: open an issue on [GitHub](https://github.com/SlovaTechModules/module-blog/issues), or write to [contact@slova.tech](mailto:contact@slova.tech). Installation and setup by us, if you prefer: [slova.tech/modules/blog](https://slova.tech/modules/blog/).
 
 MIT — see [LICENSE](LICENSE). © 2026 Carusel Multimedia SRL, trading as Slova.
-
-Questions and bug reports: [slova.tech](https://slova.tech) · contact@slova.tech
