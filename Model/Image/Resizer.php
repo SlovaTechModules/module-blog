@@ -22,6 +22,11 @@ use Slova\Blog\Model\Config;
  * pub/media/slova_blog_resized/{format}/{width}/{original path}. Images are never
  * enlarged. When resizing is turned off, unsupported or fails, the original URL is
  * returned, so a page never shows a broken image.
+ *
+ * A copy older than its original is made again, so an image replaced by a file with
+ * the same name shows up without clearing anything. The URL of a copy carries the
+ * original's modification time (?v=…), so browsers and CDNs fetch the new picture
+ * instead of the one they cached under the same address.
  */
 class Resizer
 {
@@ -66,9 +71,9 @@ class Resizer
         }
 
         $cachedPath = $this->cachedPath($sourcePath, $width, $format);
-        $mediaDir = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
+        $sourceTime = $this->modifiedTime($sourcePath);
 
-        if (!$mediaDir->isFile($cachedPath)) {
+        if ($this->isOutdated($cachedPath, $sourceTime)) {
             try {
                 $this->generate($sourcePath, $width, $format, $cachedPath);
             } catch (\Throwable $e) {
@@ -81,7 +86,47 @@ class Resizer
             }
         }
 
-        return $this->mediaUrl($cachedPath);
+        return $this->versioned($this->mediaUrl($cachedPath), $sourceTime);
+    }
+
+    /**
+     * Whether the copy is missing or older than its original (the original was replaced).
+     *
+     * @param string $cachedPath
+     * @param int $sourceTime
+     * @return bool
+     */
+    private function isOutdated(string $cachedPath, int $sourceTime): bool
+    {
+        $cachedAbs = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA)->getAbsolutePath($cachedPath);
+        if (!is_file($cachedAbs)) {
+            return true;
+        }
+        return $sourceTime > 0 && (int)filemtime($cachedAbs) < $sourceTime;
+    }
+
+    /**
+     * Modification time of a media file, 0 when it is missing.
+     *
+     * @param string $path
+     * @return int
+     */
+    private function modifiedTime(string $path): int
+    {
+        $absolute = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA)->getAbsolutePath($path);
+        return is_file($absolute) ? (int)filemtime($absolute) : 0;
+    }
+
+    /**
+     * Add the original's modification time to the URL, so a replaced image gets a new address.
+     *
+     * @param string $url
+     * @param int $sourceTime
+     * @return string
+     */
+    private function versioned(string $url, int $sourceTime): string
+    {
+        return $sourceTime > 0 ? $url . '?v=' . base_convert((string)$sourceTime, 10, 36) : $url;
     }
 
     /**
@@ -244,18 +289,23 @@ class Resizer
             $mediaDir->create($cacheDir);
         }
         $dstAbs = $mediaDir->getAbsolutePath($cachedPath);
+        // Written beside the copy and renamed over it: a copy made again (original replaced)
+        // may be served to other visitors at that moment, and must never be half-written.
+        $tmpAbs = $dstAbs . '.' . bin2hex(random_bytes(4)) . '.tmp';
 
         $ok = match ($format) {
-            'webp' => imagewebp($dst, $dstAbs, self::QUALITY_WEBP),
-            'jpg', 'jpeg' => $this->saveJpeg($dst, $dstAbs),
-            'png' => imagepng($dst, $dstAbs),
+            'webp' => imagewebp($dst, $tmpAbs, self::QUALITY_WEBP),
+            'jpg', 'jpeg' => $this->saveJpeg($dst, $tmpAbs),
+            'png' => imagepng($dst, $tmpAbs),
             default => false,
         };
 
         imagedestroy($src);
         imagedestroy($dst);
 
-        if (!$ok) {
+        // phpcs:ignore Generic.PHP.NoSilencedErrors
+        if (!$ok || !@rename($tmpAbs, $dstAbs)) {
+            @unlink($tmpAbs); // phpcs:ignore Generic.PHP.NoSilencedErrors
             throw new \RuntimeException('Failed to write ' . $cachedPath);
         }
     }

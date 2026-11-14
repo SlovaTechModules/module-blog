@@ -335,7 +335,7 @@ The internal routes (`/blog/post/view/id/7`, or `/blog` when your prefix is some
 - Every post image (featured, mobile thumbnail, intro and the images inside the content) is **resized** for the space it fills, at normal and double density, and served as **WebP** with a **JPEG** fallback. Images are never enlarged; SVG files are served as they are.
 - Every image gets its **width and height**, and the layout styles are in `<head>`, so nothing moves while the page loads (CLS 0).
 - Only the first picture of the page (the first card, the hero or the intro image) loads eagerly with high priority; everything else is lazy-loaded.
-- Copies are made on the first visit and kept in `pub/media/slova_blog_resized`. To rebuild them (after replacing a file under the same name), delete that folder.
+- Copies are made on the first visit and kept in `pub/media/slova_blog_resized`. A copy older than its original is made again, so an image replaced under the same name shows up by itself; its URL carries the original's modification time (`?v=…`), so browsers and CDNs fetch the new picture too.
 - An uploaded image never overwrites another file with the same name: the new one gets a free name.
 
 ## Customizing
@@ -431,7 +431,12 @@ Check **Show Featured Image as Hero** in the post editor: switched off, the feat
 
 ### I replaced an image but the old one still shows
 
-Resized copies are made on the first visit and kept in `pub/media/slova_blog_resized`. An image uploaded in the editor always gets a new name, so it gets new copies too. If you replaced a file under the same name directly on the server, delete that folder; the copies are rebuilt on the next visit.
+Since 1.1.2 nothing needs deleting: a resized copy older than its original is made again on the next visit, under a new URL (`?v=…`), even when the file was replaced under the same name directly on the server. Two things can still show the old picture:
+
+- **The page itself is cached.** Pages store the image URLs; flush the full page cache (or Varnish) so they get the new ones.
+- **The original's date was kept when copying it.** Tools that preserve the modification time (`cp -p`, `rsync -t`, some FTP clients) can leave the new file looking older than its copies. Touch the file (`touch pub/media/slova/blog/<file>`), or delete `pub/media/slova_blog_resized`.
+
+On 1.1.1 and earlier, delete `pub/media/slova_blog_resized`; the copies are rebuilt on the next visit.
 
 ### My video doesn't appear
 

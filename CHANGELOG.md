@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.1.2 — 2026-11-14
+
+- **A replaced image now shows up.** An image replaced by a file with the same name (directly on the server, by a deployment or an import) kept showing the old picture: resized copies were made once and never compared with their original again, and clearing Magento's caches did not touch them. A copy older than its original is now made again on the next visit.
+- **New URL when the picture changes.** The URL of a resized copy now ends in `?v=` followed by the original's modification time, so browsers and CDNs that cached the old picture fetch the new one. After updating, every resized image gets this suffix once: flush the full page cache (and Varnish) so cached pages use the new URLs.
+- Resized copies are written to a temporary file and renamed into place, so a visitor never receives a half-written image while a copy is being made again.
+- README: *Images and speed* and *I replaced an image but the old one still shows* describe the new behavior and the remaining cases (a cached page, a file copied with its old date kept); one *Support and license* section.
+
 ## 1.1.1 — 2026-11-08
 
 - Related products under a post now load every attribute marked *Used in Product Listing*, as category pages do. Product-card badges and labels that read such attributes (a gift or pre-order flag, for example) could be missing on the post page, and a special price scheduled for later could show early.
